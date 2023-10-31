@@ -1,0 +1,35 @@
+
+@startuml Loop of Legends: The Multi-Snake Challenge
+
+legend top
+Certainly, I've formatted the keywords in your text in bold:
+
+**INIT**: Client sends INIT to server to establish connection
+**OK**: Server sends OK to client to confirm action
+**LOBBY**: Client sends LOBBY to server to check if there is a place available in the lobby
+**JOIN**: Client sends JOIN to server to join the lobby
+**READY**: Client sends READY to server to confirm that the client is ready to start the game
+**START**: Server sends START to client to start the game
+**DIR**: Client sends DIR to server to indicate the direction the snake should move
+**UPDATE**: Server sends UPDATE to client to update the game state
+**END**: Server sends END to client to indicate that the game has ended
+endlegend
+
+Client -> Server :INIT
+Server -> Client :OK
+Client -> Server :LOBBY
+Server -> Client :OK
+Client -> Server :JOIN
+Server -> Client :OK
+Client -> Server :READY
+Server -> Client :OK
+Server -> Client :START
+Client -> Server :DIR
+Server -> Client :OK
+Server -> Client :UPDATE
+Client -> Server :DIR
+Server -> Client :OK
+Server -> Client :UPDATE
+Server -> Client :END
+@enduml
+```
