@@ -1,0 +1,69 @@
+@startuml Loop Of Legends
+title Loop Of Legends - Snake Game UML
+Package lool {
+
+    enum DIRECTION {
+        UP
+        DOWN
+        LEFT
+        RIGHT
+    }
+
+    Class Point {
+        - int x
+        - int y
+    }
+
+    DIRECTION "1" -- "1" Point : has >
+
+    Package server{
+
+        class Lobby {
+        - int poolSize
+        }
+
+        class Config {
+        - int frequency
+        - bool useWall
+        }
+
+        Lobby "1" -- "1" Config : has >
+    }
+
+    Package client {
+
+        class Board{
+            - int xSize
+            - int ySize
+
+        }
+
+        class Player {
+            - int id
+            - bool master
+            - string name
+            - int score
+        }
+
+        class Snake{
+
+            - int length
+            - int score
+            - char head
+            - char body
+            - Color color
+            + void eat()
+            + void getDirection()
+        }
+
+        Snake "1" --u "1" Player : has >
+        Snake "0..*" --r> "1..*" Point : has >
+        Board "1" -- "1" Player : has >
+    }
+
+    Lobby "1" --r "0..*" Player : has >
+
+    
+}
+
+@enduml
