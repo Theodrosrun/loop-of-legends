@@ -27,15 +27,30 @@ Package lool {
         - bool useWall
         }
 
+        class Snake{
+            - int ownerId
+            - int length
+            - char head
+            - char body
+            - Color color
+            + void eat()
+        }
+
+        class Board{
+            - int width
+            - int height
+
+            + void Compute()
+    
+        }
+
         Lobby "1" -- "1" Config : has >
     }
 
     Package client {
 
-        class Board{
-            - int xSize
-            - int ySize
-
+        class ComputedBoard{
+         char[x][y] computedBoard
         }
 
         class Player {
@@ -45,21 +60,9 @@ Package lool {
             - int score
         }
 
-        class Snake{
-
-            - int length
-            - int score
-            - char head
-            - char body
-            - Color color
-            + void eat()
-            + void getDirection()
-        }
-
-        Snake "1" --u "1" Player : has >
-        Snake "0..*" --r> "1..*" Point : has >
-        Board "1" -- "1" Player : has >
     }
+
+    Snake "1" --r "1" Player : has >
 
     Lobby "1" --r "0..*" Player : has >
 
