@@ -33,6 +33,8 @@ Server -> Client :UPDATE send updated board
 |||
 Client -> Server :DIR send direction
 Server -> Client :OK
+Server -> Client :DEAD / WIN
+|||
 Server -> Client :UPDATE send updated board
 |||
 Server -> Client :END
