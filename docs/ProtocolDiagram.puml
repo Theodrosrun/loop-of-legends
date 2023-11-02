@@ -17,19 +17,24 @@ endlegend
 
 Client -> Server :INIT
 Server -> Client :OK
-Client -> Server :LOBBY
+Client -> Server :LOBBY there is a place available ?
 Server -> Client :OK
-Client -> Server :JOIN
+Client -> Server :JOIN the lobby
 Server -> Client :OK
 Client -> Server :READY
 Server -> Client :OK
+|||
 Server -> Client :START
-Client -> Server :DIR
+Server -> Client :UPDATE send updated board
+|||
+Client -> Server :DIR send direction
 Server -> Client :OK
-Server -> Client :UPDATE
-Client -> Server :DIR
+Server -> Client :UPDATE send updated board
+|||
+Client -> Server :DIR send direction
 Server -> Client :OK
-Server -> Client :UPDATE
+Server -> Client :UPDATE send updated board
+|||
 Server -> Client :END
 @enduml
 ```
