@@ -1,4 +1,4 @@
-package ch.heigvd;
+package ch.heigvd.controller;
 
 public enum DIRECTION {
     UP,

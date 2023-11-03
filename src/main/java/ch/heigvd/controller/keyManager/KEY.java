@@ -1,4 +1,6 @@
-package ch.heigvd;
+package ch.heigvd.controller.keyManager;
+
+import ch.heigvd.controller.DIRECTION;
 
 public enum KEY {
     UP,
@@ -29,5 +31,15 @@ public enum KEY {
             default:
                 return NONE;
         }
+    }
+
+    public static DIRECTION keyToDirection(KEY key) {
+        return switch (key) {
+            case UP -> DIRECTION.UP;
+            case DOWN -> DIRECTION.DOWN;
+            case LEFT -> DIRECTION.LEFT;
+            case RIGHT -> DIRECTION.RIGHT;
+            default -> null;
+        };
     }
 }

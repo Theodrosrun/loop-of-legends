@@ -1,9 +1,9 @@
-package ch.heigvd;
+package ch.heigvd.controller.keyManager;
 
 import com.github.kwhat.jnativehook.GlobalScreen;
-import  com.github.kwhat.jnativehook.NativeHookException;
-import  com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
-import  com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
+import com.github.kwhat.jnativehook.NativeHookException;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -16,7 +16,7 @@ public class KeyHandler implements NativeKeyListener {
 
 
     public void nativeKeyPressed(NativeKeyEvent e) {
-        // System.out.println("Touche pressée : " + NativeKeyEvent.getKeyText(e.getKeyCode()));
+        // do nothing;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class KeyHandler implements NativeKeyListener {
 
     @Override
     public void nativeKeyTyped(NativeKeyEvent e) {
-        // Ne fait rien ici, car ce gestionnaire d'événements ne traite pas les événements de frappe.
+        // do nothing;
     }
 
     public KEY getKey() {
