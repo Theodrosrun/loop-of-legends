@@ -6,25 +6,25 @@ public enum HEAD {
     UP {
         @Override
         public String toString() {
-            return "▲";
+            return "0";
         }
     },
     DOWN {
         @Override
         public String toString() {
-            return "▼";
+            return "0";
         }
     },
     LEFT {
         @Override
         public String toString() {
-            return "◄";
+            return "0";
         }
     },
     RIGHT {
         @Override
         public String toString() {
-            return "►";
+            return "0";
         }
     };
 

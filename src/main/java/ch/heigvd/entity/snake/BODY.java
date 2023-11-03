@@ -7,13 +7,13 @@ public enum BODY {
         @Override
 
         public String toString() {
-            return "█";
+            return "o";
         }
     },
     HORIZONTAL {
         @Override
         public String toString() {
-            return "█";
+            return "o";
         }
     };
     static char getBody(DIRECTION direction){
