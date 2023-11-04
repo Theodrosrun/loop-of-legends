@@ -26,7 +26,7 @@ public class ServerWorker implements Runnable {
     public void run() {
         try {
             while ((clientInput.readLine()) != null) {
-                serverOutput.println("Hello client!");
+                serverOutput.write("Hello client!" + "\n");
                 serverOutput.flush();
             }
 
