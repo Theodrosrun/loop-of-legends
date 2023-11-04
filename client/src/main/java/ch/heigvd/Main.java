@@ -7,6 +7,6 @@ public class Main {
     public static void main(String[] args) {
         Logger logger = LoggerFactory.getLogger(Main.class);
 
-        logger.debug("Hello World!");
+        logger.debug("Hello from client!");
     }
 }
