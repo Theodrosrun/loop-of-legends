@@ -1,6 +1,6 @@
 package ch.heigvd.snake;
 
-import ch.heigvd.controller.DIRECTION;
+import ch.heigvd.DIRECTION;
 
 public enum BODY {
     VERTICAL {

@@ -1,7 +1,7 @@
 package ch.heigvd;
 
-import ch.heigvd.entity.Food;
-import ch.heigvd.entity.snake.Snake;
+import ch.heigvd.Food;
+import ch.heigvd.snake.Snake;
 import ch.qos.logback.core.joran.sanity.Pair;
 
 import java.util.HashMap;

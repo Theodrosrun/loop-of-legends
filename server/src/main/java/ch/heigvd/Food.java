@@ -1,6 +1,6 @@
 package ch.heigvd;
 
-import ch.heigvd.controller.Position;
+import ch.heigvd.Position;
 
 import java.util.ArrayList;
 
