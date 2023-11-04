@@ -26,12 +26,12 @@ public class ServerWorker implements Runnable {
     public void run() {
         try {
             while ((clientInput.readLine()) != null) {
-                serverOutput.write("Hello client!");
+                serverOutput.println("Hello client!");
                 serverOutput.flush();
             }
 
-            // clientInput.close();
-            // serverOutput.close();
+             clientInput.close();
+             serverOutput.close();
         } catch (IOException ex) {
 
         }
