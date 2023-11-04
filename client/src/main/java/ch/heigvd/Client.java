@@ -3,9 +3,9 @@ package ch.heigvd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Main {
+public class Client {
     public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(Main.class);
+        Logger logger = LoggerFactory.getLogger(Client.class);
 
         logger.debug("Hello from client!");
     }
