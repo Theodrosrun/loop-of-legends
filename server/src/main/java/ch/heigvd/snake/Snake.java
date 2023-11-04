@@ -1,9 +1,9 @@
 package ch.heigvd.snake;
 
 
-import ch.heigvd.controller.Board;
-import ch.heigvd.controller.DIRECTION;
-import ch.heigvd.controller.Position;
+import ch.heigvd.Board;
+import ch.heigvd.DIRECTION;
+import ch.heigvd.Position;
 
 import java.util.LinkedList;
 
