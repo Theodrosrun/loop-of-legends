@@ -1,4 +1,4 @@
-package ch.heigvd.asyncInputManager;
+package ch.heigvd;
 public enum KEY {
     UP,
     DOWN,
