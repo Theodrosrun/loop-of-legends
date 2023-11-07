@@ -32,12 +32,14 @@ public class ServerWorker implements Runnable {
                 // Message parsing
                 String[] command = line.split(" ");
                 Message message = Message.fromString(command[0]);
+                String data = command[1];
+
                 // Message unknown
                 if(message == Message.UNKN){
                     // return;
                 }
 
-                handle(message, command[1]);
+                commandHandler(message, data);
 
                 serverOutput.write("Hello client!" + "\n");
                 serverOutput.flush();
@@ -51,7 +53,7 @@ public class ServerWorker implements Runnable {
         }
     }
 
-    private int handle(Message message, String value) {
+    private int commandHandler(Message message, String data) {
         switch (message) {
             case INIT:
                 // Handle INIT message
