@@ -2,11 +2,15 @@ package ch.heigvd;
 
 public class Player {
 
+    private static int idCnt = 0;
+    private int id;
+
     private String name;
 
     private boolean ready = false;
 
     public Player(String name) {
+        this.id = ++idCnt;
         this.name = name;
     }
     public String getName() {
@@ -19,5 +23,17 @@ public class Player {
 
     public boolean isReady() {
         return ready;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Player player){
+            return this.id == player.id;
+        }
+        return false;
     }
 }

@@ -3,11 +3,14 @@ package ch.heigvd.snake;
 
 import ch.heigvd.Board;
 import ch.heigvd.DIRECTION;
+import ch.heigvd.Player;
 import ch.heigvd.Position;
 
 import java.util.LinkedList;
 
 public class Snake {
+
+    private final static char HEAD [] = {'∅','0','●','⦿'};
     private static int idCounter;
     private int id;
     private int score = 0;
@@ -50,10 +53,9 @@ public class Snake {
     public Position getHead() {
         return body.getFirst();
     }
-
     private char getBodyRepresentation(Position position, Position previousPosition) {
         if (previousPosition == null) {
-            return HEAD.getHead(position.getDirection());
+            return HEAD[id];
         }
         if (position.getDirection() == previousPosition.getDirection()) {
             return BODY.getBody(position.getDirection());
@@ -61,7 +63,6 @@ public class Snake {
             return ANGLE.getAngle(position.getDirection(), previousPosition.getDirection());
         }
     }
-
     public LinkedList<Position> getPositions() {
         return body;
     }
@@ -84,7 +85,7 @@ public class Snake {
         Position newHead = new Position(
                 head.getX() + DIRECTION.getCoef(head.getDirection())[0],
                 head.getY() + DIRECTION.getCoef(head.getDirection())[1],
-                head.getDirection(), HEAD.getHead(head.getDirection()));
+                head.getDirection(), HEAD[id]);
         body.addFirst(newHead);
         if (!eat){
             body.removeLast();
