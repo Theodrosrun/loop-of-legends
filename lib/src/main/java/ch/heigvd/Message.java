@@ -9,7 +9,8 @@ public enum Message {
     STRT("STRT"),
     DIRE("DIRE"),
     UPTE("UPTE"),
-    ENDD("ENDD");
+    ENDD("ENDD"),
+    UNKN("UNKN");
 
     private final String message;
 

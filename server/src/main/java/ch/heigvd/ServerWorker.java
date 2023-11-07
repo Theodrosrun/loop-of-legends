@@ -22,10 +22,35 @@ public class ServerWorker implements Runnable {
         }
     }
 
+    Message getMessage(String s) {
+        switch(s.toUpperCase()) {
+            case :
+                return Operation.ADD;
+            case "MULTIPLY":
+                return Operation.MULTIPLY;
+            default:
+                return Operation.UNKNOWN;
+        }
+    }
+
+    boolean isMessageValid(String s) {
+        return getMessage(s) != Message.UNKN;
+    }
+
+    int handle(Message message, String value) {
+        switch (message) {
+            default:
+                return 0;
+        }
+    }
+
     @Override
     public void run() {
         try {
-            while ((clientInput.readLine()) != null) {
+            String line;
+            while ((line = clientInput.readLine()) != null) {
+                String[] command = line.split(" ");
+
                 serverOutput.write("Hello client!" + "\n");
                 serverOutput.flush();
             }
