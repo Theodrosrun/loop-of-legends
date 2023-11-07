@@ -16,27 +16,29 @@ Certainly, I've formatted the keywords in your text in bold:
 endlegend
 
 Client -> Server :INIT
-Server -> Client :OK
-Client -> Server :LOBBY there is a place available ?
-Server -> Client :OK
-Client -> Server :JOIN the lobby
-Server -> Client :OK
-Client -> Server :READY
-Server -> Client :OK
+Server -> Client :DONE
 |||
-Server -> Client :START
-Server -> Client :UPDATE send updated board
+Client -> Server :LOBB
+Server -> Client :DONE
 |||
-Client -> Server :DIR send direction
-Server -> Client :OK
-Server -> Client :UPDATE send updated board
+Client -> Server :JOIN
+Server -> Client :DONE
 |||
-Client -> Server :DIR send direction
-Server -> Client :OK
-Server -> Client :DEAD / WIN
+Client -> Server :RADY
+Server -> Client :DONE
 |||
-Server -> Client :UPDATE send updated board
+Server -> Client :STRT
 |||
-Server -> Client :END
+Client -> Server :DIRE
+Server -> Client :UPTE
+|||
+Client -> Server :DIRE
+Server -> Client :UPTE
+|||
+Client -> Server :DIRE
+Server -> Client :UPTE
+|||
+Client -> Server :ENDD
+Server -> Client :ENDD
 @enduml
 ```
