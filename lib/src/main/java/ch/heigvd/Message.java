@@ -18,21 +18,17 @@ public enum Message {
         this.message = message;
     }
 
-    public String getMessage() {
+    @Override
+    public String toString() {
         return message;
     }
 
     public static Message fromString(String message) {
         for (Message m : Message.values()) {
-            if (m.getMessage().equalsIgnoreCase(message)) {
+            if (m.toString().equalsIgnoreCase(message)) {
                 return m;
             }
         }
         return UNKN;
-    }
-
-    @Override
-    public String toString() {
-        return message;
     }
 }
