@@ -29,7 +29,7 @@ public class Board {
 
     public Board(int width, int height, short nbSnakes, short foodQuantity, short foodFrequency) {
         board = new char[height * vCoef + 2][width * hCoef + 2];
-        setBorder();
+        setBorder(board);
         foods = new Food(foodQuantity, foodFrequency);
     }
 
@@ -104,7 +104,7 @@ public class Board {
         return false;
     }
 
-    private void setBorder() {
+    private void setBorder(char[][] board) {
         for (int i = 1; i < board.length - 1; i++) {
             for (int j = 1; j < board[0].length - 1; j++) {
                 board[i][j] = ' ';

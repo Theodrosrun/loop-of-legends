@@ -1,4 +1,7 @@
-package ch.heigvd.asyncInputManager;
+package ch.heigvd;
+
+import com.googlecode.lanterna.input.KeyStroke;
+
 public enum KEY {
     UP,
     DOWN,
@@ -30,13 +33,19 @@ public enum KEY {
         }
     }
 
-//    public static DIRECTION keyToDirection(KEY key) {
-//        return switch (key) {
-//            case UP -> DIRECTION.UP;
-//            case DOWN -> DIRECTION.DOWN;
-//            case LEFT -> DIRECTION.LEFT;
-//            case RIGHT -> DIRECTION.RIGHT;
-//            default -> null;
-//        };
-//    }
+    private static KEY parseKeyStroke(KeyStroke key) {
+        return switch (key.getKeyType()) {
+            case ArrowUp -> KEY.UP;
+            case ArrowDown -> KEY.DOWN;
+            case ArrowLeft -> KEY.LEFT;
+            case ArrowRight -> KEY.RIGHT;
+            case Enter -> KEY.ENTER;
+            case Character -> switch (key.getCharacter()) {
+                case 'q' -> KEY.QUIT;
+                case 'r' -> KEY.READY;
+                default -> KEY.NONE;
+            };
+            default -> KEY.NONE;
+        };
+    }
 }

@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>client</artifactId>
-    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -45,7 +44,7 @@
         <dependency>
             <groupId>ch.heigvd</groupId>
             <artifactId>lib</artifactId>
-            <version>1.0.0</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -53,5 +52,17 @@
             <artifactId>jnativehook</artifactId>
             <version>2.2.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.googlecode.lanterna</groupId>
+            <artifactId>lanterna</artifactId>
+            <version>2.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.lanterna</groupId>
+            <artifactId>lanterna</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+
     </dependencies>
 </project>
