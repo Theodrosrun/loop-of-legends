@@ -28,7 +28,7 @@ public enum Message {
                 return m;
             }
         }
-        throw new IllegalArgumentException("No constant with text " + message + " found");
+        return UNKN;
     }
 
     @Override

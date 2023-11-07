@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 public class ServerWorker implements Runnable {
     private final static Logger LOG = Logger.getLogger(ServerWorker.class.getName());
+    private Player player;
     Socket clientSocket;
     BufferedReader clientInput = null;
     PrintWriter serverOutput = null;
@@ -22,34 +23,21 @@ public class ServerWorker implements Runnable {
         }
     }
 
-    Message getMessage(String s) {
-        switch(s.toUpperCase()) {
-            case :
-                return Operation.ADD;
-            case "MULTIPLY":
-                return Operation.MULTIPLY;
-            default:
-                return Operation.UNKNOWN;
-        }
-    }
-
-    boolean isMessageValid(String s) {
-        return getMessage(s) != Message.UNKN;
-    }
-
-    int handle(Message message, String value) {
-        switch (message) {
-            default:
-                return 0;
-        }
-    }
-
     @Override
     public void run() {
         try {
             String line;
             while ((line = clientInput.readLine()) != null) {
+
+                // Message parsing
                 String[] command = line.split(" ");
+                Message message = Message.fromString(command[0]);
+                // Message unknown
+                if(message == Message.UNKN){
+                    // return;
+                }
+
+                handle(message, command[1]);
 
                 serverOutput.write("Hello client!" + "\n");
                 serverOutput.flush();
@@ -57,8 +45,45 @@ public class ServerWorker implements Runnable {
 
              clientInput.close();
              serverOutput.close();
+
         } catch (IOException ex) {
 
+        }
+    }
+
+    private int handle(Message message, String value) {
+        switch (message) {
+            case INIT:
+                // Handle INIT message
+                return 1;
+            case DONE:
+                // Handle DONE message
+                return 1;
+            case LOBB:
+                // Handle LOBB message
+                return 1;
+            case JOIN:
+                // Handle JOIN message
+                return 1;
+            case RADY:
+                // Handle RADY message
+                return 1;
+            case STRT:
+                // Handle STRT message
+                return 1;
+            case DIRE:
+                // Server.SetKey(Key, player)
+                // Handle DIRE message
+                return 1;
+            case UPTE:
+                // Handle UPTE message
+                return 1;
+            case ENDD:
+                // Handle ENDD message
+                return 1;
+            default:
+                // Handle unexpected message
+                return 0;
         }
     }
 }
