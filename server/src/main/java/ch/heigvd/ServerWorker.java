@@ -49,7 +49,26 @@ public class ServerWorker implements Runnable {
              serverOutput.close();
 
         } catch (IOException ex) {
+            if (clientInput != null) {
+                try {
+                    clientInput.close();
+                } catch (IOException ex1) {
+                    LOG.log(Level.SEVERE, "In BufferedReader cannot be closed");
+                }
+            }
 
+            if (serverOutput != null) {
+                serverOutput.close();
+            }
+
+            if (clientSocket != null) {
+                try {
+                    clientSocket.close();
+                } catch (IOException ex1) {
+                    LOG.log(Level.SEVERE, "ClientSocket cannot be closed");
+                }
+            }
+            LOG.log(Level.SEVERE, "Global error: client made a hard disconnect");
         }
     }
 
