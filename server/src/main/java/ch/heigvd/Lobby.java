@@ -9,7 +9,7 @@ public class Lobby {
     private int nbPlayers = 0;
 
 
-    private Lobby(int maxPlayers) {
+    public Lobby(int maxPlayers) {
         players = new Player[maxPlayers];
     }
     private boolean Join(Player player) {
@@ -42,7 +42,14 @@ public class Lobby {
         }
         return readyPlayers;
     }
-
+    public Player getPlayer(int id) {
+        for (Player p : players) {
+            if (p.getId() == id) {
+                return p;
+            }
+        }
+        return null;
+    }
     private int countReady() {
         int nbReady = 0;
         for (Player player : players) {
