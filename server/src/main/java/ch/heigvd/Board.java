@@ -24,7 +24,6 @@ public class Board {
     //TODO board should be private
     private char[][] board;
 
-    private Snake[] snakes;
     private Food foods;
 
     public Board(int width, int height, short nbSnakes, short foodQuantity, short foodFrequency) {
@@ -61,7 +60,7 @@ public class Board {
         return getRelativeValue(y, board.length - 1);
     }
 
-    public void deploySnakes() {
+    public void deploySnakes(Snake[] snakes) {
         clearBoard();
         for (Snake snake : snakes) {
             if (eat(snake.getHead())){
@@ -72,8 +71,15 @@ public class Board {
                 int x = getRelativeX(position.getX());
                 board[y][x] = position.getRepresentation();
             }
+        }
+    }
 
-
+    public void deployLobby(Lobby lobby) {
+        int maxNameSize = board[0].length - 8;
+        for ( int i = 0; i < lobby.getNbPlayer(); ++i) {
+            Player player = lobby.getPlayers()[i];
+            String ready = player.isReady() ? "READY": " WAIT";
+            board[i+1] = (player.getId() + " " + player.getName().substring(0, maxNameSize ) +  ready).toCharArray();
         }
     }
 
@@ -129,9 +135,20 @@ public class Board {
         return board;
     }
 
-    public void setSnakes(Snake... snakes) {
-        this.snakes = snakes;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (char[] line : board) {
+            sb.append(line.toString() + "\n");
+        }
+        return sb.toString();
     }
 
+    public int getWidth() {
+        return board[0].length;
+    }
 
+    public int getHeigth(){
+        return board.length;
+    }
 }

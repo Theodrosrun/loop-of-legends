@@ -6,6 +6,28 @@ public enum DIRECTION {
     LEFT,
     RIGHT;
 
+
+    public static DIRECTION parseKey(KEY key){
+
+        switch (key) {
+            case UP -> {
+                return DIRECTION.UP;
+            }
+            case DOWN -> {
+                return DIRECTION.DOWN;
+            }
+            case LEFT -> {
+                return DIRECTION.LEFT;
+            }
+            case RIGHT -> {
+                return DIRECTION.RIGHT;
+            }
+            default -> {
+                return null;
+            }
+
+        }
+    }
     public static short[] getCoef(DIRECTION direction){
         return switch (direction) {
             case UP -> new short[]{0, -1};

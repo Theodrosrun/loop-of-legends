@@ -28,4 +28,12 @@ public class Player {
     public int getId() {
         return id;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Player player){
+            return this.id == player.id;
+        }
+        return false;
+    }
 }
