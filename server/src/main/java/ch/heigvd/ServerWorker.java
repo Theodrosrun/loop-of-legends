@@ -68,6 +68,7 @@ public class ServerWorker implements Runnable {
                     LOG.log(Level.SEVERE, "ClientSocket cannot be closed");
                 }
             }
+
             LOG.log(Level.SEVERE, "Global error: client made a hard disconnect");
         }
     }
