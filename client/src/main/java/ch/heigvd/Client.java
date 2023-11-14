@@ -1,5 +1,7 @@
 package ch.heigvd;
 
+import com.googlecode.lanterna.input.KeyStroke;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -105,14 +107,12 @@ public class Client {
             KEY lastKey = null;
 
             while (inputHandler.getKey() != KEY.QUIT) {
-
-                if (inputHandler.isDirection()) {
-                    serverOutput.write(Message.RADY.toString() + "\n");
+                KeyStroke key = inputHandler.getKeyStroke();
+                if (InputHandler.isDirection(key)) {
+                    serverOutput.write(Message.DIRE.toString() +KEY.parseKeyStroke(key).toString() + "\n");
                     serverOutput.flush();
                     inputHandler.resetKey();
                 }
-
-
             }
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, ex.getMessage(), ex);
