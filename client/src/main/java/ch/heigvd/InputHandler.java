@@ -2,6 +2,7 @@ package ch.heigvd;
 
 import com.googlecode.lanterna.input.InputProvider;
 import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
 
 import java.io.IOException;
 import java.util.concurrent.Semaphore;
@@ -20,6 +21,7 @@ public class InputHandler {
 
     /**
      * Constructor and runner for the InputHandler
+     *
      * @param inputProvider the input provider
      * @param readFrequency the frequency at which the input is read in milliseconds
      */
@@ -30,7 +32,7 @@ public class InputHandler {
         thread.start();
     }
 
-    private void run(){
+    private void run() {
         while (!stopRequest) {
 
             if (pause) {
@@ -58,15 +60,15 @@ public class InputHandler {
         }
     }
 
-    public KeyStroke getKeyStroke(){
+    public KeyStroke getKeyStroke() {
         return key;
     }
 
-    public KEY getKey(){
+    public KEY getKey() {
         return KEY.parseKeyStroke(key);
     }
 
-    public void resetKey(){
+    public void resetKey() {
         key = null;
     }
 
@@ -74,7 +76,7 @@ public class InputHandler {
         pause = true;
     }
 
-    public void restoreHandler(){
+    public void restoreHandler() {
         pause = false;
         wait.release();
     }
@@ -84,8 +86,16 @@ public class InputHandler {
     }
 
 
-    public boolean isDirection() {
-        //TODO terminer cette methode
-        return false;
+    public static boolean isDirection(KeyStroke key) {
+        switch (key.getKeyType()) {
+            case ArrowUp:
+            case ArrowDown:
+            case ArrowLeft:
+            case ArrowRight:
+                return true;
+            default:
+                return false;
+
+        }
     }
 }
