@@ -77,14 +77,14 @@ public class Board {
     public void deployLobby(Lobby lobby) {
 
         for ( int i = 0; i < lobby.getNbPlayer(); ++i) {
-            int maxNameSize = getWidth() - 12;
+            int maxNameSize = getWidth() - 11;
             Player player = lobby.getPlayers().get(i);
             String ready = player.isReady() ? "READY": "WAIT ";
             StringBuilder sb = new StringBuilder(verticalBorder + " ");
             sb.append(player.getId()).append(" ");
             sb.append(player.getName(), 0, Math.min(player.getName().length(), maxNameSize));
             if (player.getName().length() - maxNameSize < 0) {
-                sb.append(String.valueOf(emptyChar).repeat(maxNameSize - player.getName().length() - 1));
+                sb.append(String.valueOf(emptyChar).repeat(maxNameSize - player.getName().length()));
             }
             sb.append(" ");
             sb.append(ready);

@@ -1,15 +1,25 @@
 package ch.heigvd;
 
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.graphics.TextGraphics;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.input.InputProvider;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.TerminalResizeListener;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.Button;
+import com.googlecode.lanterna.gui2.GridLayout;
+import com.googlecode.lanterna.gui2.dialogs.TextInputDialog;
+import com.googlecode.lanterna.gui2.Panel;
 
 
+import javax.swing.*;
 import java.io.IOException;
 
 public class Terminal implements InputProvider {
@@ -37,6 +47,22 @@ public class Terminal implements InputProvider {
     public void helloTerminal() {
         print("Hello Terminal!");
     }
+
+    public String userInput(){
+        final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+        String input = "";
+        input = TextInputDialog.showDialog(textGUI, "UserName", "Please enter your username", "");
+
+//        panel.addComponent(new Button("Test", new Runnable() {
+//            @Override
+//            public void run() {
+//                this.input = TextInputDialog.showDialog(textGUI, "Title", "This is the description", "Initial content");
+//            }
+//        }));
+    return input;
+
+    }
+
 
     public void print(String s) {
         try {
@@ -79,5 +105,9 @@ public class Terminal implements InputProvider {
     @Override
     public KeyStroke readInput() throws IOException {
         return terminal.readInput();
+    }
+
+    public void clear() {
+        screen.clear();
     }
 }

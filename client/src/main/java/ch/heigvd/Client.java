@@ -41,7 +41,7 @@ public class Client {
         ) {
 
             Terminal terminal = new Terminal();
-              InputHandler inputHandler = new InputHandler(terminal, 50);
+            InputHandler inputHandler = new InputHandler(terminal, 50);
 
 
 
@@ -66,8 +66,27 @@ public class Client {
                 }
             }
 
+            inputHandler.pauseHandler();
 
-            serverOutput.write(Message.JOIN.toString() + " " + "Premier" + "\n");
+
+            //TODO recup le username mettre en pause mon InputHandler puis faire une methode readline avec un read input
+//            KeyStroke keykey = terminal.();
+            String name = terminal.userInput();
+//            terminal.clear();
+//            terminal.print("Name");
+//            StringBuilder sb = new StringBuilder();
+//            while (true) {
+//                char c = terminal.readInput().getCharacter();
+//                if (c == '\n') break;
+//                sb.append(c);
+//                terminal.clearLine();
+//                terminal.print(sb.toString());
+//
+//            }
+            inputHandler.restoreHandler();
+
+
+            serverOutput.write(Message.JOIN.toString() + " " + name+ "\n");
             serverOutput.flush();
 
 
@@ -75,8 +94,10 @@ public class Client {
                 if (inputHandler.getKey() == KEY.READY) {
                     serverOutput.write(Message.RADY.toString() + "\n");
                     serverOutput.flush();
+                    inputHandler.resetKey();
                 }
                 message = readUntilEOT(serverInput);
+                //TODO créer getData dans la lib protocol
                 terminal.print(message.substring(5, message.length() - 1));
             }
 
@@ -99,6 +120,7 @@ public class Client {
 
     }
 
+    //TODO verifier si il existe pas une methode dans la lib pour faire ca
     public static String readUntilEOT(BufferedReader reader) throws IOException {
         StringBuilder data = new StringBuilder();
         int currentChar;
@@ -113,4 +135,5 @@ public class Client {
 
         return data.toString();
     }
+
 }
