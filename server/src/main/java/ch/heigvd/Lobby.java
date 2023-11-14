@@ -86,4 +86,8 @@ public class Lobby {
         }
         return !getReadyPlayers().isEmpty();
     }
+
+    public void removePlayer(Player player) {
+        players.remove(player);
+    }
 }

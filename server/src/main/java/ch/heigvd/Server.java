@@ -140,6 +140,10 @@ public class Server {
         return lobby.lobbyIsFull();
     }
 
+    public void removePlayer(Player player) {
+        lobby.removePlayer(player);
+    }
+
     public void setReady(Player player) {
         lobby.setReady(player);
         board.deployLobby(lobby);

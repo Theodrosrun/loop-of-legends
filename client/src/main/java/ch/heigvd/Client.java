@@ -42,6 +42,15 @@ public class Client {
                 BufferedReader serverInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         ) {
 
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    serverOutput.write(Message.QUIT.toString() + "\n");
+                    serverOutput.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }));
+
             Terminal terminal = new Terminal();
             InputHandler inputHandler = new InputHandler(terminal, 50);
 
