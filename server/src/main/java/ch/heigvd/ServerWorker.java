@@ -52,12 +52,9 @@ public class ServerWorker implements Runnable {
     @Override
     public void run() {
         try {
-            String command = "";
-            String response = "";
-            String message = "";
-            String data = "";
+            String command = "", response = "", message = "", data = "";
 
-            while ((response = Message.getResponse(clientInput)) != null) {
+            while (!(response = Message.getResponse(clientInput)).equals(null)) {
                 message = Message.getMessage(response);
                 data = Message.getData(response);
 
@@ -71,7 +68,6 @@ public class ServerWorker implements Runnable {
 
              clientInput.close();
              serverOutput.close();
-
         } catch (IOException ex) {
             if (clientInput != null) {
                 try {

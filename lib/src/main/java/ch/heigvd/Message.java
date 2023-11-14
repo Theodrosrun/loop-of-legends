@@ -16,7 +16,7 @@ public enum Message {
     QUIT("QUIT"),
     UNKN("UNKN");
     private final String message;
-    final static char EOT = '\n';
+    final static char EOT = 0x04;
 
     Message(String message) {
         this.message = message;
