@@ -1,5 +1,6 @@
 package ch.heigvd;
 
+import com.googlecode.lanterna.input.KeyStroke;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -36,14 +37,79 @@ public class Client {
 
         try (
                 Socket socket = new Socket(address, port);
-                BufferedReader clientInput = new BufferedReader(new InputStreamReader(System.in));
                 BufferedWriter serverOutput = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
                 BufferedReader serverInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         ) {
-            while (true) {
-                serverOutput.write(clientInput.readLine() + "\n");
-                serverOutput.flush();
-                System.out.println(serverInput.readLine());
+            Terminal terminal = new Terminal();
+            InputHandler inputHandler = new InputHandler(terminal, 50);
+            String command = "", response = "", message = "", data = "";
+
+            // INIT
+            command = Message.setCommand(Message.INIT);
+            serverOutput.write(command);
+            serverOutput.flush();
+
+            while (!message.equals("DONE")) {
+                response = Message.getResponse(serverInput);
+                message = Message.getMessage(response);
+                terminal.print(message);
+            }
+
+            terminal.print("Press enter to join");
+
+            while (inputHandler.getKey() != KEY.ENTER) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            inputHandler.pauseHandler();
+
+            //TODO recup le username mettre en pause mon InputHandler puis faire une methode readline avec un read input
+//            KeyStroke keykey = terminal.();
+            String name = terminal.userInput();
+//            terminal.clear();
+//            terminal.print("Name");
+//            StringBuilder sb = new StringBuilder();
+//            while (true) {
+//                char c = terminal.readInput().getCharacter();
+//                if (c == '\n') break;
+//                sb.append(c);
+//                terminal.clearLine();
+//                terminal.print(sb.toString());
+//
+//            }
+            inputHandler.restoreHandler();
+
+            command = Message.setCommand(Message.JOIN, name);
+            serverOutput.write(command);
+            serverOutput.flush();
+
+            while (!message.equals("STRT")) {
+                if (inputHandler.getKey() == KEY.READY) {
+                    command = Message.setCommand(Message.RADY);
+                    serverOutput.write(command);
+                    serverOutput.flush();
+                    inputHandler.resetKey();
+                }
+                response = Message.getResponse(serverInput);
+                message = Message.getMessage(response);
+                data = Message.getData(response);
+                terminal.print(data);
+            }
+
+            KEY lastKey = null;
+
+            while (inputHandler.getKey() != KEY.QUIT) {
+                KeyStroke key = inputHandler.getKeyStroke();
+                if (InputHandler.isDirection(key)) {
+                    command = Message.setCommand(Message.DIRE, KEY.parseKeyStroke(key).toString());
+                    serverOutput.write(command);
+                    serverOutput.flush();
+                    inputHandler.resetKey();
+                }
             }
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, ex.getMessage(), ex);

@@ -1,14 +1,18 @@
 package ch.heigvd;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static ch.heigvd.DIRECTION.UP;
 
 public class Lobby {
-    private final Player [] players;
-    private final int LOBBY_WIDTH = 20;
-    private final int LOBBY_HEIGHT = 20;
-    private int nbPlayers = 0;
+    private ArrayList<Player> players;
+
+    private final int MAX_PLAYERS;
+
     public Lobby(int maxPlayers) {
-        players = new Player[maxPlayers];
+        MAX_PLAYERS = maxPlayers;
+        players = new ArrayList<>();
     }
     public boolean join(Player player) {
         for (Player p : players) {
@@ -16,24 +20,21 @@ public class Lobby {
                 return false;
             }
         }
-        if (nbPlayers < players.length) {
-            players[nbPlayers] = player;
-            nbPlayers++;
+        if (players.size() < MAX_PLAYERS) {
+            players.add(player);
             return true;
         }
         return false;
     }
-    private void setReady(Player player) {
+    public void setReady(Player player) {
         player.setReady();
     }
-    public Player[] getReadyPlayers() {
+    public ArrayList<Player> getReadyPlayers() {
         int nbReady = countReady();
-        Player[] readyPlayers = new Player[nbReady];
-        int j = 0;
+        ArrayList<Player> readyPlayers = new ArrayList<>();
         for (Player player : players){
             if (player.isReady()) {
-                readyPlayers[j] = player;
-                j++;
+                readyPlayers.add(player);
             }
         }
         return readyPlayers;
@@ -47,7 +48,7 @@ public class Lobby {
         return null;
     }
     public boolean lobbyIsFull() {
-        return nbPlayers < players.length;
+        return players.size() < MAX_PLAYERS;
     }
     private int countReady() {
         int nbReady = 0;
@@ -65,11 +66,28 @@ public class Lobby {
     }
 
 
-    public Player[] getPlayers() {
+    public ArrayList<Player> getPlayers() {
         return players;
     }
 
     public int getNbPlayer() {
-        return nbPlayers;
+        return players.size();
+    }
+
+    public int getNbReadyPlayers(){
+        return getReadyPlayers().size();
+    }
+
+    public boolean everyPlayerReady() {
+        for(Player player : players){
+            if(!player.isReady()){
+                return false;
+            }
+        }
+        return !getReadyPlayers().isEmpty();
+    }
+
+    public void removePlayer(Player player) {
+        players.remove(player);
     }
 }

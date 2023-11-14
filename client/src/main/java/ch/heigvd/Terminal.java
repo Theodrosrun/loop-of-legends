@@ -1,13 +1,25 @@
 package ch.heigvd;
 
+import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.graphics.TextGraphics;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.input.InputProvider;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.TerminalResizeListener;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.Button;
+import com.googlecode.lanterna.gui2.GridLayout;
+import com.googlecode.lanterna.gui2.dialogs.TextInputDialog;
+import com.googlecode.lanterna.gui2.Panel;
 
 
+import javax.swing.*;
 import java.io.IOException;
 
 public class Terminal implements InputProvider {
@@ -16,10 +28,16 @@ public class Terminal implements InputProvider {
     private static TextGraphics text;
 
     public Terminal() {
-        try{
+        try {
             terminal = new DefaultTerminalFactory().createTerminal();
             screen = new TerminalScreen(terminal);
             screen.startScreen();
+            terminal.addResizeListener(new TerminalResizeListener() {
+                @Override
+                public void onResized(com.googlecode.lanterna.terminal.Terminal terminal, TerminalSize terminalSize) {
+                    screen.doResizeIfNecessary();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -30,15 +48,54 @@ public class Terminal implements InputProvider {
         print("Hello Terminal!");
     }
 
-    private static void print(String s) {
+    public String userInput(){
+        final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+        String input = "";
+        input = TextInputDialog.showDialog(textGUI, "UserName", "Please enter your username", "");
+
+//        panel.addComponent(new Button("Test", new Runnable() {
+//            @Override
+//            public void run() {
+//                this.input = TextInputDialog.showDialog(textGUI, "Title", "This is the description", "Initial content");
+//            }
+//        }));
+    return input;
+
+    }
+
+
+    public void print(String s) {
         try {
-            terminal.clearScreen();
-            text.putString(0, 0, s);
+            screen.setCursorPosition(null);
+            String[] lines = s.split("\n");
+            int terminalHeight = terminal.getTerminalSize().getRows();
+            int terminalWidth = terminal.getTerminalSize().getColumns();
+
+            while (lines.length + 2 > terminalHeight || lines[0].length() + 2 > terminalWidth) {
+                text.putString(0,0,"Terminal too small, please resize\n");
+                text.putString(0,1,"Current size: " + terminalWidth + "x" + terminalHeight + "\n");
+                text.putString(0,2,"Required size: " + lines[0].length() + "x" + lines.length + "\n");
+                terminalHeight = terminal.getTerminalSize().getRows();
+                terminalWidth = terminal.getTerminalSize().getColumns();
+                screen.refresh();
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+
+            for (int i = 0; i < lines.length; i++) {
+                text.putString(0, i, lines[i]);
+            }
             screen.refresh();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public KeyStroke pollInput() throws IOException {
@@ -48,5 +105,9 @@ public class Terminal implements InputProvider {
     @Override
     public KeyStroke readInput() throws IOException {
         return terminal.readInput();
+    }
+
+    public void clear() {
+        screen.clear();
     }
 }
