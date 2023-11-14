@@ -15,7 +15,6 @@ public enum Message {
     ENDD("ENDD"),
     UNKN("UNKN");
     private final String message;
-    private final char EOT = 4;
 
     Message(String message) {
         this.message = message;
@@ -37,9 +36,9 @@ public enum Message {
 
     public static String setCommand(Message message, String data) throws IOException {
         if (data == null) {
-            return message.toString() + message.EOT;
+            return message.toString() + "\n";
         } else {
-            return message.toString() + " " + data + message.EOT;
+            return message.toString() + " " + data + "\n";
         }
     }
 
