@@ -64,11 +64,11 @@ public enum Message {
     }
 
     public static String getMessage(String string) throws IOException {
-        return string.split(" ")[0];
+        return string.split(" ", 2)[0];
     }
 
     public static String getData(String string) throws IOException {
-        String[] tab = string.split(" ");
+        String[] tab = string.split(" ", 2);
         return tab.length > 1 ? tab[1] : "";
     }
 }
