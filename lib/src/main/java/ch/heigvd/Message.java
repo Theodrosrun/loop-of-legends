@@ -15,8 +15,9 @@ public enum Message {
     ENDD("ENDD"),
     QUIT("QUIT"),
     UNKN("UNKN");
-    private final String message;
+    final static String DELIMITER = " ";
     final static char EOT = 0x04;
+    private final String message;
 
     Message(String message) {
         this.message = message;
@@ -40,7 +41,7 @@ public enum Message {
         if (data == null) {
             return message.toString() + EOT;
         } else {
-            return message.toString() + " " + data + EOT;
+            return message.toString() + DELIMITER + data + EOT;
         }
     }
 
@@ -64,11 +65,11 @@ public enum Message {
     }
 
     public static String getMessage(String string) {
-        return string.split(" ", 2)[0];
+        return string.split(DELIMITER, 2)[0];
     }
 
     public static String getData(String string) {
-        String[] tab = string.split(" ", 2);
+        String[] tab = string.split(DELIMITER, 2);
         return tab.length > 1 ? tab[1] : "";
     }
 }
