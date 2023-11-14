@@ -16,7 +16,7 @@ public enum Message {
     QUIT("QUIT"),
     UNKN("UNKN");
     private final String message;
-    private final static char EOT = '\n';
+    final static char EOT = '\n';
 
     Message(String message) {
         this.message = message;
@@ -49,7 +49,7 @@ public enum Message {
     }
 
     // TODO verifier si il existe pas une methode dans la lib pour faire ca
-    public static String[] getResponse(BufferedReader reader) throws IOException {
+    public static String getResponse(BufferedReader reader) throws IOException {
         StringBuilder response = new StringBuilder();
         int c;
 
@@ -60,14 +60,15 @@ public enum Message {
             response.append((char) c);
         }
 
-        return response.toString().split(" ");
+        return response.toString();
     }
 
-    public static String getMessage(String[] string) throws IOException {
-        return string[0];
+    public static String getMessage(String string) throws IOException {
+        return string.split(" ")[0];
     }
 
-    public static String getData(String[] string) throws IOException {
-        return string.length > 1 ? string[1] : "";
+    public static String getData(String string) throws IOException {
+        String[] tab = string.split(" ");
+        return tab.length > 1 ? tab[1] : "";
     }
 }

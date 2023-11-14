@@ -42,7 +42,7 @@ public class Client {
             Terminal terminal = new Terminal();
             InputHandler inputHandler = new InputHandler(terminal, 50);
             String command = "";
-            String[] response;
+            String response;
             String message = "";
             String data = "";
 
