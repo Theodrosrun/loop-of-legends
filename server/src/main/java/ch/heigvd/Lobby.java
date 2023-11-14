@@ -8,12 +8,15 @@ import static ch.heigvd.DIRECTION.UP;
 public class Lobby {
     private ArrayList<Player> players;
 
+    private boolean isOpen = true;
+
     private final int MAX_PLAYERS;
 
     public Lobby(int maxPlayers) {
         MAX_PLAYERS = maxPlayers;
         players = new ArrayList<>();
     }
+
     public boolean join(Player player) {
         for (Player p : players) {
             if (p.getName().equals(player.getName())) {
@@ -32,7 +35,7 @@ public class Lobby {
     public ArrayList<Player> getReadyPlayers() {
         int nbReady = countReady();
         ArrayList<Player> readyPlayers = new ArrayList<>();
-        for (Player player : players){
+        for (Player player : players) {
             if (player.isReady()) {
                 readyPlayers.add(player);
             }
@@ -48,7 +51,7 @@ public class Lobby {
         return null;
     }
     public boolean lobbyIsFull() {
-        return players.size() < MAX_PLAYERS;
+        return players.size() >= MAX_PLAYERS;
     }
     private int countReady() {
         int nbReady = 0;
@@ -59,28 +62,33 @@ public class Lobby {
         }
         return nbReady;
     }
-
-    private void ComputeLobby(){
+    private void ComputeLobby() {
         StringBuilder gui = new StringBuilder();
 
     }
-
-
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void close() {
+        isOpen = false;
     }
 
     public int getNbPlayer() {
         return players.size();
     }
 
-    public int getNbReadyPlayers(){
+    public int getNbReadyPlayers() {
         return getReadyPlayers().size();
     }
 
     public boolean everyPlayerReady() {
-        for(Player player : players){
-            if(!player.isReady()){
+        for (Player player : players) {
+            if (!player.isReady()) {
                 return false;
             }
         }
@@ -89,5 +97,9 @@ public class Lobby {
 
     public void removePlayer(Player player) {
         players.remove(player);
+    }
+
+    public void open() {
+        isOpen = true;
     }
 }

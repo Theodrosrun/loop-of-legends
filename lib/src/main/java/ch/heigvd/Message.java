@@ -10,6 +10,8 @@ public enum Message {
     JOIN("JOIN"),
     RADY("RADY"),
     STRT("STRT"),
+    MSGG("MSGG"),
+    EROR("EROR"),
     DIRE("DIRE"),
     UPTE("UPTE"),
     ENDD("ENDD"),

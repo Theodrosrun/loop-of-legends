@@ -87,6 +87,7 @@ public class InputHandler {
 
 
     public static boolean isDirection(KeyStroke key) {
+        if (key == null) return false;
         switch (key.getKeyType()) {
             case ArrowUp:
             case ArrowDown:

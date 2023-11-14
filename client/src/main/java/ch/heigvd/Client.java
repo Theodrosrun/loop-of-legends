@@ -1,6 +1,7 @@
 package ch.heigvd;
 
 import com.googlecode.lanterna.input.KeyStroke;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -9,9 +10,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.lang.System.exit;
+
 public class Client {
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
+
+    private static MessageHandler messageHandler;
+
     public static void main(String[] args) {
+
+
+
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
         InetAddress address;
         int port;
@@ -40,21 +49,40 @@ public class Client {
                 BufferedWriter serverOutput = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
                 BufferedReader serverInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         ) {
+
             Terminal terminal = new Terminal();
             InputHandler inputHandler = new InputHandler(terminal, 50);
             String command = "", response = "", message = "", data = "";
+            messageHandler = new MessageHandler(serverOutput);
 
             // INIT
             command = Message.setCommand(Message.INIT);
-            serverOutput.write(command);
-            serverOutput.flush();
+            messageHandler.send(command);
 
             while (!message.equals("DONE")) {
                 response = Message.getResponse(serverInput);
                 message = Message.getMessage(response);
-                terminal.print(message);
+                data = Message.getData(response);
+                if (message.equals("EROR")) {
+                    terminal.print("Error :" + data);
+                    exit(1);
+                }
             }
 
+            // LOBB
+
+                messageHandler.send(Message.setCommand(Message.LOBB));
+                response = Message.getResponse(serverInput);
+                message = Message.getMessage(response);
+                data = Message.getData(response);
+                if (message.equals("EROR")) {
+                    terminal.print("Error :" + data);
+                    exit(1);
+                }
+
+
+
+            // JOIN
             terminal.print("Press enter to join");
 
             while (inputHandler.getKey() != KEY.ENTER) {
@@ -67,32 +95,21 @@ public class Client {
 
             inputHandler.pauseHandler();
 
-            //TODO recup le username mettre en pause mon InputHandler puis faire une methode readline avec un read input
-//            KeyStroke keykey = terminal.();
-            String name = terminal.userInput();
-//            terminal.clear();
-//            terminal.print("Name");
-//            StringBuilder sb = new StringBuilder();
-//            while (true) {
-//                char c = terminal.readInput().getCharacter();
-//                if (c == '\n') break;
-//                sb.append(c);
-//                terminal.clearLine();
-//                terminal.print(sb.toString());
-//
-//            }
+            String UserName = terminal.userInput();
             inputHandler.restoreHandler();
 
-            command = Message.setCommand(Message.JOIN, name);
+            command = Message.setCommand(Message.JOIN, UserName);
             serverOutput.write(command);
             serverOutput.flush();
 
-            while (!message.equals("STRT")) {
+            boolean isReady = false;
+            while (!isReady) {
                 if (inputHandler.getKey() == KEY.READY) {
                     command = Message.setCommand(Message.RADY);
                     serverOutput.write(command);
                     serverOutput.flush();
                     inputHandler.resetKey();
+                    isReady = true;
                 }
                 response = Message.getResponse(serverInput);
                 message = Message.getMessage(response);
@@ -110,6 +127,10 @@ public class Client {
                     serverOutput.flush();
                     inputHandler.resetKey();
                 }
+                response = Message.getResponse(serverInput);
+                message = Message.getMessage(response);
+                data = Message.getData(response);
+                terminal.print(data);
             }
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, ex.getMessage(), ex);

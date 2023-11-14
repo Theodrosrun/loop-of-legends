@@ -2,9 +2,13 @@ package ch.heigvd;
 
 import ch.heigvd.snake.Snake;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +23,7 @@ public class Server {
     private boolean listenNewClient = true;
     private Board board;
     private ArrayList<Snake> snakes = new ArrayList<>();
+    private MessageHandler messageHandler;
 
     private DIRECTION[] directions = {DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT};
     private final static Logger LOG = Logger.getLogger(Server.class.getName());
@@ -36,6 +41,7 @@ public class Server {
         board = new Board(30, 15, (short) NB_PLAYER, (short) 20, (short) 200);
 
         //loop for lobby
+        lobby.open();
         while (!lobby.everyPlayerReady()) {
             board.deployLobby(lobby);
             try {
@@ -44,8 +50,9 @@ public class Server {
                 throw new RuntimeException(e);
             }
         }
-
+        lobby.close();
         listenNewClient = false;
+
 
         initSnakes();
         //loop for game
@@ -75,7 +82,8 @@ public class Server {
                 case 0: {
                     initPosition = new Position(bw / 2, bh, directions[i], ' ');
                     snakes.add(new Snake(initPosition, (short) initLenght));
-                    break;                }
+                    break;
+                }
                 case 1: {
                     initPosition = new Position(0, bh / 2, directions[i], ' ');
                     snakes.add(new Snake(initPosition, (short) initLenght));
@@ -95,18 +103,11 @@ public class Server {
         }
     }
 
-    public void setKey(KEY key, Player player) {
-        if (key.ordinal() < 4) {
-            setDirection(key, player);
-        } else {
-            //do somthing
-        }
-    }
-
-    private void setDirection(KEY key, Player player) {
+    public void setDirection(KEY key, Player player) {
+        if (!lobby.everyPlayerReady()) return;
         DIRECTION direction = DIRECTION.parseKey(key);
         if (direction != null) {
-            directions[player.getId()] = direction;
+            directions[player.getId()-1] = direction;
         }
     }
 
@@ -121,11 +122,30 @@ public class Server {
 
     private void listenNewClient() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            while (listenNewClient) {
+            while (true) {
                 LOG.log(Level.INFO, "Waiting for a new client on port {0}", PORT);
                 Socket clientSocket = serverSocket.accept();
-                LOG.info("A new client has arrived. Starting a new thread and delegating work to a new servant...");
-                new Thread(new ServerWorker(clientSocket, this)).start();
+
+                if (lobby.isOpen() && !lobby.lobbyIsFull()) {
+                    LOG.info("A new client has arrived. Starting a new thread and delegating work to a new servant...");
+                    new Thread(new ServerWorker(clientSocket, this)).start();
+                    continue;
+                }
+
+                BufferedWriter serverOutput = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
+                MessageHandler messageHandler = new MessageHandler(serverOutput);
+
+                if (lobby.lobbyIsFull()) {
+                    LOG.log(Level.INFO, "The lobby is full. Rejecting the new client...");
+                    messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
+                    clientSocket.close();
+                    continue;
+                } else {
+                    LOG.log(Level.INFO, "The lobby is closed. Rejecting the new client...");
+                    messageHandler.send(Message.setCommand(Message.EROR, "The lobby is closed"));
+                    clientSocket.close();
+                    continue;
+                }
             }
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);

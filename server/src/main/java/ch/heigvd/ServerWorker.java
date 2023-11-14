@@ -2,6 +2,7 @@ package ch.heigvd;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,9 +16,9 @@ public class ServerWorker implements Runnable {
     private Server server;
     private Socket clientSocket;
     private BufferedReader clientInput = null;
-    private PrintWriter serverOutput = null;
+    private BufferedWriter serverOutput = null;
     private Thread thGuiUpdate = new Thread(this::guiUpdate);
-
+    private MessageHandler messageHandler;
     // private final ReentrantLock mutex = new ReentrantLock();
 
     public ServerWorker(Socket clientSocket, Server server) {
@@ -26,7 +27,8 @@ public class ServerWorker implements Runnable {
         this.clientSocket = clientSocket;
         try {
             clientInput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            serverOutput = new PrintWriter(clientSocket.getOutputStream());
+            serverOutput = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(),  StandardCharsets.UTF_8));
+            messageHandler = new MessageHandler(serverOutput);
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
@@ -60,10 +62,6 @@ public class ServerWorker implements Runnable {
                 }
             }
 
-            if (serverOutput != null) {
-                serverOutput.close();
-            }
-
             if (clientSocket != null) {
                 try {
                     clientSocket.close();
@@ -76,49 +74,55 @@ public class ServerWorker implements Runnable {
         }
     }
 
-    private int commandHandler(Message message, String data) {
+    private void commandHandler(Message message, String data) {
         switch (message) {
             case INIT:
                 String command = Message.setCommand(Message.DONE);
-                send(command);
-                return 1;
+                messageHandler.send(command);
+                break;
             case DONE:
                 // Handle DONE message
-                return 1;
+                break;
             case LOBB:
-                // Handle LOBB message
-                return 1;
+                if (server.isFull()) {
+                    messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
+                } else {
+                    messageHandler.send(Message.setCommand(Message.DONE));
+                }
+                break;
             case JOIN:
                 player = new Player(data);
+                if (server.isFull()) {
+                    messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
+                    break;
+                }
                 server.joinLobby(player);
                 thGuiUpdate.start();
-                return 1;
+                break;
             case RADY:
                 server.setReady(player);
-                return 1;
+                break;
             case STRT:
                 // Handle STRT message
-                return 1;
+                break;
             case DIRE:
-                // Server.SetKey(Key, player)
+                KEY key = KEY.valueOf(data);
+                server.setDirection(key, player);
                 // Handle DIRE message
-                return 1;
+                break;
             case UPTE:
                 // Handle UPTE message
-                return 1;
+                break;
             case ENDD:
                 // Handle ENDD message
-                return 1;
+                break;
             default:
                 // Handle unexpected message
-                return 0;
+                break;
         }
     }
 
-    private void send(String command){
-        serverOutput.write(command);
-        serverOutput.flush();
-    }
+
 
     public void guiUpdate(){
         while (true){
@@ -129,7 +133,7 @@ public class ServerWorker implements Runnable {
             }
 
             String command = Message.setCommand(Message.UPTE, server.getBoard().toString());
-            send(command);
+            messageHandler.send(command);
         }
     }
 }
