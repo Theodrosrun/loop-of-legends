@@ -51,7 +51,7 @@ public class Client {
             serverOutput.flush();
             String message = "";
             while (!message.equals("DONE")) {
-                message = readUntilEOT(serverInput);
+                message = Message.getMessage(serverInput);
                 terminal.print(message);
             }
 
@@ -76,7 +76,7 @@ public class Client {
                     serverOutput.write(Message.RADY.toString() + "\n");
                     serverOutput.flush();
                 }
-                message = readUntilEOT(serverInput);
+                message = Message.getMessage(serverInput);
                 terminal.print(message.substring(5, message.length() - 1));
             }
 
@@ -95,22 +95,5 @@ public class Client {
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
-
-
-    }
-
-    public static String readUntilEOT(BufferedReader reader) throws IOException {
-        StringBuilder data = new StringBuilder();
-        int currentChar;
-
-        while ((currentChar = reader.read()) != -1) {
-            if (currentChar == 4) {
-                // Le caractère 4 correspond à EOT (End Of Transmission)
-                break;  // Sortir de la boucle une fois que EOT est trouvé
-            }
-            data.append((char) currentChar);
-        }
-
-        return data.toString();
     }
 }
