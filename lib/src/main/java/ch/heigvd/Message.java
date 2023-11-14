@@ -36,7 +36,7 @@ public enum Message {
         return UNKN;
     }
 
-    public static String setCommand(Message message, String data) throws IOException {
+    public static String setCommand(Message message, String data){
         if (data == null) {
             return message.toString() + EOT;
         } else {
@@ -44,7 +44,7 @@ public enum Message {
         }
     }
 
-    public static String setCommand(Message message) throws IOException {
+    public static String setCommand(Message message) {
         return setCommand(message, null);
     }
 
@@ -63,11 +63,11 @@ public enum Message {
         return response.toString();
     }
 
-    public static String getMessage(String string) throws IOException {
+    public static String getMessage(String string) {
         return string.split(" ", 2)[0];
     }
 
-    public static String getData(String string) throws IOException {
+    public static String getData(String string) {
         String[] tab = string.split(" ", 2);
         return tab.length > 1 ? tab[1] : "";
     }

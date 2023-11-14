@@ -10,17 +10,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ServerWorker implements Runnable {
     private final static Logger LOG = Logger.getLogger(ServerWorker.class.getName());
-
-//    private final ReentrantLock mutex = new ReentrantLock();
-
     private final int UPDATE_FREQUENCY = 100; // millisecondes
-    private final char EOT = 0x4;
     private Player player;
     private Server server;
     private Socket clientSocket;
     private BufferedReader clientInput = null;
     private PrintWriter serverOutput = null;
     private Thread thGuiUpdate = new Thread(this::guiUpdate);
+
+    // private final ReentrantLock mutex = new ReentrantLock();
 
     public ServerWorker(Socket clientSocket, Server server) {
         this.server = server;
@@ -34,21 +32,6 @@ public class ServerWorker implements Runnable {
         }
     }
 
-    private void send(String message){
-        serverOutput.write(message + EOT);
-        serverOutput.flush();
-    }
-
-    public void guiUpdate(){
-        while (true){
-            try {
-                Thread.sleep(UPDATE_FREQUENCY);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            send(Message.UPTE.toString() + " " + server.getBoard().toString());
-        }
-    }
     @Override
     public void run() {
         try {
@@ -96,7 +79,8 @@ public class ServerWorker implements Runnable {
     private int commandHandler(Message message, String data) {
         switch (message) {
             case INIT:
-                send(Message.DONE.toString());
+                String command = Message.setCommand(Message.DONE);
+                send(command);
                 return 1;
             case DONE:
                 // Handle DONE message
@@ -128,6 +112,24 @@ public class ServerWorker implements Runnable {
             default:
                 // Handle unexpected message
                 return 0;
+        }
+    }
+
+    private void send(String command){
+        serverOutput.write(command);
+        serverOutput.flush();
+    }
+
+    public void guiUpdate(){
+        while (true){
+            try {
+                Thread.sleep(UPDATE_FREQUENCY);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            String command = Message.setCommand(Message.UPTE, server.getBoard().toString());
+            send(command);
         }
     }
 }
