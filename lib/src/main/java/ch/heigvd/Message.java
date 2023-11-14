@@ -13,8 +13,10 @@ public enum Message {
     DIRE("DIRE"),
     UPTE("UPTE"),
     ENDD("ENDD"),
+    QUIT("QUIT"),
     UNKN("UNKN");
     private final String message;
+    private final static char EOT = '\n';
 
     Message(String message) {
         this.message = message;
@@ -36,9 +38,9 @@ public enum Message {
 
     public static String setCommand(Message message, String data) throws IOException {
         if (data == null) {
-            return message.toString() + "\n";
+            return message.toString() + EOT;
         } else {
-            return message.toString() + " " + data + "\n";
+            return message.toString() + " " + data + EOT;
         }
     }
 
@@ -46,13 +48,14 @@ public enum Message {
         return setCommand(message, null);
     }
 
+    // TODO verifier si il existe pas une methode dans la lib pour faire ca
     public static String[] getResponse(BufferedReader reader) throws IOException {
         StringBuilder response = new StringBuilder();
         int c;
 
         while ((c = reader.read()) != -1) {
-            if (c == 4) { // Le caractère 4 correspond à EOT (End Of Transmission)
-                break;  // Sortir de la boucle une fois que EOT est trouvé
+            if (c == EOT) {
+                break;
             }
             response.append((char) c);
         }
@@ -60,12 +63,11 @@ public enum Message {
         return response.toString().split(" ");
     }
 
-    public static String getMessage(BufferedReader reader) throws IOException {
-        return getResponse(reader)[0];
+    public static String getMessage(String[] string) throws IOException {
+        return string[0];
     }
 
-    public static String getData(BufferedReader reader) throws IOException {
-        String[] response = getResponse(reader);
-        return response.length > 1 ? response[1] : "";
+    public static String getData(String[] string) throws IOException {
+        return string.length > 1 ? string[1] : "";
     }
 }

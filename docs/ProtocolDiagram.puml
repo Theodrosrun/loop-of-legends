@@ -12,6 +12,7 @@ Certainly, I've formatted the keywords in your text in bold:
 **START**: Server sends START to client to start the game
 **DIR**: Client sends DIR to server to indicate the direction the snake should move
 **UPDATE**: Server sends UPDATE to client to update the game state
+**QUIT**: Client sends QUIT to server to indicate that the client is leaving the game
 **END**: Server sends END to client to indicate that the game has ended
 endlegend
 
@@ -37,6 +38,9 @@ Server -> Client :UPTE
 |||
 Client -> Server :DIRE
 Server -> Client :UPTE
+|||
+Client -> Server :QUIT
+Server -> Client :DONE
 |||
 Client -> Server :ENDD
 Server -> Client :ENDD

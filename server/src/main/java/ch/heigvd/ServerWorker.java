@@ -54,7 +54,6 @@ public class ServerWorker implements Runnable {
         try {
             String line;
             while ((line = clientInput.readLine()) != null) {
-
                 // Message parsing
                 String[] command = line.split(" ");
                 Message message = Message.fromString(command[0]);
@@ -63,14 +62,12 @@ public class ServerWorker implements Runnable {
                     data = command[1];
                 }
 
-
                 // Message unknown
                 if(message == Message.UNKN){
                     // return;
                 }
 
                 commandHandler(message, data);
-
             }
 
              clientInput.close();
