@@ -4,6 +4,7 @@ import ch.heigvd.Food;
 import ch.heigvd.snake.Snake;
 import ch.qos.logback.core.joran.sanity.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static java.lang.Math.abs;
@@ -60,7 +61,7 @@ public class Board {
         return getRelativeValue(y, board.length - 1);
     }
 
-    public void deploySnakes(Snake[] snakes) {
+    public void deploySnakes(ArrayList<Snake> snakes) {
         clearBoard();
         for (Snake snake : snakes) {
             if (eat(snake.getHead())){

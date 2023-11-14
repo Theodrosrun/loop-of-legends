@@ -5,6 +5,7 @@ import ch.heigvd.snake.Snake;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,7 +18,7 @@ public class Server {
 
     private boolean listenNewClient = true;
     private Board board;
-    private Snake snakes[] = new Snake[NB_PLAYER];
+    private ArrayList<Snake> snakes = new ArrayList<>();
 
     private DIRECTION[] directions = {DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT};
     private final static Logger LOG = Logger.getLogger(Server.class.getName());
@@ -68,23 +69,27 @@ public class Server {
         Position initPosition;
         int bw = board.getWidth();
         int bh = board.getHeigth();
+
         for (int i = 0; i < lobby.getNbReadyPlayers(); i++) {
             switch (i) {
                 case 0: {
                     initPosition = new Position(bw / 2, bh, directions[i], ' ');
-                    snakes[i] = new Snake(initPosition, (short) initLenght);
-                }
+                    snakes.add(new Snake(initPosition, (short) initLenght));
+                    break;                }
                 case 1: {
                     initPosition = new Position(0, bh / 2, directions[i], ' ');
-                    snakes[i] = new Snake(initPosition, (short) initLenght);
+                    snakes.add(new Snake(initPosition, (short) initLenght));
+                    break;
                 }
                 case 2: {
                     initPosition = new Position(bw / 2, 0, directions[i], ' ');
-                    snakes[i] = new Snake(initPosition, (short) initLenght);
+                    snakes.add(new Snake(initPosition, (short) initLenght));
+                    break;
                 }
                 case 3: {
                     initPosition = new Position(bw, bh / 2, directions[i], ' ');
-                    snakes[i] = new Snake(initPosition, (short) initLenght);
+                    snakes.add(new Snake(initPosition, (short) initLenght));
+                    break;
                 }
             }
         }

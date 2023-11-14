@@ -84,4 +84,8 @@ public class InputHandler {
     }
 
 
+    public boolean isDirection() {
+        //TODO terminer cette methode
+        return false;
+    }
 }

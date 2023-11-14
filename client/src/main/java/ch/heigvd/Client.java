@@ -104,11 +104,12 @@ public class Client {
 
             KEY lastKey = null;
 
-            while (true) {
+            while (inputHandler.getKey() != KEY.QUIT) {
 
-                KEY key = KEY.parseKeyStroke(inputHandler.getKeyStroke());
-                if (key != lastKey) {
-                    terminal.print("Key :" + key.toString() + " pressed");
+                if (inputHandler.isDirection()) {
+                    serverOutput.write(Message.RADY.toString() + "\n");
+                    serverOutput.flush();
+                    inputHandler.resetKey();
                 }
 
 
