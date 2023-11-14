@@ -11,15 +11,16 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ServerWorker implements Runnable {
     private final static Logger LOG = Logger.getLogger(ServerWorker.class.getName());
 
-    private final ReentrantLock mutex = new ReentrantLock();
+//    private final ReentrantLock mutex = new ReentrantLock();
 
     private final int UPDATE_FREQUENCY = 100; // millisecondes
-    private final char EOT = 4;
+    private final char EOT = 0x4;
     private Player player;
     private Server server;
-    Socket clientSocket;
-    BufferedReader clientInput = null;
-    PrintWriter serverOutput = null;
+    private Socket clientSocket;
+    private BufferedReader clientInput = null;
+    private PrintWriter serverOutput = null;
+    private Thread thGuiUpdate = new Thread(this::guiUpdate);
 
     public ServerWorker(Socket clientSocket, Server server) {
         this.server = server;
@@ -34,10 +35,8 @@ public class ServerWorker implements Runnable {
     }
 
     private void send(String message){
-        mutex.lock();
         serverOutput.write(message + EOT);
         serverOutput.flush();
-        mutex.unlock();
     }
 
     public void guiUpdate(){
@@ -116,7 +115,6 @@ public class ServerWorker implements Runnable {
             case JOIN:
                 player = new Player(data);
                 server.joinLobby(player);
-                Thread thGuiUpdate = new Thread(this::guiUpdate);
                 thGuiUpdate.start();
                 return 1;
             case RADY:

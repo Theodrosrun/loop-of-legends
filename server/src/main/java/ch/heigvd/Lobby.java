@@ -9,8 +9,6 @@ public class Lobby {
     private ArrayList<Player> players;
 
     private final int MAX_PLAYERS;
-    private final int LOBBY_WIDTH = 20;
-    private final int LOBBY_HEIGHT = 20;
 
     public Lobby(int maxPlayers) {
         MAX_PLAYERS = maxPlayers;

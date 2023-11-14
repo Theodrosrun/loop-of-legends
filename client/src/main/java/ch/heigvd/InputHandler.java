@@ -4,11 +4,15 @@ import com.googlecode.lanterna.input.InputProvider;
 import com.googlecode.lanterna.input.KeyStroke;
 
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 
 public class InputHandler {
 
     private InputProvider inputProvider;
     private KeyStroke key = null;
+    private final Semaphore wait = new Semaphore(0);
+
+    private boolean pause = false;
 
     private final int READ_FREQUENCY;
     private final InputProvider INPUT_PROVIDER;
@@ -28,6 +32,14 @@ public class InputHandler {
 
     private void run(){
         while (!stopRequest) {
+
+            if (pause) {
+                try {
+                    wait.acquire();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
             KeyStroke input = null;
             try {
@@ -54,9 +66,26 @@ public class InputHandler {
         return KEY.parseKeyStroke(key);
     }
 
+    public void resetKey(){
+        key = null;
+    }
+
+    public void pauseHandler() {
+        pause = true;
+    }
+
+    public void restoreHandler(){
+        pause = false;
+        wait.release();
+    }
+
     public void stopRequest() {
         stopRequest = true;
     }
 
 
+    public boolean isDirection() {
+        //TODO terminer cette methode
+        return false;
+    }
 }
