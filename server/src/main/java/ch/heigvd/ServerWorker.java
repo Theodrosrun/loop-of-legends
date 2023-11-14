@@ -52,22 +52,21 @@ public class ServerWorker implements Runnable {
     @Override
     public void run() {
         try {
-            String line;
-            while ((line = clientInput.readLine()) != null) {
-                // Message parsing
-                String[] command = line.split(" ");
-                Message message = Message.fromString(command[0]);
-                String data = "";
-                if (command.length > 1) {
-                    data = command[1];
-                }
+            String command = "";
+            String response = "";
+            String message = "";
+            String data = "";
+
+            while ((response = Message.getResponse(clientInput)) != null) {
+                message = Message.getMessage(response);
+                data = Message.getData(response);
 
                 // Message unknown
-                if(message == Message.UNKN){
+                if(Message.fromString(message) == Message.UNKN){
                     // return;
                 }
 
-                commandHandler(message, data);
+                commandHandler(Message.fromString(message), data);
             }
 
              clientInput.close();
