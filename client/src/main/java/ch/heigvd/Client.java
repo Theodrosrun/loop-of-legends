@@ -36,17 +36,81 @@ public class Client {
 
         try (
                 Socket socket = new Socket(address, port);
-                BufferedReader clientInput = new BufferedReader(new InputStreamReader(System.in));
                 BufferedWriter serverOutput = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
                 BufferedReader serverInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         ) {
+
+            Terminal terminal = new Terminal();
+              InputHandler inputHandler = new InputHandler(terminal, 50);
+
+
+
+
+            //INIT
+            serverOutput.write(Message.INIT.toString() + "\n");
+            serverOutput.flush();
+            String message = "";
+            while (!message.equals("DONE")) {
+                message = readUntilEOT(serverInput);
+                terminal.print(message);
+            }
+
+
+            terminal.print("Press enter to join");
+
+            while (inputHandler.getKey() != KEY.ENTER) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+
+            serverOutput.write(Message.JOIN.toString() + " " + "Premier" + "\n");
+            serverOutput.flush();
+
+
+            while (!message.equals("STRT")) {
+                if (inputHandler.getKey() == KEY.READY) {
+                    serverOutput.write(Message.RADY.toString() + "\n");
+                    serverOutput.flush();
+                }
+                message = readUntilEOT(serverInput);
+                terminal.print(message.substring(5, message.length() - 1));
+            }
+
+
+            KEY lastKey = null;
+
             while (true) {
-                serverOutput.write(clientInput.readLine() + "\n");
-                serverOutput.flush();
-                System.out.println(serverInput.readLine());
+
+                KEY key = KEY.parseKeyStroke(inputHandler.getKeyStroke());
+                if (key != lastKey) {
+                    terminal.print("Key :" + key.toString() + " pressed");
+                }
+
+
             }
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
+
+
+    }
+
+    public static String readUntilEOT(BufferedReader reader) throws IOException {
+        StringBuilder data = new StringBuilder();
+        int currentChar;
+
+        while ((currentChar = reader.read()) != -1) {
+            if (currentChar == 4) {
+                // Le caractère 4 correspond à EOT (End Of Transmission)
+                break;  // Sortir de la boucle une fois que EOT est trouvé
+            }
+            data.append((char) currentChar);
+        }
+
+        return data.toString();
     }
 }

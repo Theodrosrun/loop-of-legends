@@ -9,7 +9,10 @@ public class InputHandler {
 
     private InputProvider inputProvider;
     private KeyStroke key = null;
-    boolean stopRequest;
+
+    private final int READ_FREQUENCY;
+    private final InputProvider INPUT_PROVIDER;
+    boolean stopRequest = false;
 
     /**
      * Constructor and runner for the InputHandler
@@ -17,12 +20,18 @@ public class InputHandler {
      * @param readFrequency the frequency at which the input is read in milliseconds
      */
     public InputHandler(InputProvider inputProvider, int readFrequency) {
+        READ_FREQUENCY = readFrequency;
+        INPUT_PROVIDER = inputProvider;
+        Thread thread = new Thread(this::run);
+        thread.start();
+    }
 
-        while (true && !stopRequest) {
+    private void run(){
+        while (!stopRequest) {
 
             KeyStroke input = null;
             try {
-                input = inputProvider.readInput();
+                input = INPUT_PROVIDER.readInput();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -30,11 +39,19 @@ public class InputHandler {
                 key = input;
             }
             try {
-                Thread.sleep(readFrequency);
+                Thread.sleep(READ_FREQUENCY);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public KeyStroke getKeyStroke(){
+        return key;
+    }
+
+    public KEY getKey(){
+        return KEY.parseKeyStroke(key);
     }
 
     public void stopRequest() {

@@ -33,7 +33,10 @@ public enum KEY {
         }
     }
 
-    private static KEY parseKeyStroke(KeyStroke key) {
+    public static KEY parseKeyStroke(KeyStroke key) {
+        if (key == null) {
+            return KEY.NONE;
+        }
         return switch (key.getKeyType()) {
             case ArrowUp -> KEY.UP;
             case ArrowDown -> KEY.DOWN;

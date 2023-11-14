@@ -75,11 +75,21 @@ public class Board {
     }
 
     public void deployLobby(Lobby lobby) {
-        int maxNameSize = board[0].length - 8;
+
         for ( int i = 0; i < lobby.getNbPlayer(); ++i) {
-            Player player = lobby.getPlayers()[i];
-            String ready = player.isReady() ? "READY": " WAIT";
-            board[i+1] = (player.getId() + " " + player.getName().substring(0, maxNameSize ) +  ready).toCharArray();
+            int maxNameSize = getWidth() - 12;
+            Player player = lobby.getPlayers().get(i);
+            String ready = player.isReady() ? "READY": "WAIT ";
+            StringBuilder sb = new StringBuilder(verticalBorder + " ");
+            sb.append(player.getId()).append(" ");
+            sb.append(player.getName(), 0, Math.min(player.getName().length(), maxNameSize));
+            if (player.getName().length() - maxNameSize < 0) {
+                sb.append(String.valueOf(emptyChar).repeat(maxNameSize - player.getName().length() - 1));
+            }
+            sb.append(" ");
+            sb.append(ready);
+            sb.append(verticalBorder);
+            board[i + 1] = sb.toString().toCharArray();
         }
     }
 
@@ -139,7 +149,10 @@ public class Board {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (char[] line : board) {
-            sb.append(line.toString() + "\n");
+            for (char c : line) {
+                sb.append(c);
+            }
+            sb.append("\n");
         }
         return sb.toString();
     }

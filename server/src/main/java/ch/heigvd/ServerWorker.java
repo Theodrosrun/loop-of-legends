@@ -5,14 +5,24 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.util.concurrent.locks.ReentrantLock;
+
+
 public class ServerWorker implements Runnable {
     private final static Logger LOG = Logger.getLogger(ServerWorker.class.getName());
+
+    private final ReentrantLock mutex = new ReentrantLock();
+
+    private final int UPDATE_FREQUENCY = 100; // millisecondes
+    private final char EOT = 4;
     private Player player;
+    private Server server;
     Socket clientSocket;
     BufferedReader clientInput = null;
     PrintWriter serverOutput = null;
 
-    public ServerWorker(Socket clientSocket) {
+    public ServerWorker(Socket clientSocket, Server server) {
+        this.server = server;
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
         this.clientSocket = clientSocket;
         try {
@@ -23,6 +33,23 @@ public class ServerWorker implements Runnable {
         }
     }
 
+    private void send(String message){
+        mutex.lock();
+        serverOutput.write(message + EOT);
+        serverOutput.flush();
+        mutex.unlock();
+    }
+
+    public void guiUpdate(){
+        while (true){
+            try {
+                Thread.sleep(UPDATE_FREQUENCY);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            send(Message.UPTE.toString() + " " + server.getBoard().toString());
+        }
+    }
     @Override
     public void run() {
         try {
@@ -32,7 +59,11 @@ public class ServerWorker implements Runnable {
                 // Message parsing
                 String[] command = line.split(" ");
                 Message message = Message.fromString(command[0]);
-                String data = command[1];
+                String data = "";
+                if (command.length > 1) {
+                    data = command[1];
+                }
+
 
                 // Message unknown
                 if(message == Message.UNKN){
@@ -41,8 +72,6 @@ public class ServerWorker implements Runnable {
 
                 commandHandler(message, data);
 
-                serverOutput.write("Hello client!" + "\n");
-                serverOutput.flush();
             }
 
              clientInput.close();
@@ -76,7 +105,7 @@ public class ServerWorker implements Runnable {
     private int commandHandler(Message message, String data) {
         switch (message) {
             case INIT:
-                // Handle INIT message
+                send(Message.DONE.toString());
                 return 1;
             case DONE:
                 // Handle DONE message
@@ -85,10 +114,13 @@ public class ServerWorker implements Runnable {
                 // Handle LOBB message
                 return 1;
             case JOIN:
-                // Handle JOIN message
+                player = new Player(data);
+                server.joinLobby(player);
+                Thread thGuiUpdate = new Thread(this::guiUpdate);
+                thGuiUpdate.start();
                 return 1;
             case RADY:
-                // Handle RADY message
+                server.setReady(player);
                 return 1;
             case STRT:
                 // Handle STRT message

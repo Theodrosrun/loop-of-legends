@@ -5,16 +5,17 @@ import ch.heigvd.snake.Snake;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Time;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server {
+    private final int PORT = 20000;
     private static final int NB_PLAYER = 4 ;
-
     private final int LOBBY_FREQUENCY = 100; // millisecondes
     private final int GAME_FREQUENCY = 300; // millisecondes
     private Lobby lobby = new Lobby(NB_PLAYER);
+
+    private boolean listenNewClient = true;
     private Board board;
     private Snake snakes [] = new Snake[NB_PLAYER];
 
@@ -25,20 +26,23 @@ public class Server {
         (new Server()).start();
     }
     private void start() {
-        board = new Board(25, 25, (short)NB_PLAYER, (short)20, (short)200);
 
+        Thread thListener = new Thread(this::listenNewClient);
+        thListener.start();
 
+        board = new Board(45, 25, (short)NB_PLAYER, (short)20, (short)200);
 
         //loop for lobby
-        while (lobby.getReadyPlayers().length != lobby.getNbPlayer()){
+        while (!lobby.everyPlayerReady()){
             board.deployLobby(lobby);
             try {
                 Thread.sleep(LOBBY_FREQUENCY);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
         }
+
+        listenNewClient = false;
 
         initSnakes();
         //loop for game
@@ -55,18 +59,6 @@ public class Server {
                 throw new RuntimeException(e);
             }
         }
-
-//        int port = 20000;
-//        try (ServerSocket serverSocket = new ServerSocket(port)) {
-//            while (true) {
-//                LOG.log(Level.INFO, "Waiting for a new client on port {0}", port);
-//                Socket clientSocket = serverSocket.accept();
-//                LOG.info("A new client has arrived. Starting a new thread and delegating work to a new servant...");
-//                new Thread(new ServerWorker(clientSocket)).start();
-//            }
-//        } catch (IOException ex) {
-//            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     private void initSnakes() {
@@ -74,7 +66,7 @@ public class Server {
         Position initPosition;
         int bw = board.getWidth();
         int bh = board.getHeigth();
-        for (int i = 0; i < lobby.getReadyPlayers().length; i++) {
+        for (int i = 0; i < lobby.getNbReadyPlayers(); i++) {
             switch (i) {
                 case 0: {
                     initPosition = new Position(bw/2, bh, directions[i],' ' );
@@ -117,9 +109,30 @@ public class Server {
     }
     public void joinLobby(Player player) {
         lobby.join(player);
+        board.deployLobby(lobby);
+    }
+
+    private void listenNewClient() {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            while (listenNewClient) {
+                LOG.log(Level.INFO, "Waiting for a new client on port {0}", PORT);
+                Socket clientSocket = serverSocket.accept();
+                LOG.info("A new client has arrived. Starting a new thread and delegating work to a new servant...");
+                new Thread(new ServerWorker(clientSocket, this)).start();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public Board getBoard() {
+        return board;
     }
     public boolean isFull(){
         return lobby.lobbyIsFull();
     }
 
+    public void setReady(Player player) {
+lobby.setReady(player);
+    }
 }
