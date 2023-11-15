@@ -91,13 +91,25 @@ public class ServerWorker implements Runnable {
                 }
                 break;
             case JOIN:
-                player = new Player(data);
+
                 if (server.isFull()) {
                     messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
                     break;
                 }
-                server.joinLobby(player);
-                thGuiUpdate.start();
+                else if (server.playerExists(data)) {
+                    messageHandler.send(Message.setCommand(Message.REPT, "Username already used"));
+                    break;
+                }
+                else if (data.isEmpty()) {
+                    messageHandler.send(Message.setCommand(Message.REPT, "Username must have minimum 1 character"));
+                    break;
+                }
+                else {
+                    messageHandler.send(Message.setCommand(Message.DONE));
+                    player = new Player(data);
+                    server.joinLobby(player);
+                    thGuiUpdate.start();
+                }
                 break;
             case RADY:
                 server.setReady(player);

@@ -102,4 +102,13 @@ public class Lobby {
     public void open() {
         isOpen = true;
     }
+
+    public boolean playerExists(String userName) {
+        for (Player player : players) {
+            if (player.getName().equals(userName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

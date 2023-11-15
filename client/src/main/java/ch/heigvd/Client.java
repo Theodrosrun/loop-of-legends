@@ -10,16 +10,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.lang.System.console;
-import static java.lang.System.exit;
+import static java.lang.System.*;
 
 public class Client {
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
 
     private String command = "", response = "", message = "", data = "";
 
-    private Terminal terminal = new Terminal();
-    private InputHandler inputHandler = new InputHandler(terminal, 50);
+    private final Terminal terminal = new Terminal();
+    private final InputHandler inputHandler = new InputHandler(terminal, 50);
 
     private BufferedWriter serverOutput;
     private BufferedReader serverInput;
@@ -69,14 +68,7 @@ public class Client {
     private void tryLobby() {
 
         messageHandler.send(Message.setCommand(Message.LOBB));
-
-        try {
-            response = Message.getResponse(serverInput);
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
-            throw new RuntimeException(e);
-        }
-
+        response = Message.getResponse(serverInput);
         message = Message.getMessage(response);
         data = Message.getData(response);
         if (message.equals("EROR")) {
@@ -95,7 +87,7 @@ public class Client {
     }
 
     private void join() {
-        terminal.print("Press enter to join");
+        terminal.print(Intro.logo);
         while (inputHandler.getKey() != KEY.ENTER) {
             try {
                 Thread.sleep(200);
@@ -103,12 +95,40 @@ public class Client {
                 throw new RuntimeException(e);
             }
         }
+
         inputHandler.pauseHandler();
 
-        String UserName = terminal.userInput();
+        while (true) {
+            String UserName = terminal.userInput();
+            command = Message.setCommand(Message.JOIN, UserName);
+            messageHandler.send(command);
+            response = Message.getResponse(serverInput);
+            message = Message.getMessage(response);
+            data = Message.getData(response);
+            if (UserName == null) {
+                messageHandler.send(Message.setCommand(Message.QUIT));
+                closeServer();
+                exit(1);
+            }
+            if (message.equals("DONE")) {
+                break;
+            }
+            inputHandler.restoreHandler();
+            inputHandler.resetKey();
+            while (inputHandler.getKey() != KEY.ENTER) {
+                    terminal.print(data + "\n" + "Press enter to continue\n");
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            inputHandler.pauseHandler();
+
+        }
+
         inputHandler.restoreHandler();
 
-        command = Message.setCommand(Message.JOIN, UserName);
         try {
             serverOutput.write(command);
             serverOutput.flush();

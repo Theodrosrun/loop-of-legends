@@ -168,4 +168,8 @@ public class Server {
         lobby.setReady(player);
         board.deployLobby(lobby);
     }
+
+    public boolean playerExists(String userName) {
+        return lobby.playerExists(userName);
+    }
 }

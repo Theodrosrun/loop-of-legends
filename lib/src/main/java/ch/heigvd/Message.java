@@ -11,6 +11,7 @@ public enum Message {
     RADY("RADY"),
     STRT("STRT"),
     MSGG("MSGG"),
+    REPT("REPT"),
     EROR("EROR"),
     DIRE("DIRE"),
     UPTE("UPTE"),
@@ -52,14 +53,18 @@ public enum Message {
     }
 
 
-    public static String getResponse(BufferedReader reader) throws IOException {
+    public static String getResponse(BufferedReader reader)  {
         StringBuilder response = new StringBuilder();
         int c;
-        while ((c = reader.read()) != -1) {
-            if (c == EOT) {
-                break;
+        try {
+            while ((c = reader.read()) != -1) {
+                if (c == EOT) {
+                    break;
+                }
+                response.append((char) c);
             }
-            response.append((char) c);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return response.toString();
