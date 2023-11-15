@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 
 public class MessageHandler {
 
-    private final BufferedWriter serverOutput;
+    private BufferedWriter serverOutput;
 
     public MessageHandler(BufferedWriter serverOutput){
         this.serverOutput = serverOutput;

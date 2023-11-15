@@ -51,11 +51,10 @@ public enum Message {
         return setCommand(message, null);
     }
 
-    // TODO verifier si il existe pas une methode dans la lib pour faire ca
+
     public static String getResponse(BufferedReader reader) throws IOException {
         StringBuilder response = new StringBuilder();
         int c;
-
         while ((c = reader.read()) != -1) {
             if (c == EOT) {
                 break;
