@@ -15,6 +15,7 @@ public enum Message {
     EROR("EROR"),
     DIRE("DIRE"),
     UPTE("UPTE"),
+    SETT("SETT"),
     ENDD("ENDD"),
     QUIT("QUIT"),
     UNKN("UNKN");

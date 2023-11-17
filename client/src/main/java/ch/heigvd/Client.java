@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +20,10 @@ public class Client {
 
     private final Terminal terminal = new Terminal();
     private final InputHandler inputHandler = new InputHandler(terminal, 50);
+
+    private Setting setting;
+
+    private Player player;
 
     private BufferedWriter serverOutput;
     private BufferedReader serverInput;
@@ -103,6 +108,7 @@ public class Client {
         message = "";
         while (true) {
             if (message.equals("DONE")) {
+                player = Player.deserialize(data.getBytes());
                 break;
             }
             String UserName = terminal.userInput();
@@ -117,7 +123,7 @@ public class Client {
                 exit(1);
             }
 
-            if(message.equals("REPT")) {
+            if (message.equals("REPT")) {
                 inputHandler.restoreHandler();
                 inputHandler.resetKey();
                 while (inputHandler.getKey() != KEY.ENTER) {
@@ -146,32 +152,39 @@ public class Client {
     private void waitReady() {
         inputHandler.resetKey();
         boolean isReady = false;
-        try {
-            while (!isReady) {
-                if (inputHandler.getKey() == KEY.READY) {
-                    command = Message.setCommand(Message.RADY);
-                    serverOutput.write(command);
-                    serverOutput.flush();
-                    inputHandler.resetKey();
-                    isReady = true;
-                }
-                response = Message.getResponse(serverInput);
-                message = Message.getMessage(response);
-                data = Message.getData(response);
-                terminal.print(data);
-                if (inputHandler.getKey() == KEY.MENU){
-                    inputHandler.pauseHandler();
-                    new Menu(terminal);
-                    inputHandler.restoreHandler();
-                    inputHandler.resetKey();
-                }
-            }
 
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
-            closeServer();
-            exit(1);
+        while (!isReady) {
+            if (inputHandler.getKey() == KEY.READY) {
+                command = Message.setCommand(Message.RADY);
+                messageHandler.send(command);
+                inputHandler.resetKey();
+                isReady = true;
+            }
+            response = Message.getResponse(serverInput);
+            message = Message.getMessage(response);
+            data = Message.getData(response);
+            terminal.print(data);
+            if (inputHandler.getKey() == KEY.MENU) {
+                enterMenu();
+            }
         }
+
+
+    }
+
+    private void enterMenu() {
+        command = Message.setCommand(Message.SETT);
+        messageHandler.send(command);
+        response = Message.getResponse(serverInput);
+        message = Message.getMessage(response);
+        data = Message.getData(response);
+
+
+        inputHandler.pauseHandler();
+        new Menu(terminal, data);
+        inputHandler.restoreHandler();
+        inputHandler.resetKey();
+
     }
 
     private void controlSnake() {

@@ -11,7 +11,13 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import java.util.regex.Pattern;
 
 public class Menu {
-    public Menu(Terminal terminal) {
+
+    public char[] getParam() {
+        return new char[0];
+    }
+
+
+    public Menu(Terminal terminal, String settings){
         // Create panel to hold components
         Panel panel = new Panel();
         panel.setLayoutManager(new GridLayout(2));
@@ -25,7 +31,7 @@ public class Menu {
         final TextBox txtNum2 = new TextBox().setValidationPattern(Pattern.compile("[0-9]*")).addTo(panel);
 
         panel.addComponent(new EmptySpace(new TerminalSize(0, 0)));
-        new Button("Add!", new Runnable() {
+        new Button("OK", new Runnable() {
             @Override
             public void run() {
                 int num1 = Integer.parseInt(txtNum1.getText());

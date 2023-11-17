@@ -105,9 +105,12 @@ public class ServerWorker implements Runnable {
                     break;
                 }
                 else {
-                    messageHandler.send(Message.setCommand(Message.DONE));
+
                     player = new Player(data);
                     server.joinLobby(player);
+                    String p = new String(player.serialize());
+                    String m = Message.setCommand(Message.DONE, p);
+                    messageHandler.send(m);
                     thGuiUpdate.start();
                 }
                 break;

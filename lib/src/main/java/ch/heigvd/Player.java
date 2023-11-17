@@ -1,6 +1,14 @@
 package ch.heigvd;
 
-public class Player {
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ByteArrayInputStream;
+
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+
+public class Player implements java.io.Serializable {
 
     private final char MASTER_LOGO = '♔';
     private static int idCnt = 0;
@@ -61,4 +69,26 @@ private PlayerStatus status = PlayerStatus.DISCONNECTED;
     public boolean isMaster() {
         return master;
     }
+    public byte[] serialize() {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(this);
+            return bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Player deserialize(byte[] data) {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
+             ObjectInputStream ois = new ObjectInputStream(bis)) {
+            Player p = (Player) ois.readObject();
+            return p;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
