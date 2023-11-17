@@ -102,6 +102,10 @@ public class Terminal implements InputProvider {
         return terminal.readInput();
     }
 
+    public Screen getScreen(){
+        return screen;
+    }
+
     public void clear() {
         screen.clear();
     }

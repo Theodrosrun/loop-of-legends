@@ -80,6 +80,9 @@ public class Client {
     public Client(InetAddress address, int port) {
 
         initConnection(address, port);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            onExit();
+        }));
         tryLobby();
         join();
         waitReady();
@@ -97,8 +100,11 @@ public class Client {
         }
 
         inputHandler.pauseHandler();
-
+        message = "";
         while (true) {
+            if (message.equals("DONE")) {
+                break;
+            }
             String UserName = terminal.userInput();
             command = Message.setCommand(Message.JOIN, UserName);
             messageHandler.send(command);
@@ -110,21 +116,20 @@ public class Client {
                 closeServer();
                 exit(1);
             }
-            if (message.equals("DONE")) {
-                break;
-            }
-            inputHandler.restoreHandler();
-            inputHandler.resetKey();
-            while (inputHandler.getKey() != KEY.ENTER) {
-                    terminal.print(data + "\n" + "Press enter to continue\n");
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            inputHandler.pauseHandler();
 
+            if(message.equals("REPT")) {
+                inputHandler.restoreHandler();
+                inputHandler.resetKey();
+                while (inputHandler.getKey() != KEY.ENTER) {
+                    terminal.print(data + "\n" + "Press enter to continue\n");
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                inputHandler.pauseHandler();
+            }
         }
 
         inputHandler.restoreHandler();
@@ -154,6 +159,12 @@ public class Client {
                 message = Message.getMessage(response);
                 data = Message.getData(response);
                 terminal.print(data);
+                if (inputHandler.getKey() == KEY.MENU){
+                    inputHandler.pauseHandler();
+                    new Menu(terminal);
+                    inputHandler.restoreHandler();
+                    inputHandler.resetKey();
+                }
             }
 
         } catch (IOException e) {
@@ -212,5 +223,11 @@ public class Client {
         }
 
         Client client = new Client(address, port);
+    }
+
+    private void onExit() {
+        messageHandler.send(Message.setCommand(Message.QUIT));
+        closeServer();
+        LOG.log(Level.INFO, "Client Exit");
     }
 }

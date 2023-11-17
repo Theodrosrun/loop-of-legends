@@ -2,27 +2,40 @@ package ch.heigvd;
 
 public class Player {
 
+    private final char MASTER_LOGO = '♔';
     private static int idCnt = 0;
     private int id;
-
+    private boolean master;
     private String name;
-
-    private boolean ready = false;
+private PlayerStatus status = PlayerStatus.DISCONNECTED;
 
     public Player(String name) {
         this.id = ++idCnt;
         this.name = name;
+        status = PlayerStatus.CONNECTED;
     }
+
+    public char getMasterLogo() {
+        if (master) {
+            return MASTER_LOGO;
+        }
+        return ' ';
+    }
+
     public String getName() {
         return name;
     }
 
     public void setReady() {
-        this.ready = !this.ready;
+       status = PlayerStatus.READY;
     }
 
     public boolean isReady() {
-        return ready;
+        return status == PlayerStatus.READY;
+    }
+
+    public void setMaster() {
+        this.master = true;
     }
 
     public int getId() {
@@ -35,5 +48,17 @@ public class Player {
             return this.id == player.id;
         }
         return false;
+    }
+
+    public void removeMaster() {
+        this.master = false;
+    }
+
+    public PlayerStatus getStatus() {
+        return status;
+    }
+
+    public boolean isMaster() {
+        return master;
     }
 }

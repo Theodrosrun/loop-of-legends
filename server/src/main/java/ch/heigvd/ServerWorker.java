@@ -125,6 +125,9 @@ public class ServerWorker implements Runnable {
             case UPTE:
                 // Handle UPTE message
                 break;
+            case QUIT:
+                server.removePlayer(player);
+                break;
             case ENDD:
                 // Handle ENDD message
                 break;

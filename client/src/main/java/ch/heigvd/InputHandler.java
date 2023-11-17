@@ -85,7 +85,6 @@ public class InputHandler {
         stopRequest = true;
     }
 
-
     public static boolean isDirection(KeyStroke key) {
         if (key == null) return false;
         switch (key.getKeyType()) {
@@ -97,6 +96,27 @@ public class InputHandler {
             default:
                 return false;
 
+        }
+    }
+
+    public static void main(String[] args) {
+        KeyStroke lastKey = null;
+        Terminal terminal = new Terminal();
+        InputHandler inputHandler = new InputHandler(terminal,20);
+        terminal.print("Press a key");
+         while (inputHandler.getKey() != KEY.QUIT) {
+            if (inputHandler.getKeyStroke() != lastKey) {
+                lastKey = inputHandler.getKeyStroke();
+                terminal.print( "Key pressed : " + lastKey.getCharacter() + "\n" +
+                                "KeyStroke :" + lastKey.toString() + "\n" +
+                                "KEY :" + KEY.parseKeyStroke(lastKey) + "\n" +
+                                "KeyCode :" + lastKey.getKeyType().toString() + "\n" );
+            }
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

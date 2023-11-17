@@ -18,16 +18,21 @@ public class Lobby {
     }
 
     public boolean join(Player player) {
-        for (Player p : players) {
-            if (p.getName().equals(player.getName())) {
-                return false;
+        if (players.size() >= MAX_PLAYERS) {
+            return false;
+        }
+        if (players.isEmpty()) {
+            player.setMaster();
+        } else {
+            for (Player p : players) {
+                if (p.getName().equals(player.getName())) {
+                    return false;
+                }
             }
+            player.removeMaster();
         }
-        if (players.size() < MAX_PLAYERS) {
-            players.add(player);
-            return true;
-        }
-        return false;
+        players.add(player);
+        return true;
     }
     public void setReady(Player player) {
         player.setReady();
@@ -97,6 +102,14 @@ public class Lobby {
 
     public void removePlayer(Player player) {
         players.remove(player);
+        if (player.isMaster() && !players.isEmpty()){
+            getPolePlayers().setMaster();
+        }
+    }
+
+    private Player getPolePlayers() {
+        if (players.isEmpty()) return null;
+        return players.get(0);
     }
 
     public void open() {

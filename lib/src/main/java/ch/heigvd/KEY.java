@@ -10,28 +10,8 @@ public enum KEY {
     QUIT,
     ENTER,
     READY,
+    MENU,
     NONE;
-
-    public static KEY getKey(int keyCode) {
-        switch (keyCode) {
-            case 57419:
-                return LEFT;
-            case 57416:
-                return UP;
-            case 57421:
-                return RIGHT;
-            case 57424:
-                return DOWN;
-            case 16://q
-                return QUIT;
-            case 28:// Enter
-                return ENTER;
-            case 19://r
-                return READY;
-            default:
-                return NONE;
-        }
-    }
 
     public static KEY parseKeyStroke(KeyStroke key) {
         if (key == null) {
@@ -46,6 +26,7 @@ public enum KEY {
             case Character -> switch (key.getCharacter()) {
                 case 'q' -> KEY.QUIT;
                 case 'r' -> KEY.READY;
+                case 'm' -> KEY.MENU;
                 default -> KEY.NONE;
             };
             default -> KEY.NONE;

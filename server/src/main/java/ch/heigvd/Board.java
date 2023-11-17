@@ -7,7 +7,7 @@ import ch.qos.logback.core.joran.sanity.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static java.lang.Math.abs;
+import static java.lang.Math.*;
 
 public class Board {
 
@@ -71,17 +71,24 @@ public class Board {
     public void deployLobby(Lobby lobby) {
 
         for ( int i = 0; i < lobby.getNbPlayer(); ++i) {
-            int maxNameSize = getWidth() - 11;
             Player player = lobby.getPlayers().get(i);
-            String ready = player.isReady() ? "READY": "WAIT ";
+            String status = player.getStatus().toString();
+            char master = player.getMasterLogo();
+            int maxNameSize = (int) (getWidth()
+                                - 2 - 1 //border with space
+                                - 1 - 1 //master with space
+                                - player.getStatus().toString().length() - 2 //status with space
+                                - (int)(log10((double)player.getId())) + 1 - 2); // id with space
+
             StringBuilder sb = new StringBuilder(Border.VERTICAL.getBorder(borderType) + " ");
             sb.append(player.getId()).append(" ");
+            sb.append(master).append(" ");
             sb.append(player.getName(), 0, Math.min(player.getName().length(), maxNameSize));
             if (player.getName().length() - maxNameSize < 0) {
                 sb.append(String.valueOf(emptyChar).repeat(maxNameSize - player.getName().length()));
             }
             sb.append(" ");
-            sb.append(ready);
+            sb.append(status);
             sb.append(Border.VERTICAL.getBorder(borderType));
             board[i + 1] = sb.toString().toCharArray();
         }
