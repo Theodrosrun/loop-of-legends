@@ -89,6 +89,9 @@ public class Client {
     private void join() {
         terminal.print(Intro.logo);
         while (inputHandler.getKey() != KEY.ENTER) {
+            if (inputHandler.getKey() == KEY.QUIT) {
+                quit();
+            }
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
@@ -150,6 +153,10 @@ public class Client {
                     inputHandler.resetKey();
                     isReady = true;
                 }
+                if (inputHandler.getKey() == KEY.QUIT) {
+                    command = Message.setCommand(Message.QUIT);
+                    quit();
+                }
                 response = Message.getResponse(serverInput);
                 message = Message.getMessage(response);
                 data = Message.getData(response);
@@ -178,11 +185,36 @@ public class Client {
                 data = Message.getData(response);
                 terminal.print(data);
             }
+            quit();
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
+    private void quit() {
+        command = Message.setCommand(Message.QUIT);
+        messageHandler.send(command);
+        response= Message.getResponse(serverInput);
+        message = Message.getMessage(response);
+        data = Message.getData(response);
+        if (!message.equals("ENDD")) {
+            terminal.print("Error :" + data);
+            exit(1);
+        }
+        terminal.clear();
+        terminal.print(data + "\n" + "Press enter to exit\n");
+        while (inputHandler.getKey() != KEY.ENTER) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        closeServer();
+        exit(0);
+    }
+
+
 
     public static void main(String[] args) {
 

@@ -128,6 +128,10 @@ public class ServerWorker implements Runnable {
             case ENDD:
                 // Handle ENDD message
                 break;
+            case QUIT:
+                messageHandler.send(Message.setCommand(Message.ENDD, "You left the game"));
+                if (player != null) server.removePlayer(player);
+                break;
             default:
                 // Handle unexpected message
                 break;
