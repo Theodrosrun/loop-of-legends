@@ -1,44 +1,51 @@
 # Loop of Legends: The Multi-Snake Challenge
 
-"Loop of Legends: The Multi-Snake Challenge" est un jeu de serpent en réseau où les joueurs contrôlent des serpents et essaient de survivre le plus longtemps possible. Ce projet implémente le client du jeu, qui se connecte à un serveur de jeu pour une expérience multijoueur.
+**"Loop of Legends: The Multi-Snake Challenge"** is a networked snake game where players control snakes and try to survive as long as possible. This project implements the game client, which connects to a game server for a multiplayer experience.
 
-## 1. Construction de l'Application
+## 1. Building the Application
 
-### Prérequis
-- Java JDK 11 ou supérieur.
+### Prerequisites
+- Java JDK 11 or higher.
 
-### Compilation
-```bash
-javac Client.java
+### Build Instructions
+
+Before you begin with FileEditor, please execute the following commands:
+
+```sh
+# Download the dependencies
+./mvnw dependency:resolve
+
+# Package the application
+./mvnw package
 ```
 
-## 2. Exécution de l'Application
+## 2. Running the Application
 
-Pour lancer le client :
+To launch the client, use the following command:
 ```bash
-java -jar client-1.0-SNAPSHOT.jar [adresse-du-serveur] [port]
+java -jar client-1.0-SNAPSHOT.jar [server-address] [port]
 ```
-Exemple :
+Example:
 ```bash
 java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 ```
 
-Pour lancer le serveur :
+To launch the server, use:
 ```bash
 java -jar server-1.0-SNAPSHOT.jar
 ```
-Exemple :
+Example:
 ```bash
 java -jar server-1.0-SNAPSHOT.jar
 ```
 
-## 3. Protocole d'Application
+## 3. Application Protocol
 
-Le jeu utilise un protocole basé sur TCP pour la communication entre le client et le serveur. Le protocole définit les actions suivantes :
+The game uses a TCP-based protocol for communication between the client and the server. The protocol defines the following actions:
 
-- **INIT** : Le client envoie INIT pour établir la connexion.
-- **LOBBY** : Le client vérifie la disponibilité dans le lobby.
-- **JOIN** : Le client rejoint le lobby.
-- **READY** : Le client signale qu'il est prêt.
-- **START**, **UPDATE**, **END** : Le serveur contrôle le flux du jeu.
-- **DIR** : Le client envoie la direction du serpent.
+- **INIT**: The client sends INIT to establish the connection.
+- **LOBBY**: The client checks for availability in the lobby.
+- **JOIN**: The client joins the lobby.
+- **READY**: The client signals that it is ready.
+- **START**, **UPDATE**, **END**: The server controls the game flow.
+- **DIR**: The client sends the direction for the snake.
