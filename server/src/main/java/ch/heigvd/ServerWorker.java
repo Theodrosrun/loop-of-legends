@@ -37,15 +37,15 @@ public class ServerWorker implements Runnable {
     @Override
     public void run() {
         try {
-            String command = "", response = "", message = "", data = "";
+            String command, response, message, data;
 
-            while (!(response = Message.getResponse(clientInput)).equals(null)) {
+            while ((response = Message.getResponse(clientInput)) != null) {
                 message = Message.getMessage(response);
                 data = Message.getData(response);
 
                 // Message unknown
                 if(Message.fromString(message) == Message.UNKN){
-                    // return;
+                    LOG.log(Level.SEVERE, "Message unknown");
                 }
 
                 commandHandler(Message.fromString(message), data);
