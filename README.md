@@ -11,7 +11,7 @@
 
 ### Build Instructions
 
-Before you begin with FileEditor, please execute the following commands:
+Before you begin with Loop of Legends, please execute the following commands:
 
 ```sh
 # Download the dependencies
