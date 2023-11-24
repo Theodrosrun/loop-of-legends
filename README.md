@@ -76,7 +76,7 @@ The server can send the following messages:
 - **UPTE <map>**: Updating the game state.
 - **ENDD**: Indicates the end of the game.
 
-Server and Client
+Common messages
 - **MSGG**: General messaging within the game.
 - **QUIT**: Exit the game.
 - **EROR**: Error message for any issues encountered.
