@@ -25,6 +25,7 @@ Before you begin with FileEditor, please execute the following commands:
 
 ## 2. Running the Application
 
+### 2.1 Client
 To launch the client, use the following command:
 ```bash
 java -jar client-1.0-SNAPSHOT.jar [server-address] [port]
@@ -34,6 +35,7 @@ Example:
 java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 ```
 
+### 2.2 Server
 To launch the server, use:
 ```bash
 java -jar server-1.0-SNAPSHOT.jar
