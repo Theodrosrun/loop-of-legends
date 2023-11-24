@@ -2,6 +2,8 @@
 
 **"Loop of Legends: The Multi-Snake Challenge"** is a networked snake game where players control snakes and try to survive as long as possible. This project implements the game client, which connects to a game server for a multiplayer experience.
 
+---
+
 ## 1. Building the Application
 
 ### Prerequisites
@@ -18,6 +20,8 @@ Before you begin with FileEditor, please execute the following commands:
 # Package the application
 ./mvnw package
 ```
+
+---
 
 ## 2. Running the Application
 
@@ -39,13 +43,45 @@ Example:
 java -jar server-1.0-SNAPSHOT.jar
 ```
 
+---
+
 ## 3. Application Protocol
 
 The game uses a TCP-based protocol for communication between the client and the server. The protocol defines the following actions:
 
-- **INIT**: The client sends INIT to establish the connection.
-- **LOBBY**: The client checks for availability in the lobby.
-- **JOIN**: The client joins the lobby.
-- **READY**: The client signals that it is ready.
-- **START**, **UPDATE**, **END**: The server controls the game flow.
-- **DIR**: The client sends the direction for the snake.
+### Port and Protocol Specification
+- **Protocol**: TCP (Transmission Control Protocol).
+- **Port**: 20000.
+
+### Connection Initiation
+- The connection is initiated by the client.
+- The client sends an **INIT** message to the server to establish a connection.
+- The server, upon receiving the **INIT** message, responds with **DONE** if the connection is successfully established.
+
+### Messages/Actions
+- **INIT**: Client to Server, to start the connection.
+- **DONE**: Server to Client, indicating successful completion of the previous request.
+- **LOBB**: Client to Server, to check lobby availability.
+- **JOIN**: Client to Server, to join the game lobby.
+- **RADY**: Client to Server, indicating readiness for the game.
+- **STRT**: Server to Client, signaling the start of the game.
+- **MSGG**: General messaging within the game.
+- **REPT**: Reporting game events or statuses.
+- **EROR**: Error message for any issues encountered.
+- **DIRE**: Client to Server, indicating the snake's direction.
+- **UPTE**: Server to Client, updating the game state.
+- **ENDD**: Indicates the end of the game.
+- **QUIT**: Client to Server, to exit the game.
+- **UNKN**: Represents an unknown or invalid message.
+
+### Success/Error Codes
+- **DONE**: Action completed successfully.
+- **EROR**: An error occurred, followed by an error message.
+
+### Protocol Diagram
+(Include a diagram here visualizing the flow of messages between the client and the server. Use a tool like PlantUML or draw.io to create the diagram.)
+
+### Edge-Cases Handling
+- **Lost Connection**: If the client loses connection unexpectedly, the server will handle the dropout and update the game state accordingly.
+- **Invalid Message (UNKN)**: If the server receives an unrecognized message, it responds with an **EROR** message.
+- **Late Joining**: If a client attempts to join a game in progress, the server responds with an **EROR** message.
