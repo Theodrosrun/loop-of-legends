@@ -94,3 +94,5 @@ Common messages
 
 ## 3.4 Examples
 ![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/uml1.png)
+
+![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/uml2.png)
