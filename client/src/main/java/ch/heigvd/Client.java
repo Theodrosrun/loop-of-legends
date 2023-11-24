@@ -1,7 +1,6 @@
 package ch.heigvd;
 
 import com.googlecode.lanterna.input.KeyStroke;
-
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -9,7 +8,6 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import static java.lang.System.*;
 
 public class Client {
