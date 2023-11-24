@@ -16,7 +16,6 @@ public class ServerWorker implements Runnable {
     private BufferedReader clientInput = null;
     private BufferedWriter serverOutput = null;
     private Thread thGuiUpdate = new Thread(this::guiUpdate);
-    private MessageHandler messageHandler;
 
     // private final ReentrantLock mutex = new ReentrantLock();
 
@@ -27,24 +26,29 @@ public class ServerWorker implements Runnable {
 
         try {
             clientInput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            serverOutput = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(),  StandardCharsets.UTF_8));
-            messageHandler = new MessageHandler(serverOutput);
+            serverOutput = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
+
+        Thread exitTh = new Thread(new Exit(clientSocket, serverOutput, clientInput));
+        Runtime.getRuntime().addShutdownHook(exitTh);
     }
 
     @Override
     public void run() {
         try {
             String command, response, message, data;
+            boolean finished = false;
 
-            while ((response = Message.getResponse(clientInput)) != null) {
+            while (!finished) {
+                response = Message.getResponse(clientInput);
+                if (response == null) break;
                 message = Message.getMessage(response);
                 data = Message.getData(response);
 
                 // Message unknown
-                if(Message.fromString(message) == Message.UNKN){
+                if (Message.fromString(message) == Message.UNKN) {
                     LOG.log(Level.SEVERE, "Message unknown");
                 }
 
@@ -52,32 +56,35 @@ public class ServerWorker implements Runnable {
                 switch (Message.fromString(message)) {
                     case INIT:
                         command = Message.setCommand(Message.DONE);
-                        messageHandler.send(command);
+                        serverOutput.write(command);
+                        serverOutput.flush();
                         break;
 
                     case LOBB:
                         if (server.isFull()) {
-                            messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
+                            serverOutput.write(Message.setCommand(Message.EROR, "The lobby is full"));
+                            serverOutput.flush();
                         } else {
-                            messageHandler.send(Message.setCommand(Message.DONE));
+                            serverOutput.write(Message.setCommand(Message.DONE));
+                            serverOutput.flush();
                         }
                         break;
 
                     case JOIN:
                         if (server.isFull()) {
-                            messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
+                            serverOutput.write(Message.setCommand(Message.EROR, "The lobby is full"));
+                            serverOutput.flush();
                             break;
-                        }
-                        else if (server.playerExists(data)) {
-                            messageHandler.send(Message.setCommand(Message.REPT, "Username already used"));
+                        } else if (server.playerExists(data)) {
+                            serverOutput.write(Message.setCommand(Message.REPT, "Username already used"));
                             break;
-                        }
-                        else if (data.isEmpty()) {
-                            messageHandler.send(Message.setCommand(Message.REPT, "Username must have minimum 1 character"));
+                        } else if (data.isEmpty()) {
+                            serverOutput.write(Message.setCommand(Message.REPT, "Username must have minimum 1 character"));
+                            serverOutput.flush();
                             break;
-                        }
-                        else {
-                            messageHandler.send(Message.setCommand(Message.DONE));
+                        } else {
+                            serverOutput.write(Message.setCommand(Message.DONE));
+                            serverOutput.flush();
                             player = new Player(data);
                             server.joinLobby(player);
                             thGuiUpdate.start();
@@ -94,8 +101,11 @@ public class ServerWorker implements Runnable {
                         break;
 
                     case QUIT:
-                        messageHandler.send(Message.setCommand(Message.ENDD, "You left the game"));
+                        serverOutput.write(Message.setCommand(Message.QUIT, "You left the game"));
+                        serverOutput.flush();
                         if (player != null) server.removePlayer(player);
+                        finished = true;
+                        LOG.log(Level.INFO, "Client disconnected");
                         break;
 
                     default:
@@ -127,8 +137,8 @@ public class ServerWorker implements Runnable {
         }
     }
 
-    public void guiUpdate(){
-        while (true){
+    public void guiUpdate() {
+        while (true) {
             try {
                 Thread.sleep(UPDATE_FREQUENCY);
             } catch (InterruptedException e) {
@@ -136,7 +146,17 @@ public class ServerWorker implements Runnable {
             }
 
             String command = Message.setCommand(Message.UPTE, server.getBoard().toString());
-            messageHandler.send(command);
+            if (!clientSocket.isClosed()) {
+                try {
+                    serverOutput.write(command);
+                    serverOutput.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                LOG.log(Level.INFO, "ServerWorker: clientSocket is closed");
+                break;
+            }
         }
     }
 }

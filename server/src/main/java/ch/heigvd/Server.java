@@ -22,8 +22,6 @@ public class Server {
 
     private boolean listenNewClient = true;
     private Board board;
-    private MessageHandler messageHandler;
-
     private DIRECTION[] directions = {DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT};
     private final static Logger LOG = Logger.getLogger(Server.class.getName());
 
@@ -92,16 +90,17 @@ public class Server {
                 }
 
                 BufferedWriter serverOutput = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
-                MessageHandler messageHandler = new MessageHandler(serverOutput);
 
                 if (lobby.lobbyIsFull()) {
                     LOG.log(Level.INFO, "The lobby is full. Rejecting the new client...");
-                    messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
+                    serverOutput.write(Message.setCommand(Message.EROR, "The lobby is full"));
+                    serverOutput.flush();
                     clientSocket.close();
                     continue;
                 } else {
                     LOG.log(Level.INFO, "The lobby is closed. Rejecting the new client...");
-                    messageHandler.send(Message.setCommand(Message.EROR, "The lobby is closed"));
+                    serverOutput.write(Message.setCommand(Message.EROR, "The lobby is closed"));
+                    serverOutput.flush();
                     clientSocket.close();
                     continue;
                 }

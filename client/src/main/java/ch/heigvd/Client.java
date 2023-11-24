@@ -1,6 +1,7 @@
 package ch.heigvd;
 
 import com.googlecode.lanterna.input.KeyStroke;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -8,6 +9,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import static java.lang.System.*;
 
 public class Client {
@@ -46,14 +48,10 @@ public class Client {
     private Socket socket;
 
     /**
-     * The message handler used to send and receive messages from the server
-     */
-    private MessageHandler messageHandler;
-
-    /**
      * Constructor of the client
+     *
      * @param address the address of the server
-     * @param port the port of the server
+     * @param port    the port of the server
      */
     public Client(InetAddress address, int port) {
         initConnection(address, port);
@@ -65,8 +63,9 @@ public class Client {
 
     /**
      * Initialize the connection with the server
+     *
      * @param address the address of the server
-     * @param port the port of the server
+     * @param port    the port of the server
      */
     private void initConnection(InetAddress address, int port) {
         try {
@@ -74,22 +73,22 @@ public class Client {
             serverOutput = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
             serverInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
-            messageHandler = new MessageHandler(serverOutput);
+            Thread exitTh = new Thread(new Exit(socket, serverOutput, serverInput));
+            Runtime.getRuntime().addShutdownHook(exitTh);
+
+
             command = Message.setCommand(Message.INIT);
-            messageHandler.send(command);
+            serverOutput.write(command);
+            serverOutput.flush();
 
             while (!message.equals("DONE")) {
                 response = Message.getResponse(serverInput);
                 message = Message.getMessage(response);
                 data = Message.getData(response);
-                if (message.equals("EROR")) {
-                    terminal.print("Error :" + data);
-                    exit(1);
-                }
+                messageHandling(message, data);
             }
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getMessage(), e);
-            closeServer();
             exit(1);
         }
     }
@@ -99,15 +98,13 @@ public class Client {
      */
     private void tryLobby() {
         try {
-            messageHandler.send(Message.setCommand(Message.LOBB));
+            serverOutput.write(Message.setCommand(Message.LOBB));
+            serverOutput.flush();
             response = Message.getResponse(serverInput);
             message = Message.getMessage(response);
             data = Message.getData(response);
-            if (message.equals("EROR")) {
-                terminal.print("Error :" + data);
-                exit(1);
-            }
-        } catch (IOException  e) {
+            messageHandling(message, data);
+        } catch (IOException e) {
             terminal.clear();
             terminal.print("Client exception: " + e);
         }
@@ -131,19 +128,31 @@ public class Client {
 
         inputHandler.pauseHandler();
 
-        try{
+        try {
             while (true) {
                 String UserName = terminal.userInput();
+
+                if (UserName == null) {
+                    serverOutput.write(Message.setCommand(Message.QUIT));
+                    serverOutput.flush();
+                    exit(1);
+                }
+
+                if (socket.getInputStream().available() > 0) {
+                    response = Message.getResponse(serverInput);
+                    message = Message.getMessage(response);
+                    data = Message.getData(response);
+                    messageHandling(message, data);
+                }
+
                 command = Message.setCommand(Message.JOIN, UserName);
-                messageHandler.send(command);
+                serverOutput.write(command);
+                serverOutput.flush();
                 response = Message.getResponse(serverInput);
                 message = Message.getMessage(response);
                 data = Message.getData(response);
-                if (UserName == null) {
-                    messageHandler.send(Message.setCommand(Message.QUIT));
-                    closeServer();
-                    exit(1);
-                }
+                messageHandling(message, data);
+
                 if (message.equals("DONE")) {
                     break;
                 }
@@ -160,7 +169,7 @@ public class Client {
                 inputHandler.pauseHandler();
 
             }
-        } catch (IOException  e) {
+        } catch (IOException e) {
             terminal.clear();
             terminal.print("Client exception: " + e);
         }
@@ -198,12 +207,12 @@ public class Client {
                 response = Message.getResponse(serverInput);
                 message = Message.getMessage(response);
                 data = Message.getData(response);
+                messageHandling(message, data);
                 terminal.print(data);
             }
 
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getMessage(), e);
-            closeServer();
             exit(1);
         }
     }
@@ -224,6 +233,7 @@ public class Client {
                 response = Message.getResponse(serverInput);
                 message = Message.getMessage(response);
                 data = Message.getData(response);
+                messageHandling(message, data);
                 terminal.print(data);
             }
             quit();
@@ -238,10 +248,10 @@ public class Client {
      */
     private void quit() {
         command = Message.setCommand(Message.QUIT);
-        messageHandler.send(command);
-
-        try{
-            response= Message.getResponse(serverInput);
+        try {
+            serverOutput.write(command);
+            serverOutput.flush();
+            response = Message.getResponse(serverInput);
         } catch (IOException e) {
             terminal.clear();
             terminal.print("Client exception: " + e);
@@ -249,7 +259,7 @@ public class Client {
 
         message = Message.getMessage(response);
         data = Message.getData(response);
-        if (!message.equals("ENDD")) {
+        if (!message.equals("QUIT")) {
             terminal.print("Error :" + data);
             exit(1);
         }
@@ -263,24 +273,42 @@ public class Client {
                 throw new RuntimeException(e);
             }
         }
-
-        closeServer();
         exit(0);
+    }
+
+    private void messageHandling(String message, String data) {
+        switch (message) {
+            case "EROR":
+                terminal.clear();
+                terminal.print("Error :" + data + "\n" + "Press enter to exit\n");
+                requestEnter();
+                exit(0);
+                break;
+            case "QUIT":
+                terminal.clear();
+                terminal.print("Server left \n" + data + "\n" + "Press enter to exit\n");
+                requestEnter();
+                exit(0);
+            default:
+                break;
+        }
+
+    }
+
+    private void requestEnter() {
+        while (inputHandler.getKey() != KEY.ENTER) {
+            inputHandler.restoreHandler();
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
      * Close the connection with the server
      */
-    private void closeServer() {
-        try {
-            serverOutput.close();
-            serverInput.close();
-            socket.close();
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
-            exit(1);
-        }
-    }
 
 
     public static void main(String[] args) {
