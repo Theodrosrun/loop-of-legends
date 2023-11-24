@@ -22,8 +22,9 @@ public class ServerWorker implements Runnable {
     // private final ReentrantLock mutex = new ReentrantLock();
 
     public ServerWorker(Socket clientSocket, Server server) {
-        this.server = server;
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
+
+        this.server = server;
         this.clientSocket = clientSocket;
         try {
             clientInput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
