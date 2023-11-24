@@ -52,18 +52,15 @@ public enum Message {
         return setCommand(message, null);
     }
 
-    public static String getResponse(BufferedReader reader)  {
+    public static String getResponse(BufferedReader reader) throws IOException {
         StringBuilder response = new StringBuilder();
         int c;
-        try {
-            while ((c = reader.read()) != -1) {
-                if (c == EOT) {
-                    break;
-                }
-                response.append((char) c);
+
+        while ((c = reader.read()) != -1) {
+            if (c == EOT) {
+                break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            response.append((char) c);
         }
 
         return response.toString();

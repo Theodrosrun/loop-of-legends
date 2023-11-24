@@ -18,6 +18,5 @@ public class MessageHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 }

@@ -98,14 +98,18 @@ public class Client {
      * try if lobby is open or not full
      */
     private void tryLobby() {
-
-        messageHandler.send(Message.setCommand(Message.LOBB));
-        response = Message.getResponse(serverInput);
-        message = Message.getMessage(response);
-        data = Message.getData(response);
-        if (message.equals("EROR")) {
-            terminal.print("Error :" + data);
-            exit(1);
+        try {
+            messageHandler.send(Message.setCommand(Message.LOBB));
+            response = Message.getResponse(serverInput);
+            message = Message.getMessage(response);
+            data = Message.getData(response);
+            if (message.equals("EROR")) {
+                terminal.print("Error :" + data);
+                exit(1);
+            }
+        } catch (IOException  e) {
+            terminal.clear();
+            terminal.print("Client exception: " + e);
         }
     }
 
@@ -127,33 +131,38 @@ public class Client {
 
         inputHandler.pauseHandler();
 
-        while (true) {
-            String UserName = terminal.userInput();
-            command = Message.setCommand(Message.JOIN, UserName);
-            messageHandler.send(command);
-            response = Message.getResponse(serverInput);
-            message = Message.getMessage(response);
-            data = Message.getData(response);
-            if (UserName == null) {
-                messageHandler.send(Message.setCommand(Message.QUIT));
-                closeServer();
-                exit(1);
-            }
-            if (message.equals("DONE")) {
-                break;
-            }
-            inputHandler.restoreHandler();
-            inputHandler.resetKey();
-            while (inputHandler.getKey() != KEY.ENTER) {
-                terminal.print(data + "\n" + "Press enter to continue\n");
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+        try{
+            while (true) {
+                String UserName = terminal.userInput();
+                command = Message.setCommand(Message.JOIN, UserName);
+                messageHandler.send(command);
+                response = Message.getResponse(serverInput);
+                message = Message.getMessage(response);
+                data = Message.getData(response);
+                if (UserName == null) {
+                    messageHandler.send(Message.setCommand(Message.QUIT));
+                    closeServer();
+                    exit(1);
                 }
-            }
-            inputHandler.pauseHandler();
+                if (message.equals("DONE")) {
+                    break;
+                }
+                inputHandler.restoreHandler();
+                inputHandler.resetKey();
+                while (inputHandler.getKey() != KEY.ENTER) {
+                    terminal.print(data + "\n" + "Press enter to continue\n");
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                inputHandler.pauseHandler();
 
+            }
+        } catch (IOException  e) {
+            terminal.clear();
+            terminal.print("Client exception: " + e);
         }
 
         inputHandler.restoreHandler();
@@ -230,7 +239,14 @@ public class Client {
     private void quit() {
         command = Message.setCommand(Message.QUIT);
         messageHandler.send(command);
-        response= Message.getResponse(serverInput);
+
+        try{
+            response= Message.getResponse(serverInput);
+        } catch (IOException e) {
+            terminal.clear();
+            terminal.print("Client exception: " + e);
+        }
+
         message = Message.getMessage(response);
         data = Message.getData(response);
         if (!message.equals("ENDD")) {
@@ -265,6 +281,7 @@ public class Client {
             exit(1);
         }
     }
+
 
     public static void main(String[] args) {
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
