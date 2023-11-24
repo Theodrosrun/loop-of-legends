@@ -75,8 +75,6 @@ public class Client {
             serverInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
             messageHandler = new MessageHandler(serverOutput);
-
-            // INIT
             command = Message.setCommand(Message.INIT);
             messageHandler.send(command);
 
