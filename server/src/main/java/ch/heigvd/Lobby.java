@@ -1,12 +1,16 @@
 package ch.heigvd;
 
+import ch.heigvd.snake.Snake;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static ch.heigvd.DIRECTION.UP;
+import static ch.heigvd.DIRECTION.*;
 
 public class Lobby {
     private ArrayList<Player> players;
+
+    private boolean isOpen = true;
 
     private final int MAX_PLAYERS;
 
@@ -14,6 +18,7 @@ public class Lobby {
         MAX_PLAYERS = maxPlayers;
         players = new ArrayList<>();
     }
+
     public boolean join(Player player) {
         for (Player p : players) {
             if (p.getName().equals(player.getName())) {
@@ -32,7 +37,7 @@ public class Lobby {
     public ArrayList<Player> getReadyPlayers() {
         int nbReady = countReady();
         ArrayList<Player> readyPlayers = new ArrayList<>();
-        for (Player player : players){
+        for (Player player : players) {
             if (player.isReady()) {
                 readyPlayers.add(player);
             }
@@ -48,7 +53,7 @@ public class Lobby {
         return null;
     }
     public boolean lobbyIsFull() {
-        return players.size() < MAX_PLAYERS;
+        return players.size() >= MAX_PLAYERS;
     }
     private int countReady() {
         int nbReady = 0;
@@ -59,28 +64,29 @@ public class Lobby {
         }
         return nbReady;
     }
-
-    private void ComputeLobby(){
-        StringBuilder gui = new StringBuilder();
-
-    }
-
-
     public ArrayList<Player> getPlayers() {
         return players;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void close() {
+        isOpen = false;
     }
 
     public int getNbPlayer() {
         return players.size();
     }
 
-    public int getNbReadyPlayers(){
+    public int getNbReadyPlayers() {
         return getReadyPlayers().size();
     }
 
     public boolean everyPlayerReady() {
-        for(Player player : players){
-            if(!player.isReady()){
+        for (Player player : players) {
+            if (!player.isReady()) {
                 return false;
             }
         }
@@ -89,5 +95,70 @@ public class Lobby {
 
     public void removePlayer(Player player) {
         players.remove(player);
+    }
+
+    public void open() {
+        isOpen = true;
+    }
+
+    public boolean playerExists(String userName) {
+        for (Player player : players) {
+            if (player.getName().equals(userName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void initSnakes(Board board) {
+        int initLenght = 3;
+        Position initPosition;
+        int bw = board.getWidth();
+        int bh = board.getHeigth();
+
+        int i = 0;
+        for (Player player : players) {
+            switch (i) {
+                case 0: {
+                    initPosition = new Position(bw / 2, bh, UP, ' ');
+                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    break;
+                }
+                case 1: {
+                    initPosition = new Position(0, bh / 2, LEFT, ' ');
+                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    break;
+                }
+                case 2: {
+                    initPosition = new Position(bw / 2, 0, DOWN, ' ');
+                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    break;
+                }
+                case 3: {
+                    initPosition = new Position(bw, bh / 2, RIGHT, ' ');
+                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    break;
+                }
+            }
+            i++;
+        }
+    }
+
+    public void setDirection(Player player, DIRECTION direction) {
+        player.getSnake().setNextDirection(direction);
+    }
+
+    public void snakeStep() {
+        for (Player player : players) {
+            player.getSnake().step();
+        }
+    }
+
+    public ArrayList<Snake> getSnakes() {
+        ArrayList<Snake> snakes = new ArrayList<>();
+        for (Player player : players) {
+            snakes.add(player.getSnake());
+        }
+        return snakes;
     }
 }

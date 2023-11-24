@@ -1,9 +1,13 @@
 package ch.heigvd;
 
+import ch.heigvd.snake.Snake;
+
 public class Player {
 
     private static int idCnt = 0;
     private int id;
+
+    private Snake snake;
 
     private String name;
 
@@ -15,6 +19,14 @@ public class Player {
     }
     public String getName() {
         return name;
+    }
+
+    public void setSnake(Snake snake) {
+        this.snake = snake;
+    }
+
+    public Snake getSnake() {
+        return snake;
     }
 
     public void setReady() {

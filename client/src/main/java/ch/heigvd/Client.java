@@ -1,6 +1,7 @@
 package ch.heigvd;
 
 import com.googlecode.lanterna.input.KeyStroke;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -9,12 +10,312 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.lang.System.*;
+
 public class Client {
+    /**
+     * The logger
+     */
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
+
+    /**
+     * The command, response, message and data used to communicate with the server
+     */
+    private String command = "", response = "", message = "", data = "";
+
+    /**
+     * The terminal
+     */
+    private final Terminal terminal = new Terminal();
+
+    /**
+     * The input handler used to get the user inputs
+     */
+    private final InputHandler inputHandler = new InputHandler(terminal, 50);
+
+    /**
+     * The output streams used to communicate with the server
+     */
+    private BufferedWriter serverOutput;
+
+    /**
+     * The input stream used to communicate with the server
+     */
+    private BufferedReader serverInput;
+    /**
+     * The socket used to communicate with the server
+     */
+    private Socket socket;
+
+    /**
+     * Constructor of the client
+     *
+     * @param address the address of the server
+     * @param port    the port of the server
+     */
+    public Client(InetAddress address, int port) {
+        initConnection(address, port);
+        tryLobby();
+        join();
+        waitReady();
+        controlSnake();
+    }
+
+    /**
+     * Initialize the connection with the server
+     *
+     * @param address the address of the server
+     * @param port    the port of the server
+     */
+    private void initConnection(InetAddress address, int port) {
+        try {
+            socket = new Socket(address, port);
+            serverOutput = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+            serverInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+
+            Thread exitTh = new Thread(new Exit(socket, serverOutput, serverInput));
+            Runtime.getRuntime().addShutdownHook(exitTh);
+
+
+            command = Message.setCommand(Message.INIT);
+            serverOutput.write(command);
+            serverOutput.flush();
+
+            while (!message.equals("DONE")) {
+                response = Message.getResponse(serverInput);
+                message = Message.getMessage(response);
+                data = Message.getData(response);
+                messageHandling(message, data);
+            }
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getMessage(), e);
+            exit(1);
+        }
+    }
+
+    /**
+     * try if lobby is open or not full
+     */
+    private void tryLobby() {
+        try {
+            serverOutput.write(Message.setCommand(Message.LOBB));
+            serverOutput.flush();
+            response = Message.getResponse(serverInput);
+            message = Message.getMessage(response);
+            data = Message.getData(response);
+            messageHandling(message, data);
+        } catch (IOException e) {
+            terminal.clear();
+            terminal.print("Client exception: " + e);
+        }
+    }
+
+    /**
+     * Join the lobby
+     */
+    private void join() {
+        terminal.print(Intro.logo);
+        while (inputHandler.getKey() != KEY.ENTER) {
+            if (inputHandler.getKey() == KEY.QUIT) {
+                quit();
+            }
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        inputHandler.pauseHandler();
+
+        try {
+            while (true) {
+                String UserName = terminal.userInput();
+
+                if (UserName == null) {
+                    serverOutput.write(Message.setCommand(Message.QUIT));
+                    serverOutput.flush();
+                    exit(1);
+                }
+
+                if (socket.getInputStream().available() > 0) {
+                    response = Message.getResponse(serverInput);
+                    message = Message.getMessage(response);
+                    data = Message.getData(response);
+                    messageHandling(message, data);
+                }
+
+                command = Message.setCommand(Message.JOIN, UserName);
+                serverOutput.write(command);
+                serverOutput.flush();
+                response = Message.getResponse(serverInput);
+                message = Message.getMessage(response);
+                data = Message.getData(response);
+                messageHandling(message, data);
+
+                if (message.equals("DONE")) {
+                    break;
+                }
+                inputHandler.restoreHandler();
+                inputHandler.resetKey();
+                while (inputHandler.getKey() != KEY.ENTER) {
+                    terminal.print(data + "\n" + "Press enter to continue\n");
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                inputHandler.pauseHandler();
+
+            }
+        } catch (IOException e) {
+            terminal.clear();
+            terminal.print("Client exception: " + e);
+        }
+
+        inputHandler.restoreHandler();
+
+        try {
+            serverOutput.write(command);
+            serverOutput.flush();
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Wait for the game to start
+     */
+    private void waitReady() {
+        inputHandler.resetKey();
+        boolean isReady = false;
+        try {
+            while (!isReady) {
+                if (inputHandler.getKey() == KEY.READY) {
+                    command = Message.setCommand(Message.RADY);
+                    serverOutput.write(command);
+                    serverOutput.flush();
+                    inputHandler.resetKey();
+                    isReady = true;
+                }
+                if (inputHandler.getKey() == KEY.QUIT) {
+                    command = Message.setCommand(Message.QUIT);
+                    quit();
+                }
+                response = Message.getResponse(serverInput);
+                message = Message.getMessage(response);
+                data = Message.getData(response);
+                messageHandling(message, data);
+                terminal.print(data);
+            }
+
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getMessage(), e);
+            exit(1);
+        }
+    }
+
+    /**
+     * Control the snake
+     */
+    private void controlSnake() {
+        try {
+            while (inputHandler.getKey() != KEY.QUIT) {
+                KeyStroke key = inputHandler.getKeyStroke();
+                if (InputHandler.isDirection(key)) {
+                    command = Message.setCommand(Message.DIRE, KEY.parseKeyStroke(key).toString());
+                    serverOutput.write(command);
+                    serverOutput.flush();
+                    inputHandler.resetKey();
+                }
+                response = Message.getResponse(serverInput);
+                message = Message.getMessage(response);
+                data = Message.getData(response);
+                messageHandling(message, data);
+                terminal.print(data);
+            }
+            quit();
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Quit the game
+     */
+    private void quit() {
+        command = Message.setCommand(Message.QUIT);
+        try {
+            serverOutput.write(command);
+            serverOutput.flush();
+            response = Message.getResponse(serverInput);
+        } catch (IOException e) {
+            terminal.clear();
+            terminal.print("Client exception: " + e);
+        }
+
+        message = Message.getMessage(response);
+        data = Message.getData(response);
+        if (!message.equals("QUIT")) {
+            terminal.print("Error :" + data);
+            exit(1);
+        }
+        terminal.clear();
+        terminal.print(data + "\n" + "Press enter to exit\n");
+
+        while (inputHandler.getKey() != KEY.ENTER) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        exit(0);
+    }
+
+    private void messageHandling(String message, String data) {
+        switch (message) {
+            case "EROR":
+                terminal.clear();
+                terminal.print("Error :" + data + "\n" + "Press enter to exit\n");
+                requestEnter();
+                exit(0);
+                break;
+            case "QUIT":
+                terminal.clear();
+                terminal.print("Server left \n" + data + "\n" + "Press enter to exit\n");
+                requestEnter();
+                exit(0);
+            default:
+                break;
+        }
+
+    }
+
+    private void requestEnter() {
+        while (inputHandler.getKey() != KEY.ENTER) {
+            inputHandler.restoreHandler();
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
+     * Close the connection with the server
+     */
+
+
     public static void main(String[] args) {
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
-        InetAddress address;
+
         int port;
+        InetAddress address = null;
 
         if (args.length != 2) {
             System.err.println("usage: client <address> <port>");
@@ -35,84 +336,6 @@ public class Client {
             return;
         }
 
-        try (
-                Socket socket = new Socket(address, port);
-                BufferedWriter serverOutput = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
-                BufferedReader serverInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-        ) {
-            Terminal terminal = new Terminal();
-            InputHandler inputHandler = new InputHandler(terminal, 50);
-            String command = "", response = "", message = "", data = "";
-
-            // INIT
-            command = Message.setCommand(Message.INIT);
-            serverOutput.write(command);
-            serverOutput.flush();
-
-            while (!message.equals("DONE")) {
-                response = Message.getResponse(serverInput);
-                message = Message.getMessage(response);
-                terminal.print(message);
-            }
-
-            terminal.print("Press enter to join");
-
-            while (inputHandler.getKey() != KEY.ENTER) {
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            inputHandler.pauseHandler();
-
-            //TODO recup le username mettre en pause mon InputHandler puis faire une methode readline avec un read input
-//            KeyStroke keykey = terminal.();
-            String name = terminal.userInput();
-//            terminal.clear();
-//            terminal.print("Name");
-//            StringBuilder sb = new StringBuilder();
-//            while (true) {
-//                char c = terminal.readInput().getCharacter();
-//                if (c == '\n') break;
-//                sb.append(c);
-//                terminal.clearLine();
-//                terminal.print(sb.toString());
-//
-//            }
-            inputHandler.restoreHandler();
-
-            command = Message.setCommand(Message.JOIN, name);
-            serverOutput.write(command);
-            serverOutput.flush();
-
-            while (!message.equals("STRT")) {
-                if (inputHandler.getKey() == KEY.READY) {
-                    command = Message.setCommand(Message.RADY);
-                    serverOutput.write(command);
-                    serverOutput.flush();
-                    inputHandler.resetKey();
-                }
-                response = Message.getResponse(serverInput);
-                message = Message.getMessage(response);
-                data = Message.getData(response);
-                terminal.print(data);
-            }
-
-            KEY lastKey = null;
-
-            while (inputHandler.getKey() != KEY.QUIT) {
-                KeyStroke key = inputHandler.getKeyStroke();
-                if (InputHandler.isDirection(key)) {
-                    command = Message.setCommand(Message.DIRE, KEY.parseKeyStroke(key).toString());
-                    serverOutput.write(command);
-                    serverOutput.flush();
-                    inputHandler.resetKey();
-                }
-            }
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage(), ex);
-        }
+        Client client = new Client(address, port);
     }
 }

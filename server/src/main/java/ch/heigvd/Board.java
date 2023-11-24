@@ -11,16 +11,10 @@ import static java.lang.Math.abs;
 
 public class Board {
 
-    private final short hCoef = 1;
-    private final short vCoef = 1;
-
     private final char emptyChar = ' ';
-    private final char horizontalBorder = '═';
-    private final char verticalBorder = '║';
-    private final char cornerBorder = '╔';
-    private final char cornerBorder2 = '╗';
-    private final char cornerBorder3 = '╚';
-    private final char cornerBorder4 = '╝';
+
+    private BorderType borderType = BorderType.NORMAL;
+
 
     //TODO board should be private
     private char[][] board;
@@ -28,7 +22,7 @@ public class Board {
     private Food foods;
 
     public Board(int width, int height, short nbSnakes, short foodQuantity, short foodFrequency) {
-        board = new char[height * vCoef + 2][width * hCoef + 2];
+        board = new char[height + 2][width + 2];
         setBorder(board);
         foods = new Food(foodQuantity, foodFrequency);
     }
@@ -43,7 +37,6 @@ public class Board {
 
     private int getRelativeValue(int value, int limit) {
 
-        value = value * hCoef;
         int relativeValue = value % limit;
 
         if (value % limit < 1) {
@@ -81,7 +74,7 @@ public class Board {
             int maxNameSize = getWidth() - 11;
             Player player = lobby.getPlayers().get(i);
             String ready = player.isReady() ? "READY": "WAIT ";
-            StringBuilder sb = new StringBuilder(verticalBorder + " ");
+            StringBuilder sb = new StringBuilder(Border.VERTICAL.getBorder(borderType) + " ");
             sb.append(player.getId()).append(" ");
             sb.append(player.getName(), 0, Math.min(player.getName().length(), maxNameSize));
             if (player.getName().length() - maxNameSize < 0) {
@@ -89,7 +82,7 @@ public class Board {
             }
             sb.append(" ");
             sb.append(ready);
-            sb.append(verticalBorder);
+            sb.append(Border.VERTICAL.getBorder(borderType));
             board[i + 1] = sb.toString().toCharArray();
         }
     }
@@ -129,17 +122,17 @@ public class Board {
         }
 
         for (int i = 0; i < board.length; i++) {
-            board[i][0] = verticalBorder;
-            board[i][board[0].length - 1] = verticalBorder;
+            board[i][0] = Border.VERTICAL.getBorder(borderType);
+            board[i][board[0].length - 1] = Border.VERTICAL.getBorder(borderType);
         }
         for (int i = 0; i < board[0].length; i++) {
-            board[0][i] = horizontalBorder;
-            board[board.length - 1][i] = horizontalBorder;
+            board[0][i] = Border.HORIZONTAL.getBorder(borderType);
+            board[board.length - 1][i] = Border.HORIZONTAL.getBorder(borderType);
         }
-        board[0][0] = cornerBorder;
-        board[0][board[0].length - 1] = cornerBorder2;
-        board[board.length - 1][0] = cornerBorder3;
-        board[board.length - 1][board[0].length - 1] = cornerBorder4;
+        board[0][0] = Border.CORNER_TOP_LEFT.getBorder(borderType);
+        board[0][board[0].length - 1] = Border.CORNER_TOP_RIGHT.getBorder(borderType);;
+        board[board.length - 1][0] = Border.CORNER_BOTTOM_LEFT.getBorder(borderType);;
+        board[board.length - 1][board[0].length - 1] = Border.CORNER_BOTTOM_RIGHT.getBorder(borderType);;
     }
 
     public char[][] getBoard() {

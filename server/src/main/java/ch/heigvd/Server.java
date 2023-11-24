@@ -2,9 +2,13 @@ package ch.heigvd;
 
 import ch.heigvd.snake.Snake;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,8 +22,6 @@ public class Server {
 
     private boolean listenNewClient = true;
     private Board board;
-    private ArrayList<Snake> snakes = new ArrayList<>();
-
     private DIRECTION[] directions = {DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT};
     private final static Logger LOG = Logger.getLogger(Server.class.getName());
 
@@ -36,6 +38,7 @@ public class Server {
         board = new Board(30, 15, (short) NB_PLAYER, (short) 20, (short) 200);
 
         //loop for lobby
+        lobby.open();
         while (!lobby.everyPlayerReady()) {
             board.deployLobby(lobby);
             try {
@@ -44,17 +47,14 @@ public class Server {
                 throw new RuntimeException(e);
             }
         }
-
+        lobby.initSnakes(board);
+        lobby.close();
         listenNewClient = false;
 
-        initSnakes();
         //loop for game
         while (true) {
-            for (Snake snake : snakes) {
-                snake.setNextDirection(directions[snake.getId()]);
-                snake.step();
-            }
-            board.deploySnakes(snakes);
+            lobby.snakeStep();
+            board.deploySnakes(lobby.getSnakes());
             board.deployFood();
             try {
                 Thread.sleep(GAME_FREQUENCY);
@@ -64,54 +64,12 @@ public class Server {
         }
     }
 
-    private void initSnakes() {
-        int initLenght = 3;
-        Position initPosition;
-        int bw = board.getWidth();
-        int bh = board.getHeigth();
-
-        for (int i = 0; i < lobby.getNbReadyPlayers(); i++) {
-            switch (i) {
-                case 0: {
-                    initPosition = new Position(bw / 2, bh, directions[i], ' ');
-                    snakes.add(new Snake(initPosition, (short) initLenght));
-                    break;                }
-                case 1: {
-                    initPosition = new Position(0, bh / 2, directions[i], ' ');
-                    snakes.add(new Snake(initPosition, (short) initLenght));
-                    break;
-                }
-                case 2: {
-                    initPosition = new Position(bw / 2, 0, directions[i], ' ');
-                    snakes.add(new Snake(initPosition, (short) initLenght));
-                    break;
-                }
-                case 3: {
-                    initPosition = new Position(bw, bh / 2, directions[i], ' ');
-                    snakes.add(new Snake(initPosition, (short) initLenght));
-                    break;
-                }
-            }
-        }
-    }
-
-    public void setKey(KEY key, Player player) {
-        if (key.ordinal() < 4) {
-            setDirection(key, player);
-        } else {
-            //do somthing
-        }
-    }
-
-    private void setDirection(KEY key, Player player) {
+    public void setDirection(KEY key, Player player) {
+        if (!lobby.everyPlayerReady()) return;
         DIRECTION direction = DIRECTION.parseKey(key);
         if (direction != null) {
-            directions[player.getId()] = direction;
+            lobby.setDirection(player, direction);
         }
-    }
-
-    public Player getPlayer(int id) {
-        return lobby.getPlayer(id);
     }
 
     public void joinLobby(Player player) {
@@ -121,11 +79,31 @@ public class Server {
 
     private void listenNewClient() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            while (listenNewClient) {
+            while (true) {
                 LOG.log(Level.INFO, "Waiting for a new client on port {0}", PORT);
                 Socket clientSocket = serverSocket.accept();
-                LOG.info("A new client has arrived. Starting a new thread and delegating work to a new servant...");
-                new Thread(new ServerWorker(clientSocket, this)).start();
+
+                if (lobby.isOpen() && !lobby.lobbyIsFull()) {
+                    LOG.info("A new client has arrived. Starting a new thread and delegating work to a new servant...");
+                    new Thread(new ServerWorker(clientSocket, this)).start();
+                    continue;
+                }
+
+                BufferedWriter serverOutput = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
+
+                if (lobby.lobbyIsFull()) {
+                    LOG.log(Level.INFO, "The lobby is full. Rejecting the new client...");
+                    serverOutput.write(Message.setCommand(Message.EROR, "The lobby is full"));
+                    serverOutput.flush();
+                    clientSocket.close();
+                    continue;
+                } else {
+                    LOG.log(Level.INFO, "The lobby is closed. Rejecting the new client...");
+                    serverOutput.write(Message.setCommand(Message.EROR, "The lobby is closed"));
+                    serverOutput.flush();
+                    clientSocket.close();
+                    continue;
+                }
             }
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
@@ -147,5 +125,9 @@ public class Server {
     public void setReady(Player player) {
         lobby.setReady(player);
         board.deployLobby(lobby);
+    }
+
+    public boolean playerExists(String userName) {
+        return lobby.playerExists(userName);
     }
 }

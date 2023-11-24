@@ -10,6 +10,9 @@ public enum Message {
     JOIN("JOIN"),
     RADY("RADY"),
     STRT("STRT"),
+    MSGG("MSGG"),
+    REPT("REPT"),
+    EROR("EROR"),
     DIRE("DIRE"),
     UPTE("UPTE"),
     ENDD("ENDD"),
@@ -49,7 +52,6 @@ public enum Message {
         return setCommand(message, null);
     }
 
-    // TODO verifier si il existe pas une methode dans la lib pour faire ca
     public static String getResponse(BufferedReader reader) throws IOException {
         StringBuilder response = new StringBuilder();
         int c;
