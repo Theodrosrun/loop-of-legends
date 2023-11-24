@@ -22,7 +22,6 @@ public class Server {
 
     private boolean listenNewClient = true;
     private Board board;
-    private ArrayList<Snake> snakes = new ArrayList<>();
     private MessageHandler messageHandler;
 
     private DIRECTION[] directions = {DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT};
@@ -50,18 +49,14 @@ public class Server {
                 throw new RuntimeException(e);
             }
         }
+        lobby.initSnakes(board);
         lobby.close();
         listenNewClient = false;
 
-
-        initSnakes();
         //loop for game
         while (true) {
-            for (Snake snake : snakes) {
-                snake.setNextDirection(directions[snake.getId()]);
-                snake.step();
-            }
-            board.deploySnakes(snakes);
+            lobby.snakeStep();
+            board.deploySnakes(lobby.getSnakes());
             board.deployFood();
             try {
                 Thread.sleep(GAME_FREQUENCY);
@@ -71,48 +66,12 @@ public class Server {
         }
     }
 
-    private void initSnakes() {
-        int initLenght = 3;
-        Position initPosition;
-        int bw = board.getWidth();
-        int bh = board.getHeigth();
-
-        for (int i = 0; i < lobby.getNbReadyPlayers(); i++) {
-            switch (i) {
-                case 0: {
-                    initPosition = new Position(bw / 2, bh, directions[i], ' ');
-                    snakes.add(new Snake(initPosition, (short) initLenght));
-                    break;
-                }
-                case 1: {
-                    initPosition = new Position(0, bh / 2, directions[i], ' ');
-                    snakes.add(new Snake(initPosition, (short) initLenght));
-                    break;
-                }
-                case 2: {
-                    initPosition = new Position(bw / 2, 0, directions[i], ' ');
-                    snakes.add(new Snake(initPosition, (short) initLenght));
-                    break;
-                }
-                case 3: {
-                    initPosition = new Position(bw, bh / 2, directions[i], ' ');
-                    snakes.add(new Snake(initPosition, (short) initLenght));
-                    break;
-                }
-            }
-        }
-    }
-
     public void setDirection(KEY key, Player player) {
         if (!lobby.everyPlayerReady()) return;
         DIRECTION direction = DIRECTION.parseKey(key);
         if (direction != null) {
-            directions[player.getId()-1] = direction;
+            lobby.setDirection(player, direction);
         }
-    }
-
-    public Player getPlayer(int id) {
-        return lobby.getPlayer(id);
     }
 
     public void joinLobby(Player player) {

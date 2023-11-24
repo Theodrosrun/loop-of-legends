@@ -19,6 +19,8 @@ public class Snake {
     boolean eat = false;
     private LinkedList<Position> body = new LinkedList<Position>();
 
+    private DIRECTION direction;
+
     public Snake(Position initialPosition, short initialLength) {
         id = idCounter++;
         Position previousPosition = null;
@@ -35,6 +37,7 @@ public class Snake {
         if (!verifyNextDirection(direction)) return;
         body.getFirst().setDirection(direction);
     }
+
 
     private boolean verifyNextDirection(DIRECTION direction) {
         return switch (direction) {

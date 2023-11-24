@@ -13,19 +13,50 @@ import java.util.logging.Logger;
 import static java.lang.System.*;
 
 public class Client {
+    /**
+     * The logger
+     */
     private static final Logger LOG = Logger.getLogger(Client.class.getName());
 
+    /**
+     * The command, response, message and data used to communicate with the server
+     */
     private String command = "", response = "", message = "", data = "";
 
+    /**
+     * The terminal
+     */
     private final Terminal terminal = new Terminal();
+
+    /**
+     * The input handler used to get the user inputs
+     */
     private final InputHandler inputHandler = new InputHandler(terminal, 50);
 
+    /**
+     * The output streams used to communicate with the server
+     */
     private BufferedWriter serverOutput;
+
+    /**
+     * The input stream used to communicate with the server
+     */
     private BufferedReader serverInput;
+    /**
+     * The socket used to communicate with the server
+     */
     private Socket socket;
 
+    /**
+     * The message handler used to send and receive messages from the server
+     */
     private MessageHandler messageHandler;
 
+    /**
+     * Initialize the connection with the server
+     * @param address the address of the server
+     * @param port the port of the server
+     */
     private void initConnection(InetAddress address, int port) {
         try {
             socket = new Socket(address, port);
@@ -54,6 +85,9 @@ public class Client {
         }
     }
 
+    /**
+     * Close the connection with the server
+     */
     private void closeServer() {
         try {
             serverOutput.close();
@@ -65,6 +99,9 @@ public class Client {
         }
     }
 
+    /**
+     * try if lobby is open or not full
+     */
     private void tryLobby() {
 
         messageHandler.send(Message.setCommand(Message.LOBB));
@@ -77,6 +114,11 @@ public class Client {
         }
     }
 
+    /**
+     * Constructor of the client
+     * @param address the address of the server
+     * @param port the port of the server
+     */
     public Client(InetAddress address, int port) {
 
         initConnection(address, port);
@@ -86,6 +128,9 @@ public class Client {
         controlSnake();
     }
 
+    /**
+     * Join the lobby
+     */
     private void join() {
         terminal.print(Intro.logo);
         while (inputHandler.getKey() != KEY.ENTER) {
@@ -141,6 +186,9 @@ public class Client {
         }
     }
 
+    /**
+     * Wait for the game to start
+     */
     private void waitReady() {
         inputHandler.resetKey();
         boolean isReady = false;
@@ -170,6 +218,9 @@ public class Client {
         }
     }
 
+    /**
+     * Control the snake
+     */
     private void controlSnake() {
         try {
             while (inputHandler.getKey() != KEY.QUIT) {
@@ -191,6 +242,10 @@ public class Client {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Quit the game
+     */
     private void quit() {
         command = Message.setCommand(Message.QUIT);
         messageHandler.send(command);

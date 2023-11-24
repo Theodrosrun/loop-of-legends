@@ -80,9 +80,6 @@ public class ServerWorker implements Runnable {
                 String command = Message.setCommand(Message.DONE);
                 messageHandler.send(command);
                 break;
-            case DONE:
-                // Handle DONE message
-                break;
             case LOBB:
                 if (server.isFull()) {
                     messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
@@ -114,26 +111,16 @@ public class ServerWorker implements Runnable {
             case RADY:
                 server.setReady(player);
                 break;
-            case STRT:
-                // Handle STRT message
-                break;
             case DIRE:
                 KEY key = KEY.valueOf(data);
                 server.setDirection(key, player);
-                // Handle DIRE message
                 break;
-            case UPTE:
-                // Handle UPTE message
-                break;
-            case ENDD:
-                // Handle ENDD message
-                break;
+
             case QUIT:
                 messageHandler.send(Message.setCommand(Message.ENDD, "You left the game"));
                 if (player != null) server.removePlayer(player);
                 break;
             default:
-                // Handle unexpected message
                 break;
         }
     }
