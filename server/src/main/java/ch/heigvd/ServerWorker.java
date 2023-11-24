@@ -49,7 +49,55 @@ public class ServerWorker implements Runnable {
                     LOG.log(Level.SEVERE, "Message unknown");
                 }
 
-                commandHandler(Message.fromString(message), data);
+                // Message handling
+                switch (Message.fromString(message)) {
+                    case INIT:
+                        command = Message.setCommand(Message.DONE);
+                        messageHandler.send(command);
+                        break;
+                    case LOBB:
+                        if (server.isFull()) {
+                            messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
+                        } else {
+                            messageHandler.send(Message.setCommand(Message.DONE));
+                        }
+                        break;
+                    case JOIN:
+
+                        if (server.isFull()) {
+                            messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
+                            break;
+                        }
+                        else if (server.playerExists(data)) {
+                            messageHandler.send(Message.setCommand(Message.REPT, "Username already used"));
+                            break;
+                        }
+                        else if (data.isEmpty()) {
+                            messageHandler.send(Message.setCommand(Message.REPT, "Username must have minimum 1 character"));
+                            break;
+                        }
+                        else {
+                            messageHandler.send(Message.setCommand(Message.DONE));
+                            player = new Player(data);
+                            server.joinLobby(player);
+                            thGuiUpdate.start();
+                        }
+                        break;
+                    case RADY:
+                        server.setReady(player);
+                        break;
+                    case DIRE:
+                        KEY key = KEY.valueOf(data);
+                        server.setDirection(key, player);
+                        break;
+
+                    case QUIT:
+                        messageHandler.send(Message.setCommand(Message.ENDD, "You left the game"));
+                        if (player != null) server.removePlayer(player);
+                        break;
+                    default:
+                        break;
+                }
             }
 
             clientInput.close();
@@ -74,59 +122,6 @@ public class ServerWorker implements Runnable {
             LOG.log(Level.SEVERE, "Global error: client made a hard disconnect");
         }
     }
-
-    private void commandHandler(Message message, String data) {
-        switch (message) {
-            case INIT:
-                String command = Message.setCommand(Message.DONE);
-                messageHandler.send(command);
-                break;
-            case LOBB:
-                if (server.isFull()) {
-                    messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
-                } else {
-                    messageHandler.send(Message.setCommand(Message.DONE));
-                }
-                break;
-            case JOIN:
-
-                if (server.isFull()) {
-                    messageHandler.send(Message.setCommand(Message.EROR, "The lobby is full"));
-                    break;
-                }
-                else if (server.playerExists(data)) {
-                    messageHandler.send(Message.setCommand(Message.REPT, "Username already used"));
-                    break;
-                }
-                else if (data.isEmpty()) {
-                    messageHandler.send(Message.setCommand(Message.REPT, "Username must have minimum 1 character"));
-                    break;
-                }
-                else {
-                    messageHandler.send(Message.setCommand(Message.DONE));
-                    player = new Player(data);
-                    server.joinLobby(player);
-                    thGuiUpdate.start();
-                }
-                break;
-            case RADY:
-                server.setReady(player);
-                break;
-            case DIRE:
-                KEY key = KEY.valueOf(data);
-                server.setDirection(key, player);
-                break;
-
-            case QUIT:
-                messageHandler.send(Message.setCommand(Message.ENDD, "You left the game"));
-                if (player != null) server.removePlayer(player);
-                break;
-            default:
-                break;
-        }
-    }
-
-
 
     public void guiUpdate(){
         while (true){
