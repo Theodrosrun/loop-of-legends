@@ -59,19 +59,25 @@ The game uses a TCP-based protocol for communication between the client and the 
 - The server, upon receiving the **INIT** message, responds with **DONE** if the connection is successfully established.
 
 ### Messages/Actions
-- **INIT**: Client to Server, to start the connection.
-- **DONE**: Server to Client, indicating successful completion of the previous request.
-- **LOBB**: Client to Server, to check lobby availability.
-- **JOIN**: Client to Server, to join the game lobby.
-- **RADY**: Client to Server, indicating readiness for the game.
-- **STRT**: Server to Client, signaling the start of the game.
-- **MSGG**: General messaging within the game.
+
+The client can send the following messages:
+- **INIT**: Start the connection.
+- **LOBB**: Check lobby availability.
+- **JOIN**: Join the game lobby.
+- **RADY**: Indicating readiness for the game.
 - **REPT**: Reporting game events or statuses.
-- **EROR**: Error message for any issues encountered.
-- **DIRE**: Client to Server, indicating the snake's direction.
-- **UPTE**: Server to Client, updating the game state.
+- **DIRE** <direction>: Indicating the snake's direction.
+
+The server can send the following messages:
+- **STRT**: Signaling the start of the game.
+- **DONE**: Indicating successful completion of the previous request.
+- **UPTE**: Updating the game state.
 - **ENDD**: Indicates the end of the game.
-- **QUIT**: Client to Server, to exit the game.
+
+Common message
+- **MSGG**: General messaging within the game.
+- **QUIT**: Exit the game.
+- **EROR**: Error message for any issues encountered.
 - **UNKN**: Represents an unknown or invalid message.
 
 ### Success/Error Codes
