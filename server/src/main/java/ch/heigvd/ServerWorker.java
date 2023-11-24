@@ -102,6 +102,7 @@ public class ServerWorker implements Runnable {
 
             clientInput.close();
             serverOutput.close();
+
         } catch (IOException ex) {
             if (clientInput != null) {
                 try {
