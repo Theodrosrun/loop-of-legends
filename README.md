@@ -71,10 +71,10 @@ The client can send the following messages:
 The server can send the following messages:
 - **STRT**: Signaling the start of the game.
 - **DONE**: Indicating successful completion of the previous request.
-- **UPTE**: Updating the game state.
+- **UPTE** <map>: Updating the game state.
 - **ENDD**: Indicates the end of the game.
 
-Common message
+Server and Client
 - **MSGG**: General messaging within the game.
 - **QUIT**: Exit the game.
 - **EROR**: Error message for any issues encountered.
