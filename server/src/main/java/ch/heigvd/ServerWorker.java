@@ -17,6 +17,7 @@ public class ServerWorker implements Runnable {
     private BufferedWriter serverOutput = null;
     private Thread thGuiUpdate = new Thread(this::guiUpdate);
     private MessageHandler messageHandler;
+
     // private final ReentrantLock mutex = new ReentrantLock();
 
     public ServerWorker(Socket clientSocket, Server server) {
