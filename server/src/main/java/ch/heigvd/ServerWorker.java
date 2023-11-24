@@ -5,9 +5,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import java.util.concurrent.locks.ReentrantLock;
-
 
 public class ServerWorker implements Runnable {
     private final static Logger LOG = Logger.getLogger(ServerWorker.class.getName());
