@@ -66,12 +66,12 @@ The client can send the following messages:
 - **JOIN**: Join the game lobby.
 - **RADY**: Indicating readiness for the game.
 - **REPT**: Reporting game events or statuses.
-- **DIRE** <direction>: Indicating the snake's direction.
+- **DIRE  <dir>**: Indicating the snake's direction.
 
 The server can send the following messages:
 - **STRT**: Signaling the start of the game.
 - **DONE**: Indicating successful completion of the previous request.
-- **UPTE** <map>: Updating the game state.
+- **UPTE <map>**: Updating the game state.
 - **ENDD**: Indicates the end of the game.
 
 Server and Client
@@ -84,10 +84,10 @@ Server and Client
 - **DONE**: Action completed successfully.
 - **EROR**: An error occurred, followed by an error message.
 
-### Protocol Diagram
-(Include a diagram here visualizing the flow of messages between the client and the server. Use a tool like PlantUML or draw.io to create the diagram.)
-
 ### Edge-Cases Handling
 - **Lost Connection**: If the client loses connection unexpectedly, the server will handle the dropout and update the game state accordingly.
 - **Invalid Message (UNKN)**: If the server receives an unrecognized message, it responds with an **EROR** message.
 - **Late Joining**: If a client attempts to join a game in progress, the server responds with an **EROR** message.
+
+### Protocol Diagram
+![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/uml1.png)
