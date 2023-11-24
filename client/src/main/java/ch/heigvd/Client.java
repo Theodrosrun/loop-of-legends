@@ -225,20 +225,6 @@ public class Client {
     }
 
     /**
-     * Close the connection with the server
-     */
-    private void closeServer() {
-        try {
-            serverOutput.close();
-            serverInput.close();
-            socket.close();
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
-            exit(1);
-        }
-    }
-
-    /**
      * Quit the game
      */
     private void quit() {
@@ -253,6 +239,7 @@ public class Client {
         }
         terminal.clear();
         terminal.print(data + "\n" + "Press enter to exit\n");
+
         while (inputHandler.getKey() != KEY.ENTER) {
             try {
                 Thread.sleep(200);
@@ -260,8 +247,23 @@ public class Client {
                 throw new RuntimeException(e);
             }
         }
+
         closeServer();
         exit(0);
+    }
+
+    /**
+     * Close the connection with the server
+     */
+    private void closeServer() {
+        try {
+            serverOutput.close();
+            serverInput.close();
+            socket.close();
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getMessage(), e);
+            exit(1);
+        }
     }
 
     public static void main(String[] args) {
