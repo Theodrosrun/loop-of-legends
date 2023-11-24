@@ -58,7 +58,6 @@ public class Client {
      * @param port the port of the server
      */
     public Client(InetAddress address, int port) {
-
         initConnection(address, port);
         tryLobby();
         join();
