@@ -52,7 +52,6 @@ public enum Message {
         return setCommand(message, null);
     }
 
-
     public static String getResponse(BufferedReader reader)  {
         StringBuilder response = new StringBuilder();
         int c;
