@@ -25,7 +25,27 @@ Before you begin with Loop of Legends, please execute the following commands:
 
 ## 2. Running the Application
 
-### 2.1 Client
+### 2.1 Client on Windows
+To launch the client, use the following command:
+```bash
+javaw -jar client-1.0-SNAPSHOT.jar [server-address] [port]
+```
+Example:
+```bash
+javaw -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
+```
+
+### 2.2 Server on Windows
+To launch the server, use:
+```bash
+javaw -jar server-1.0-SNAPSHOT.jar
+```
+Example:
+```bash
+javaw -jar server-1.0-SNAPSHOT.jar
+```
+
+### 2.3 Client on Linux
 To launch the client, use the following command:
 ```bash
 java -jar client-1.0-SNAPSHOT.jar [server-address] [port]
@@ -35,7 +55,7 @@ Example:
 java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 ```
 
-### 2.2 Server
+### 2.4 Server on Linux
 To launch the server, use:
 ```bash
 java -jar server-1.0-SNAPSHOT.jar
@@ -44,7 +64,6 @@ Example:
 ```bash
 java -jar server-1.0-SNAPSHOT.jar
 ```
-
 ---
 
 ## 3. Application Protocol
