@@ -53,6 +53,20 @@ public class Client {
     private MessageHandler messageHandler;
 
     /**
+     * Constructor of the client
+     * @param address the address of the server
+     * @param port the port of the server
+     */
+    public Client(InetAddress address, int port) {
+
+        initConnection(address, port);
+        tryLobby();
+        join();
+        waitReady();
+        controlSnake();
+    }
+
+    /**
      * Initialize the connection with the server
      * @param address the address of the server
      * @param port the port of the server
@@ -86,20 +100,6 @@ public class Client {
     }
 
     /**
-     * Close the connection with the server
-     */
-    private void closeServer() {
-        try {
-            serverOutput.close();
-            serverInput.close();
-            socket.close();
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
-            exit(1);
-        }
-    }
-
-    /**
      * try if lobby is open or not full
      */
     private void tryLobby() {
@@ -112,20 +112,6 @@ public class Client {
             terminal.print("Error :" + data);
             exit(1);
         }
-    }
-
-    /**
-     * Constructor of the client
-     * @param address the address of the server
-     * @param port the port of the server
-     */
-    public Client(InetAddress address, int port) {
-
-        initConnection(address, port);
-        tryLobby();
-        join();
-        waitReady();
-        controlSnake();
     }
 
     /**
@@ -164,7 +150,7 @@ public class Client {
             inputHandler.restoreHandler();
             inputHandler.resetKey();
             while (inputHandler.getKey() != KEY.ENTER) {
-                    terminal.print(data + "\n" + "Press enter to continue\n");
+                terminal.print(data + "\n" + "Press enter to continue\n");
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -244,6 +230,20 @@ public class Client {
     }
 
     /**
+     * Close the connection with the server
+     */
+    private void closeServer() {
+        try {
+            serverOutput.close();
+            serverInput.close();
+            socket.close();
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getMessage(), e);
+            exit(1);
+        }
+    }
+
+    /**
      * Quit the game
      */
     private void quit() {
@@ -272,8 +272,6 @@ public class Client {
 
 
     public static void main(String[] args) {
-
-
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
 
         int port;
