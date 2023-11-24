@@ -25,14 +25,14 @@ java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 
 Pour lancer le serveur :
 ```bash
-java -jar client-1.0-SNAPSHOT.jar [adresse-du-serveur] [port]
+java -jar server-1.0-SNAPSHOT.jar
 ```
 Exemple :
 ```bash
-java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
+java -jar server-1.0-SNAPSHOT.jar
 ```
 
-## 3.Protocole d'Application
+## 3. Protocole d'Application
 
 Le jeu utilise un protocole basé sur TCP pour la communication entre le client et le serveur. Le protocole définit les actions suivantes :
 
