@@ -23,9 +23,9 @@ public class ServerWorker implements Runnable {
 
     public ServerWorker(Socket clientSocket, Server server) {
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
-
         this.server = server;
         this.clientSocket = clientSocket;
+
         try {
             clientInput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             serverOutput = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(),  StandardCharsets.UTF_8));
