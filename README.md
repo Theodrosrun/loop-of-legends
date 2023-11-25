@@ -104,11 +104,11 @@ The client can send the following messages:
     - `3`: Right direction
 
 The server can send the following messages:
-- `DONE`: Indicating successful completion of the previous request.
+- `DONE`: Indicating successful completion of the previous request. See details below.
 - `STRT`: Signaling the start of the game.
 - `REPT`: Reporting game events or status.
 - `UPTE <map>`: Used to send the map. Updating the game state.
-- `EROR`: Error message for any issues encountered.
+- `EROR`: Error message for any issues encountered. See details below.
 - `ENDD`: Indicates the end of the game.
 
 Common messages
@@ -117,8 +117,8 @@ Common messages
 - `UNKN`: This message represents an unknown or invalid command. This could happen if there's a typo in the command, the client uses a command not supported by the server or the message format is incorrect.
 
 ### Success/Error Codes
-- `DONE`: Action completed successfully.
-- `EROR`: An error occurred, followed by an error message.
+- `DONE`: This code indicates that an action requested by the client has been completed successfully. For example, when a player successfully joins a lobby, the server might respond with a DONE message. It's a general acknowledgment sent from the server to confirm that the requested operation was executed without any issues.
+- `EROR`: This code signifies that an error occurred while processing the client's request. It is usually followed by an error message that provides more details about the nature of the error. Examples of situations that might generate an EROR message include attempts to join a full game lobby. The accompanying error message helps in understanding the specific reason for the failure.
 
 ### Edge-Cases Handling
 - **Lost Connection**: If the client loses connection unexpectedly, the server will handle the dropout and update the game state accordingly.
