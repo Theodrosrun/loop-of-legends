@@ -112,9 +112,9 @@ The server can send the following messages:
 - `ENDD`: Indicates the end of the game.
 
 Common messages
-- `MSGG`: General messaging within the game.
-- `QUIT`: Exit the game.
-- `UNKN`: Represents an unknown or invalid message.
+- `MSGG`: This message is used for general communication within the game. It can be employed for various purposes, such as sending information about current actions. The specific content of the MSGG message would depend on the context in which it is used.
+- `QUIT`: This message is sent when exiting the game. Upon receiving a QUIT message, the server typically performs cleanup operations related to the client, such as removing the player from the game lobby or freeing up resources.
+- `UNKN`: This message represents an unknown or invalid command. This could happen if there's a typo in the command, the client uses a command not supported by the server or the message format is incorrect.
 
 ### Success/Error Codes
 - `DONE`: Action completed successfully.
