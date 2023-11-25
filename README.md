@@ -77,14 +77,16 @@ java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 ## 3. Application Protocol
 
 ## 3.1 Overview
-- The LOL protocol is meant to play snake over the network.
-- The LOL protocol is a client-server protocol.
-- The client connects to a server and requests a game. If the lobby is not full and everyone is ready, the game starts.
+The Loop of Legend (LOL) protocol is designed specifically for online multiplayer snake games, operating on a client-server architecture. This protocol facilitates real-time interactions and gameplay over a network, providing a seamless gaming experience.
+
+- The main objective of the LOL protocol is to enable players to play the classic snake game in a networked, multiplayer environment.
+- Players (clients) connect to a central game server. The server manages game lobbies, player actions, and game state updates.
+- To start a game, a client connects to the server and requests to join a game. The game begins when the lobby has sufficient players, and all players indicate they are ready.
 
 ## 3.2 Transport protocol
 ### Protocol and port
-- **Protocol**: TCP (Transmission Control Protocol).
-- **Port**: 20000.
+- **Protocol**: TCP (Transmission Control Protocol) for reliable, ordered, and error-checked delivery of game data.
+- **Port**: The default communication port for the LOL protocol is 20000.
 
 ### Connection Initiation
 - The connection is initiated by the client.
