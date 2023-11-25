@@ -97,7 +97,7 @@ The client can send the following messages:
 - `LOBB`: Check lobby availability.
 - `JOIN`: Join the game lobby.
 - `RADY`: Indicating readiness for the game.
-- `REPT`: Reporting game events or statuses.
+- `REPT`: Reporting game events or status.
 - `DIRE <direction>`: Indicating the snake's direction.
     - `0`: Up direction
     - `1`: Down direction
