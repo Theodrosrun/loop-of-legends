@@ -123,7 +123,6 @@ Common messages
 ### Edge-Cases Handling
 - **Lost Connection**: If the client loses connection unexpectedly, the server will handle the dropout and update the game state accordingly.
 - **Invalid Message (UNKN)**: If the server receives an unrecognized message, it responds with an **EROR** message.
-- **Late Joining**: If a client attempts to join a game in progress, the server responds with an **EROR** message.
 
 ## 3.4 Examples
 ### Client plays
