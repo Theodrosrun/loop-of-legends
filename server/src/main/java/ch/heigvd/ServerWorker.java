@@ -5,7 +5,6 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ServerWorker implements Runnable {
     private final static Logger LOG = Logger.getLogger(ServerWorker.class.getName());
@@ -16,8 +15,6 @@ public class ServerWorker implements Runnable {
     private BufferedReader clientInput = null;
     private BufferedWriter serverOutput = null;
     private Thread thGuiUpdate = new Thread(this::guiUpdate);
-
-    // private final ReentrantLock mutex = new ReentrantLock();
 
     public ServerWorker(Socket clientSocket, Server server) {
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
