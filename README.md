@@ -6,6 +6,12 @@
 
 ## 1. Building the Application
 
+Loop of snake has been developed in a Maven repository utilizing the multi-module approach. To launch this game, it is necessary to open two separate terminals.
+
+In the first terminal, you will start the server module. This module is responsible for managing interactions between players and maintaining the overall state of the game. 
+
+In the second terminal, you will launch the client module. The client is the interface through which players interact with the game. This module communicates with the server to send commands and receive updates on the game's state.
+
 ### Prerequisites
 - Java JDK 11 or higher.
 
