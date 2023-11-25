@@ -85,28 +85,30 @@ The game uses a TCP-based protocol for communication between the client and the 
 
 ## 3.3 Messages/Actions
 The client can send the following messages:
-- **INIT**: Start the connection.
-- **LOBB**: Check lobby availability.
-- **JOIN**: Join the game lobby.
-- **RADY**: Indicating readiness for the game.
-- **REPT**: Reporting game events or statuses.
-- **DIRE  <dir>**: Indicating the snake's direction.
+- `INIT`: Start the connection.
+- `LOBB`: Check lobby availability.
+- `JOIN`: Join the game lobby.
+- `RADY`: Indicating readiness for the game.
+- `REPT`: Reporting game events or statuses.
+- `DIRE <direction>`: Indicating the snake's direction.
+    - `<direction>`: the direction of the snake
 
 The server can send the following messages:
-- **STRT**: Signaling the start of the game.
-- **DONE**: Indicating successful completion of the previous request.
-- **UPTE <map>**: Updating the game state.
-- **ENDD**: Indicates the end of the game.
+- `STRT`: Signaling the start of the game.
+- `DONE`: Indicating successful completion of the previous request.
+- `UPTE <map>`: Updating the game state.
+    - `<map>`: The map of the game
+- `ENDD`: Indicates the end of the game.
 
 Common messages
-- **MSGG**: General messaging within the game.
-- **QUIT**: Exit the game.
-- **EROR**: Error message for any issues encountered.
-- **UNKN**: Represents an unknown or invalid message.
+- `MSGG`: General messaging within the game.
+- `QUIT`: Exit the game.
+- `EROR`: Error message for any issues encountered.
+- `UNKN`: Represents an unknown or invalid message.
 
 ### Success/Error Codes
-- **DONE**: Action completed successfully.
-- **EROR**: An error occurred, followed by an error message.
+- `DONE`: Action completed successfully.
+- `EROR`: An error occurred, followed by an error message.
 
 ### Edge-Cases Handling
 - **Lost Connection**: If the client loses connection unexpectedly, the server will handle the dropout and update the game state accordingly.
