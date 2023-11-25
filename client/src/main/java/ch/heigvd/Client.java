@@ -13,11 +13,6 @@ import static java.lang.System.*;
 
 public class Client {
     /**
-     * The logger
-     */
-    private static final Logger LOG = Logger.getLogger(Client.class.getName());
-
-    /**
      * The command, response, message and data used to communicate with the server
      */
     private String command = "", response = "", message = "", data = "";
@@ -86,7 +81,6 @@ public class Client {
                 messageHandling(message, data);
             }
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
             exit(1);
         }
     }
@@ -178,7 +172,6 @@ public class Client {
             serverOutput.write(command);
             serverOutput.flush();
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
@@ -210,7 +203,6 @@ public class Client {
             }
 
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
             exit(1);
         }
     }
@@ -236,7 +228,6 @@ public class Client {
             }
             quit();
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
@@ -323,14 +314,12 @@ public class Client {
         try {
             address = InetAddress.getByName((args[0]));
         } catch (UnknownHostException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage(), ex);
             return;
         }
 
         try {
             port = Integer.parseInt(args[1]);
         } catch (NumberFormatException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage(), ex);
             return;
         }
 

@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ServerWorker implements Runnable {
-    private final static Logger LOG = Logger.getLogger(ServerWorker.class.getName());
     private final int UPDATE_FREQUENCY = 100; // millisecondes
     private Player player;
     private Server server;
@@ -25,7 +24,6 @@ public class ServerWorker implements Runnable {
             clientInput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             serverOutput = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
         } catch (IOException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
 
         Thread exitTh = new Thread(new Exit(clientSocket, serverOutput, clientInput));
@@ -46,7 +44,6 @@ public class ServerWorker implements Runnable {
 
                 // Message unknown
                 if (Message.fromString(message) == Message.UNKN) {
-                    LOG.log(Level.SEVERE, "Message unknown");
                 }
 
                 // Message handling
@@ -101,7 +98,6 @@ public class ServerWorker implements Runnable {
                         serverOutput.flush();
                         if (player != null) server.removePlayer(player);
                         finished = true;
-                        LOG.log(Level.INFO, "Client disconnected");
                         break;
 
                     default:
@@ -117,7 +113,6 @@ public class ServerWorker implements Runnable {
                 try {
                     clientInput.close();
                 } catch (IOException ex1) {
-                    LOG.log(Level.SEVERE, "In BufferedReader cannot be closed");
                 }
             }
 
@@ -125,11 +120,8 @@ public class ServerWorker implements Runnable {
                 try {
                     clientSocket.close();
                 } catch (IOException ex1) {
-                    LOG.log(Level.SEVERE, "ClientSocket cannot be closed");
                 }
             }
-
-            LOG.log(Level.SEVERE, "Global error: client made a hard disconnect");
         }
     }
 
@@ -150,7 +142,6 @@ public class ServerWorker implements Runnable {
                     e.printStackTrace();
                 }
             } else {
-                LOG.log(Level.INFO, "ServerWorker: clientSocket is closed");
                 break;
             }
         }
