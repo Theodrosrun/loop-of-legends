@@ -1,0 +1,22 @@
+@startuml
+participant "Player One" as P1
+participant "Player Two" as P2
+participant "Player Three" as P3
+participant "Player Four" as P4
+participant "Server" as S
+
+== Player One Joins and Quits ==
+P1 -> S: JOIN
+S -> P1: DONE
+P1 -> S: QUIT
+S -> P1: DONE
+
+== Players Two, Three, and Four Join ==
+P2 -> S: JOIN
+S -> P2: DONE
+P3 -> S: JOIN
+S -> P3: DONE
+P4 -> S: JOIN
+S -> P4: DONE
+
+@enduml
