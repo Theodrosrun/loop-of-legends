@@ -26,7 +26,7 @@ Before you begin with Loop of Legends, please execute the following commands:
 ## 2. Running the Application
 
 ### 2.1 Server
-To launch the server, use the following command:
+To launch the server, use the following command in the target folder:
 
 #### Windows:
 ```bash
@@ -47,7 +47,7 @@ java -jar server-1.0-SNAPSHOT.jar
 ```
 
 ### 2.2 Client
-To launch the client, use the following command:
+To launch the client, use the following command in the target folder:
 
 #### Windows:
 ```bash
