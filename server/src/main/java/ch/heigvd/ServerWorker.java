@@ -58,13 +58,11 @@ public class ServerWorker implements Runnable {
                         break;
 
                     case LOBB:
-                        if (server.isFull()) {
-                            serverOutput.write(Message.setCommand(Message.EROR, "The lobby is full"));
-                            serverOutput.flush();
-                        } else {
-                            serverOutput.write(Message.setCommand(Message.DONE));
-                            serverOutput.flush();
-                        }
+                        command = server.isFull() ?
+                                Message.setCommand(Message.EROR, "The lobby is full") :
+                                Message.setCommand(Message.DONE);
+                        serverOutput.write(command);
+                        serverOutput.flush();
                         break;
 
                     case JOIN:
@@ -74,6 +72,7 @@ public class ServerWorker implements Runnable {
                             break;
                         } else if (server.playerExists(data)) {
                             serverOutput.write(Message.setCommand(Message.REPT, "Username already used"));
+                            serverOutput.flush();
                             break;
                         } else if (data.isEmpty()) {
                             serverOutput.write(Message.setCommand(Message.REPT, "Username must have minimum 1 character"));
