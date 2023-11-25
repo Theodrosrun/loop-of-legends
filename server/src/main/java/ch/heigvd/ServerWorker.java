@@ -39,10 +39,6 @@ public class ServerWorker implements Runnable {
                 message = Message.getMessage(response);
                 data = Message.getData(response);
 
-                // Message unknown
-                if (Message.fromString(message) == Message.UNKN) {
-                }
-
                 // Message handling
                 switch (Message.fromString(message)) {
                     case INIT:
@@ -96,6 +92,8 @@ public class ServerWorker implements Runnable {
                         if (player != null) server.removePlayer(player);
                         finished = true;
                         break;
+
+                    case UNKN:
 
                     default:
                         break;
