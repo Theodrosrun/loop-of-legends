@@ -9,7 +9,6 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import static java.lang.System.*;
 
 public class Client {
@@ -75,7 +74,6 @@ public class Client {
 
             Thread exitTh = new Thread(new Exit(socket, serverOutput, serverInput));
             Runtime.getRuntime().addShutdownHook(exitTh);
-
 
             command = Message.setCommand(Message.INIT);
             serverOutput.write(command);
