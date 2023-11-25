@@ -99,13 +99,15 @@ The client can send the following messages:
 - `RADY`: Indicating readiness for the game.
 - `REPT`: Reporting game events or statuses.
 - `DIRE <direction>`: Indicating the snake's direction.
-    - `<direction>`: Direction of the snake
+    - `0`: Up direction
+    - `1`: Down direction
+    - `2`: Left direction
+    - `3`: Right direction
 
 The server can send the following messages:
 - `STRT`: Signaling the start of the game.
 - `DONE`: Indicating successful completion of the previous request.
-- `UPTE <map>`: Updating the game state.
-    - `<map>`: Map of the game
+- `UPTE <map>`: Used to send the map. Updating the game state.
 - `ENDD`: Indicates the end of the game.
 
 Common messages
