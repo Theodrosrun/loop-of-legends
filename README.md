@@ -97,7 +97,6 @@ The client can send the following messages:
 - `LOBB`: Check lobby availability.
 - `JOIN`: Join the game lobby.
 - `RADY`: Indicating readiness for the game.
-- `REPT`: Reporting game events or status.
 - `DIRE <direction>`: Indicating the snake's direction.
     - `0`: Up direction
     - `1`: Down direction
@@ -106,6 +105,7 @@ The client can send the following messages:
 
 The server can send the following messages:
 - `STRT`: Signaling the start of the game.
+- `REPT`: Reporting game events or status.
 - `DONE`: Indicating successful completion of the previous request.
 - `UPTE <map>`: Used to send the map. Updating the game state.
 - `ENDD`: Indicates the end of the game.
