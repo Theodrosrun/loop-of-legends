@@ -3,8 +3,6 @@ package ch.heigvd;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ServerWorker implements Runnable {
     private final int UPDATE_FREQUENCY = 100; // millisecondes
@@ -16,7 +14,6 @@ public class ServerWorker implements Runnable {
     private Thread thGuiUpdate = new Thread(this::guiUpdate);
 
     public ServerWorker(Socket clientSocket, Server server) {
-        System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
         this.server = server;
         this.clientSocket = clientSocket;
 
