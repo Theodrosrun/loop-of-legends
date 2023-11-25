@@ -124,8 +124,9 @@ Common messages
 - **Late Joining**: If a client attempts to join a game in progress, the server responds with an **EROR** message.
 
 ## 3.4 Examples
-### Game with 1 client
-![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/uml1.png)
-### Client leaves game then fulling loby
-![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/uml2.png)
-### Something could go wrong
+### Client plays
+![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/clientPlays.png)
+### Client leaves
+![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/clientLeaves.png)
+### Lobby is full
+![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/lobbyIsFull.png)
