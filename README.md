@@ -77,7 +77,9 @@ java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 ## 3. Application Protocol
 
 ## 3.1 Overview
-The game uses a TCP-based protocol for communication between the client and the server.
+The LOL protocol is meant to play snake over the network.
+The LOL protocol is a client-server protocol.
+The client connects to a server and requests a game. If the lobby is not full and everyone is ready, the game starts.
 
 ## 3.2 Transport protocol
 ### Protocol and port
