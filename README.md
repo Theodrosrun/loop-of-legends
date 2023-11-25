@@ -104,16 +104,16 @@ The client can send the following messages:
     - `3`: Right direction
 
 The server can send the following messages:
+- `DONE`: Indicating successful completion of the previous request.
 - `STRT`: Signaling the start of the game.
 - `REPT`: Reporting game events or status.
-- `DONE`: Indicating successful completion of the previous request.
 - `UPTE <map>`: Used to send the map. Updating the game state.
+- `EROR`: Error message for any issues encountered.
 - `ENDD`: Indicates the end of the game.
 
 Common messages
 - `MSGG`: General messaging within the game.
 - `QUIT`: Exit the game.
-- `EROR`: Error message for any issues encountered.
 - `UNKN`: Represents an unknown or invalid message.
 
 ### Success/Error Codes
