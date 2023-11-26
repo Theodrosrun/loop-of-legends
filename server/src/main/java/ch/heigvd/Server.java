@@ -21,11 +21,6 @@ public class Server {
     private final static Logger LOG = Logger.getLogger(Server.class.getName());
 
     /**
-     *  The frequency that refresh the lobby in milliseconds
-     */
-    private final int LOBBY_FREQUENCY = 100;
-
-    /**
      * The frequency that refresh the game in milliseconds
      */
     private final int GAME_FREQUENCY = 300;
@@ -140,7 +135,7 @@ public class Server {
         while (!lobby.everyPlayerReady()) {
             board.deployLobby(lobby);
             try {
-                Thread.sleep(LOBBY_FREQUENCY);
+                Thread.sleep(GAME_FREQUENCY);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -160,6 +155,14 @@ public class Server {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /**
+     * Get the frequency that refresh the game in milliseconds
+     * @return The frequency that refresh the game in milliseconds
+     */
+    public int getGameFrequency(){
+        return GAME_FREQUENCY;
     }
 
     /**
