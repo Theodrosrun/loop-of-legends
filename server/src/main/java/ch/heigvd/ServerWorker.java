@@ -163,7 +163,7 @@ public class ServerWorker implements Runnable {
     public void guiUpdate() {
         while (true) {
             try {
-                Thread.sleep(server.getGameFrequency());
+                Thread.sleep(server.getGameFrequency() / 2);
             } catch (InterruptedException e) {
                 System.out.println("Server exception: " + e);
             }

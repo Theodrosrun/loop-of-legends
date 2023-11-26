@@ -160,7 +160,7 @@ public class Lobby {
         int initLenght = 3;
         Position initPosition;
         int bw = board.getWidth();
-        int bh = board.getHeigth();
+        int bh = board.getHeight();
 
         int i = 0;
         for (Player player : players) {

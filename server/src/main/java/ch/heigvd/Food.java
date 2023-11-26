@@ -109,8 +109,8 @@ public class Food {
      * @return a random position
      */
     private Position getRandPosition(){
-        int x = (int) (Math.random() * Math.random());
-        int y = (int) (Math.random() * Math.random());
+        int x = (int) (Math.random() * 20);
+        int y = (int) (Math.random() * 20);
         return new Position(x, y, representation);
     }
 }

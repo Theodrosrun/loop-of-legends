@@ -131,7 +131,7 @@ public class Server {
         Thread thListener = new Thread(this::listenNewClient);
         thListener.start();
 
-        board = new Board(30, 15, (short) NB_PLAYER, (short) 20, (short) 200);
+        board = new Board(30, 15, 20,200);
 
         //loop for lobby
         lobby.open();
