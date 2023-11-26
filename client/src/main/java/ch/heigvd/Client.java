@@ -80,7 +80,6 @@ public class Client {
                 requestEnter();
                 exit(1);
             }
-            socket = new Socket(address, port);
             serverOutput = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
             serverInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
@@ -228,6 +227,7 @@ public class Client {
                 message = Message.getMessage(response);
                 data = Message.getData(response);
                 messageHandling(message, data);
+                terminal.clear();
                 terminal.print(data);
             }
 
@@ -332,7 +332,7 @@ public class Client {
             }
         }
     }
-    
+
     public static void main(String[] args) {
         // Validate arguments
         if (args.length == 0) {

@@ -83,12 +83,13 @@ public class Board {
      * @param lobby the lobby to deploy
      */
     public void deployLobby(Lobby lobby) {
-
+        setBorder(board);
         for ( int i = 0; i < lobby.getNbPlayer(); ++i) {
+            StringBuilder sb = new StringBuilder(Border.VERTICAL.getBorder(borderType) + " ");
             int maxNameSize = getWidth() - 11;
             Player player = lobby.getPlayers().get(i);
             String ready = player.isReady() ? "READY": "WAIT ";
-            StringBuilder sb = new StringBuilder(Border.VERTICAL.getBorder(borderType) + " ");
+
             sb.append(player.getId()).append(" ");
             sb.append(player.getName(), 0, Math.min(player.getName().length(), maxNameSize));
             if (player.getName().length() - maxNameSize < 0) {

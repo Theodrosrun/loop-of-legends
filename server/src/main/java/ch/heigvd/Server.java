@@ -3,11 +3,16 @@ package ch.heigvd;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.lang.System.exit;
 
 /**
  * The class that represent the server
@@ -32,22 +37,23 @@ public class Server {
      * The port used by the server
      */
     private final int port;
+    /**
+     * Pool of thread
+     */
 
+    ArrayList<Thread> pool = new ArrayList<Thread>();
     /**
      * The lobby
      */
     private Lobby lobby = new Lobby(NB_PLAYER);
-
     /**
      * The boolean that indicates if the server is listening for new clients
      */
     private boolean listenNewClient = true;
-
     /**
      * The board
      */
     private Board board;
-
     /**
      * The directions initialized in the order UP, RIGHT, DOWN, LEFT for the first 4 players
      */
@@ -55,15 +61,18 @@ public class Server {
 
     /**
      * The constructor
+     *
      * @param port The port used by the server
      */
-    private Server (int port){
+    private Server(int port) {
         this.port = port;
     }
 
+
     /**
      * Set the direction of the player
-     * @param key The key pressed by the player
+     *
+     * @param key    The key pressed by the player
      * @param player The player that pressed the key
      */
     public void setDirection(KEY key, Player player) {
@@ -76,6 +85,7 @@ public class Server {
 
     /**
      * Join the lobby
+     *
      * @param player The player that wants to join the lobby
      */
     public void joinLobby(Player player) {
@@ -85,6 +95,7 @@ public class Server {
 
     /**
      * Get the board
+     *
      * @return The board
      */
     public Board getBoard() {
@@ -92,7 +103,8 @@ public class Server {
     }
 
     /**
-     *Ask if lobby is full
+     * Ask if lobby is full
+     *
      * @return true if lobby is full
      */
     public boolean isFull() {
@@ -108,6 +120,7 @@ public class Server {
 
     /**
      * Set the player ready
+     *
      * @param player The player that is ready
      */
     public void setReady(Player player) {
@@ -117,6 +130,7 @@ public class Server {
 
     /**
      * Ask if the username is already in use
+     *
      * @return true if the username is already in use
      */
     public boolean playerNameAlreadyInUse(String userName) {
@@ -124,48 +138,53 @@ public class Server {
     }
 
     /**
+     * Get the frequency that refresh the game in milliseconds
+     *
+     * @return The frequency that refresh the game in milliseconds
+     */
+    public int getGameFrequency() {
+        return GAME_FREQUENCY;
+    }
+
+    /**
      * Start the server
      */
     private void start() {
 
-        Thread thListener = new Thread(this::listenNewClient);
-        thListener.start();
-
-        board = new Board(30, 15, 20,200);
-
-        //loop for lobby
-        lobby.open();
-        while (!lobby.everyPlayerReady()) {
-            board.deployLobby(lobby);
-            try {
-                Thread.sleep(GAME_FREQUENCY);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        lobby.initSnakes(board);
-        lobby.close();
-        listenNewClient = false;
-
-        //loop for game
         while (true) {
-            lobby.snakeStep();
-            board.deploySnakes(lobby.getSnakes());
-            board.deployFood();
-            try {
-                Thread.sleep(GAME_FREQUENCY);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            listenNewClient = true;
+            Thread thListener = new Thread(this::listenNewClient);
+            thListener.start();
+
+            board = new Board(30, 15, 20, 200);
+
+            //loop for lobby
+            lobby.open();
+            while (!lobby.everyPlayerReady()) {
+                board.deployLobby(lobby);
+                try {
+                    Thread.sleep(GAME_FREQUENCY);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            lobby.initSnakes(board);
+            lobby.close();
+            listenNewClient = false;
+            thListener.interrupt();
+
+            //loop for game
+            while (lobby.getNbPlayer() > 0) {
+                lobby.snakeStep();
+                board.deploySnakes(lobby.getSnakes());
+                board.deployFood();
+                try {
+                    Thread.sleep(GAME_FREQUENCY);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
-    }
-
-    /**
-     * Get the frequency that refresh the game in milliseconds
-     * @return The frequency that refresh the game in milliseconds
-     */
-    public int getGameFrequency(){
-        return GAME_FREQUENCY;
     }
 
     /**
@@ -173,13 +192,15 @@ public class Server {
      */
     private void listenNewClient() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            while (true) {
-                LOG.log(Level.INFO, "Waiting for a new client on port {0}", port);
+            while (listenNewClient) {
+                LOG.log(Level.INFO, "Waiting for a new client on port {0}", port + " with PID: " + ProcessHandle.current().pid());
                 Socket clientSocket = serverSocket.accept();
 
                 if (lobby.isOpen() && !lobby.lobbyIsFull()) {
                     LOG.info("A new client has arrived. Starting a new thread and delegating work to a new servant...");
-                    new Thread(new ServerWorker(clientSocket, this)).start();
+                    Thread th = new Thread(new ServerWorker(clientSocket, this));
+                    pool.add(th);
+                    th.start();
                     continue;
                 }
 
@@ -203,9 +224,10 @@ public class Server {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public static void main(String[] args) {
         int port = 20000;
-        if (args.length > 0){
+        if (args.length > 0) {
             port = Integer.parseInt(args[0]);
         }
 
