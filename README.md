@@ -163,3 +163,5 @@ Common messages
 ![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/clientLeaves.png)
 ### Lobby is full
 ![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/lobbyIsFull.png)
+### Socket closed
+![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/socketClosed.png)
