@@ -2,7 +2,30 @@
 
 **"Loop of Legends: The Multi-Snake Challenge"** is a networked snake game where players control snakes and try to survive as long as possible. This project implements the game client, which connects to a game server for a multiplayer experience.
 
----
+````
+  _                                                    ______
+ | |     ___   ___  _ __                          _.-""      ""-._
+ | |    / _ \ / _ \| '_ \                      .-'                `-.
+ | |___| (_) | (_) | |_) |                   .'      __.----.__      `.
+ \_____/\___/ \___/| .__/                   /     .-"          "-.     \
+         __        | |                     /    .'                `.    \
+        / _|       |_|                    .    /                    \    \
+   ___ | |_                               /   ´                      `   `
+  / _ \|  _|                             ´   '                        '   |
+ | (_) | |                               |   |                        |   |
+  \___/|_|                               |   |                        |   |
+  _                               _      |   |                        |   |
+ | |     ___  __ _  ___ _ __   __| |     |   .                        .   .
+ | |    / _ \/ _` |/ _ \ '_ \ / _` |     `    \   .------.           /    ´
+ | |___|  __/ (_| |  __/ | | | (_| |      \    \ /        \   __    /    /
+ \_____/\___|\__, |\___|_| |_|\__,_|       \    (|)(|)_   .-'".'  .'    /
+              __/ |                         \    \   /_>-'  .<_.-'     /
+             |___/                           `.   `-'     .'         .'
+                                               `--.|___.-'`._    _.-'
+
+                             Press enter to play   ^
+
+````
 
 ## 1. Building the Application
 
@@ -28,25 +51,34 @@ Before you begin with Loop of Legends, please execute the following commands:
 
 ## 2. Running the Application
 
+All commands below must be performed in the target folder.
+
 ### Windows
 For launching applications on Windows, use the `javaw` command.
 
 #### Launching server:
+By default, port is 20000.
 ```bash
 javaw -jar server-1.0-SNAPSHOT.jar [port]
 ```
 Examples:
 ```bash
 javaw -jar server-1.0-SNAPSHOT.jar
+```
+```bash
 javaw -jar server-1.0-SNAPSHOT.jar 40000
 ```
 #### Launching client:
+By default, IP is 127.0.0.1 and port is 20000.
 ```bash
-javaw -jar client-1.0-SNAPSHOT.jar <server-address> <port>
+javaw -jar client-1.0-SNAPSHOT.jar [server-address] [port]
 ```
-Example:
+Examples:
 ```bash
-javaw -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
+javaw -jar client-1.0-SNAPSHOT.jar
+```
+```bash
+javaw -jar client-1.0-SNAPSHOT.jar 192.168.1.10 40000
 ```
 
 <br>
@@ -55,22 +87,29 @@ javaw -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 For launching applications on Linux, use the `java` command.
 
 #### Launching server:
+By default, port is 20000.
 ```bash
 java -jar server-1.0-SNAPSHOT.jar [port]
 ```
 Examples:
 ```bash
 java -jar server-1.0-SNAPSHOT.jar
+```
+```bash
 java -jar server-1.0-SNAPSHOT.jar 40000
 ```
 
 #### Launching client:
+By default, IP is 127.0.0.1 and port is 20000.
 ```bash
-java -jar client-1.0-SNAPSHOT.jar <server-address> <port>
+java -jar client-1.0-SNAPSHOT.jar [server-address] [port]
 ```
-Example:
+Examples:
 ```bash
-java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
+java -jar client-1.0-SNAPSHOT.jar
+```
+```bash
+java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 40000
 ```
 
 <br>
@@ -116,8 +155,8 @@ The Loop of Legend (LOL) protocol is designed specifically for online multiplaye
 
 ### Connection Initiation
 - The connection is initiated by the client.
-- The client sends an **INIT** message to the server to establish a connection.
-- The server, upon receiving the **INIT** message, responds with **DONE** if the connection is successfully established.
+- The client sends an `INIT` message to the server to establish a connection.
+- The server, upon receiving the `INIT` message, responds with `DONE` if the connection is successfully established.
 
 ## 3.3 Messages/Actions
 The client can send the following messages:
