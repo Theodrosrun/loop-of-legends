@@ -14,10 +14,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server {
-    private final int PORT = 20000;
-    private static final int NB_PLAYER = 4;
+     private static final int NB_PLAYER = 4;
     private final int LOBBY_FREQUENCY = 100; // millisecondes
     private final int GAME_FREQUENCY = 300; // millisecondes
+    private final int port;
     private Lobby lobby = new Lobby(NB_PLAYER);
 
     private boolean listenNewClient = true;
@@ -26,8 +26,17 @@ public class Server {
     private final static Logger LOG = Logger.getLogger(Server.class.getName());
 
     public static void main(String[] args) {
+        int port = 20000;
+        if (args.length > 0){
+            port = Integer.parseInt(args[0]);
+        }
+
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
-        (new Server()).start();
+        (new Server(port)).start();
+    }
+
+    private Server (int port){
+        this.port = port;
     }
 
     private void start() {
@@ -78,9 +87,9 @@ public class Server {
     }
 
     private void listenNewClient() {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
             while (true) {
-                LOG.log(Level.INFO, "Waiting for a new client on port {0}", PORT);
+                LOG.log(Level.INFO, "Waiting for a new client on port {0}", port);
                 Socket clientSocket = serverSocket.accept();
 
                 if (lobby.isOpen() && !lobby.lobbyIsFull()) {
