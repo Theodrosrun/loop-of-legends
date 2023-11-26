@@ -140,17 +140,17 @@ The server can send the following messages:
 - `ENDD`: Indicates the end of the game.
 
 Common messages
-- `MSGG`: This message is used for general communication within the game. It can be employed for various purposes, such as sending information about current actions. The specific content of the MSGG message would depend on the context in which it is used.
+- `MSGG`: This message is used for general communication within the game. It can be employed for various purposes, such as sending information about current actions. The specific content of the message would depend on the context in which it is used.
 - `QUIT`: This message is sent when exiting the game. Upon receiving a QUIT message, the server typically performs cleanup operations related to the client, such as removing the player from the game lobby or freeing up resources.
 - `UNKN`: This message represents an unknown or invalid command. This could happen if there's a typo in the command, the client uses a command not supported by the server or the message format is incorrect.
 
 ### Success/Error Codes
-- `DONE`: This code indicates that an action requested by the client has been completed successfully. For example, when a player successfully joins a lobby, the server might respond with a DONE message. It's a general acknowledgment sent from the server to confirm that the requested operation was executed without any issues.
+- `DONE`: This code indicates that an action requested by the client has been completed successfully. For example, when a player successfully joins a lobby, the server might respond with a `DONE` message. It's a general acknowledgment sent from the server to confirm that the requested operation was executed without any issues.
 - `EROR`: This code signifies that an error occurred while processing the client's request. It is usually followed by an error message that provides more details about the nature of the error. Examples of situations that might generate an EROR message include attempts to join a full game lobby. The accompanying error message helps in understanding the specific reason for the failure.
 
 ### Edge-Cases Handling
-- **Full Lobby**: In cases where a client attempts to join a game lobby that is already full, the server responds with a specific 'EROR' message indicating that the lobby is at capacity.
-- **Username Already Taken**: When a client attempts to register or join with a username that is already in use, the server responds with a specific 'REPT' message indicating that the username is unavailable. This message can guide the user to choose an alternative username.
+- **Full Lobby**: In cases where a client attempts to join a game lobby that is already full, the server responds with a specific `EROR` message indicating that the lobby is at capacity.
+- **Username Already Taken**: When a client attempts to register or join with a username that is already in use, the server responds with a specific `REPT` message indicating that the username is unavailable. This message can guide the user to choose an alternative username.
 - **Socket Closed/Disconnection**: If the client's connection to the server is unexpectedly closed (e.g., due to a socket closure), the client's termnal will display a notification message to the user. This message informs the user about the disconnection. This straightforward communication helps the user understand that the issue is related to the network connection and guides them on the immediate steps they can take. The client's application is responsible for detecting when the socket has been closed.
 
 ## 3.4 Examples
