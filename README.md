@@ -33,22 +33,22 @@ To launch the server, use the following command in the target folder:
 
 #### Windows:
 ```bash
-javaw -jar server-1.0-SNAPSHOT.jar
+javaw -jar server-1.0-SNAPSHOT.jar [port]
 ```
 Example:
 ```bash
-javaw -jar server-1.0-SNAPSHOT.jar
+javaw -jar server-1.0-SNAPSHOT.jar 40000
 ```
 
 <br>
 
 #### Linux:
 ```bash
-java -jar server-1.0-SNAPSHOT.jar
+java -jar server-1.0-SNAPSHOT.jar [port]
 ```
 Example:
 ```bash
-java -jar server-1.0-SNAPSHOT.jar
+java -jar server-1.0-SNAPSHOT.jar 40000
 ```
 
 <br>
