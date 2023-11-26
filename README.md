@@ -37,10 +37,11 @@ javaw -jar server-1.0-SNAPSHOT.jar [port]
 ```
 Example:
 ```bash
+javaw -jar server-1.0-SNAPSHOT.jar
+```
+```bash
 javaw -jar server-1.0-SNAPSHOT.jar 40000
 ```
-
-<br>
 
 #### Linux:
 ```bash
@@ -48,35 +49,32 @@ java -jar server-1.0-SNAPSHOT.jar [port]
 ```
 Example:
 ```bash
+java -jar server-1.0-SNAPSHOT.jar
+```
+```bash
 java -jar server-1.0-SNAPSHOT.jar 40000
 ```
-
-<br>
 
 ### 2.2 Launching client
 To launch the client, use the following command in the target folder:
 
 #### Windows:
 ```bash
-javaw -jar client-1.0-SNAPSHOT.jar [server-address] [port]
+javaw -jar client-1.0-SNAPSHOT.jar <server-address> <port>
 ```
 Example:
 ```bash
 javaw -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 ```
 
-<br>
-
 #### Linux:
 ```bash
-java -jar client-1.0-SNAPSHOT.jar [server-address] [port]
+java -jar client-1.0-SNAPSHOT.jar <server-address> <port>
 ```
 Example:
 ```bash
 java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 ```
-
-<br>
 
 ### 2.3 How to play
 Now that you are ready, Follow these simple steps to start playing and enjoy the game:
