@@ -12,9 +12,6 @@ In the first terminal, you will start the server module. This module is responsi
 
 In the second terminal, you will launch the client module. The client is the interface through which players interact with the game. This module communicates with the server to send commands and receive updates on the game's state.
 
-### Prerequisites
-- Java JDK 11 or higher.
-
 ### Build Instructions
 
 Before you begin with Loop of Legends, please execute the following commands:
