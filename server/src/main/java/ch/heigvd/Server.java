@@ -1,35 +1,133 @@
 package ch.heigvd;
 
-import ch.heigvd.snake.Snake;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server {
-    private final int PORT = 20000;
+    /**
+     * The number of players in the game
+     */
     private static final int NB_PLAYER = 4;
-    private final int LOBBY_FREQUENCY = 100; // millisecondes
-    private final int GAME_FREQUENCY = 300; // millisecondes
-    private Lobby lobby = new Lobby(NB_PLAYER);
 
-    private boolean listenNewClient = true;
-    private Board board;
-    private DIRECTION[] directions = {DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT};
+    /**
+     * The logger
+     */
     private final static Logger LOG = Logger.getLogger(Server.class.getName());
 
-    public static void main(String[] args) {
-        System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
-        (new Server()).start();
+    /**
+     *  The frequency that refresh the lobby in milliseconds
+     */
+    private final int LOBBY_FREQUENCY = 100;
+
+    /**
+     * The frequency that refresh the game in milliseconds
+     */
+    private final int GAME_FREQUENCY = 300;
+
+    /**
+     * The port used by the server
+     */
+    private final int port;
+
+    /**
+     * The lobby
+     */
+    private Lobby lobby = new Lobby(NB_PLAYER);
+
+    /**
+     * The boolean that indicates if the server is listening for new clients
+     */
+    private boolean listenNewClient = true;
+
+    /**
+     * The board
+     */
+    private Board board;
+
+    /**
+     * The directions initialized in the order UP, RIGHT, DOWN, LEFT for the first 4 players
+     */
+    private DIRECTION[] directions = {DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT};
+
+    /**
+     * The constructor
+     * @param port The port used by the server
+     */
+    private Server (int port){
+        this.port = port;
     }
 
+    /**
+     * Set the direction of the player
+     * @param key The key pressed by the player
+     * @param player The player that pressed the key
+     */
+    public void setDirection(KEY key, Player player) {
+        if (!lobby.everyPlayerReady()) return;
+        DIRECTION direction = DIRECTION.parseKey(key);
+        if (direction != null) {
+            lobby.setDirection(player, direction);
+        }
+    }
+
+    /**
+     * Join the lobby
+     * @param player The player that wants to join the lobby
+     */
+    public void joinLobby(Player player) {
+        lobby.join(player);
+        board.deployLobby(lobby);
+    }
+
+    /**
+     * Get the board
+     * @return The board
+     */
+    public Board getBoard() {
+        return board;
+    }
+
+    /**
+     *Ask if lobby is full
+     * @return true if lobby is full
+     */
+    public boolean isFull() {
+        return lobby.lobbyIsFull();
+    }
+
+    /**
+     * remove player from lobby
+     */
+    public void removePlayer(Player player) {
+        lobby.removePlayer(player);
+    }
+
+    /**
+     * Set the player ready
+     * @param player The player that is ready
+     */
+    public void setReady(Player player) {
+        lobby.setReady(player);
+        board.deployLobby(lobby);
+    }
+
+    /**
+     * Ask if the username is already in use
+     * @return true if the username is already in use
+     */
+    public boolean playerNameAlreadyInUse(String userName) {
+        return lobby.playerNameAlreadyInUse(userName);
+    }
+
+    /**
+     * Start the server
+     */
     private void start() {
 
         Thread thListener = new Thread(this::listenNewClient);
@@ -64,23 +162,13 @@ public class Server {
         }
     }
 
-    public void setDirection(KEY key, Player player) {
-        if (!lobby.everyPlayerReady()) return;
-        DIRECTION direction = DIRECTION.parseKey(key);
-        if (direction != null) {
-            lobby.setDirection(player, direction);
-        }
-    }
-
-    public void joinLobby(Player player) {
-        lobby.join(player);
-        board.deployLobby(lobby);
-    }
-
+    /**
+     * Listen for new clients
+     */
     private void listenNewClient() {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
             while (true) {
-                LOG.log(Level.INFO, "Waiting for a new client on port {0}", PORT);
+                LOG.log(Level.INFO, "Waiting for a new client on port {0}", port);
                 Socket clientSocket = serverSocket.accept();
 
                 if (lobby.isOpen() && !lobby.lobbyIsFull()) {
@@ -109,25 +197,13 @@ public class Server {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public static void main(String[] args) {
+        int port = 20000;
+        if (args.length > 0){
+            port = Integer.parseInt(args[0]);
+        }
 
-    public Board getBoard() {
-        return board;
-    }
-
-    public boolean isFull() {
-        return lobby.lobbyIsFull();
-    }
-
-    public void removePlayer(Player player) {
-        lobby.removePlayer(player);
-    }
-
-    public void setReady(Player player) {
-        lobby.setReady(player);
-        board.deployLobby(lobby);
-    }
-
-    public boolean playerExists(String userName) {
-        return lobby.playerExists(userName);
+        System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
+        (new Server(port)).start();
     }
 }

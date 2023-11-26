@@ -3,13 +3,9 @@ package ch.heigvd;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ServerWorker implements Runnable {
-    private final static Logger LOG = Logger.getLogger(ServerWorker.class.getName());
-    private final int UPDATE_FREQUENCY = 100; // millisecondes
+    private final int UPDATE_FREQUENCY = 100; // [ms]
     private Player player;
     private Server server;
     private Socket clientSocket;
@@ -17,18 +13,23 @@ public class ServerWorker implements Runnable {
     private BufferedWriter serverOutput = null;
     private Thread thGuiUpdate = new Thread(this::guiUpdate);
 
-    // private final ReentrantLock mutex = new ReentrantLock();
-
     public ServerWorker(Socket clientSocket, Server server) {
-        System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
         this.server = server;
         this.clientSocket = clientSocket;
 
         try {
             clientInput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             serverOutput = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage(), ex);
+        } catch (IOException e) {
+            System.out.println("Server exception: " + e);
+
+            try {
+                if (clientInput != null) clientInput.close();
+                if (serverOutput != null) serverOutput.close();
+                if (clientSocket != null && !clientSocket.isClosed()) clientSocket.close();
+            } catch (IOException e2) {
+                System.err.println("Error closing resources: " + e2);
+            }
         }
 
         Thread exitTh = new Thread(new Exit(clientSocket, serverOutput, clientInput));
@@ -47,12 +48,6 @@ public class ServerWorker implements Runnable {
                 message = Message.getMessage(response);
                 data = Message.getData(response);
 
-                // Message unknown
-                if (Message.fromString(message) == Message.UNKN) {
-                    LOG.log(Level.SEVERE, "Message unknown");
-                }
-
-                // Message handling
                 switch (Message.fromString(message)) {
                     case INIT:
                         command = Message.setCommand(Message.DONE);
@@ -61,13 +56,11 @@ public class ServerWorker implements Runnable {
                         break;
 
                     case LOBB:
-                        if (server.isFull()) {
-                            serverOutput.write(Message.setCommand(Message.EROR, "The lobby is full"));
-                            serverOutput.flush();
-                        } else {
-                            serverOutput.write(Message.setCommand(Message.DONE));
-                            serverOutput.flush();
-                        }
+                        command = server.isFull() ?
+                                Message.setCommand(Message.EROR, "The lobby is full") :
+                                Message.setCommand(Message.DONE);
+                        serverOutput.write(command);
+                        serverOutput.flush();
                         break;
 
                     case JOIN:
@@ -75,8 +68,9 @@ public class ServerWorker implements Runnable {
                             serverOutput.write(Message.setCommand(Message.EROR, "The lobby is full"));
                             serverOutput.flush();
                             break;
-                        } else if (server.playerExists(data)) {
+                        } else if (server.playerNameAlreadyInUse(data)) {
                             serverOutput.write(Message.setCommand(Message.REPT, "Username already used"));
+                            serverOutput.flush();
                             break;
                         } else if (data.isEmpty()) {
                             serverOutput.write(Message.setCommand(Message.REPT, "Username must have minimum 1 character"));
@@ -105,8 +99,9 @@ public class ServerWorker implements Runnable {
                         serverOutput.flush();
                         if (player != null) server.removePlayer(player);
                         finished = true;
-                        LOG.log(Level.INFO, "Client disconnected");
                         break;
+
+                    case UNKN:
 
                     default:
                         break;
@@ -116,24 +111,16 @@ public class ServerWorker implements Runnable {
             clientInput.close();
             serverOutput.close();
 
-        } catch (IOException ex) {
-            if (clientInput != null) {
-                try {
-                    clientInput.close();
-                } catch (IOException ex1) {
-                    LOG.log(Level.SEVERE, "In BufferedReader cannot be closed");
-                }
-            }
+        } catch (IOException e) {
+            System.err.println("Server exception: " + e);
 
-            if (clientSocket != null) {
-                try {
-                    clientSocket.close();
-                } catch (IOException ex1) {
-                    LOG.log(Level.SEVERE, "ClientSocket cannot be closed");
-                }
+            try {
+                if (clientInput != null) clientInput.close();
+                if (serverOutput != null) serverOutput.close();
+                if (clientSocket != null) clientSocket.close();
+            } catch (IOException e2) {
+                System.err.println("Error closing resources: " + e2);
             }
-
-            LOG.log(Level.SEVERE, "Global error: client made a hard disconnect");
         }
     }
 
@@ -142,19 +129,26 @@ public class ServerWorker implements Runnable {
             try {
                 Thread.sleep(UPDATE_FREQUENCY);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.out.println("Server exception: " + e);
             }
 
             String command = Message.setCommand(Message.UPTE, server.getBoard().toString());
+
             if (!clientSocket.isClosed()) {
                 try {
                     serverOutput.write(command);
                     serverOutput.flush();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Server exception: " + e);
+
+                    try {
+                        if (serverOutput != null) serverOutput.close();
+                        if (clientSocket != null && !clientSocket.isClosed())clientSocket.close();
+                    } catch (IOException e2) {
+                        System.err.println("Error closing resources: " + e2);
+                    }
                 }
             } else {
-                LOG.log(Level.INFO, "ServerWorker: clientSocket is closed");
                 break;
             }
         }

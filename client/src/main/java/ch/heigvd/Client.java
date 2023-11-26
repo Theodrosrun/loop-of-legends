@@ -1,23 +1,14 @@
 package ch.heigvd;
 
 import com.googlecode.lanterna.input.KeyStroke;
-
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import static java.lang.System.*;
 
 public class Client {
-    /**
-     * The logger
-     */
-    private static final Logger LOG = Logger.getLogger(Client.class.getName());
-
     /**
      * The command, response, message and data used to communicate with the server
      */
@@ -76,7 +67,6 @@ public class Client {
             Thread exitTh = new Thread(new Exit(socket, serverOutput, serverInput));
             Runtime.getRuntime().addShutdownHook(exitTh);
 
-
             command = Message.setCommand(Message.INIT);
             serverOutput.write(command);
             serverOutput.flush();
@@ -88,7 +78,6 @@ public class Client {
                 messageHandling(message, data);
             }
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
             exit(1);
         }
     }
@@ -180,7 +169,6 @@ public class Client {
             serverOutput.write(command);
             serverOutput.flush();
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
@@ -212,7 +200,6 @@ public class Client {
             }
 
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
             exit(1);
         }
     }
@@ -238,7 +225,6 @@ public class Client {
             }
             quit();
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
@@ -306,36 +292,42 @@ public class Client {
         }
     }
 
-    /**
-     * Close the connection with the server
-     */
-
-
     public static void main(String[] args) {
-        System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
-
-        int port;
-        InetAddress address = null;
-
+        // Validate arguments
         if (args.length != 2) {
-            System.err.println("usage: client <address> <port>");
+            System.err.println("Usage: client <address> <port>");
             return;
         }
 
+        InetAddress address;
+        int port;
+
+        // Resolve the address
         try {
-            address = InetAddress.getByName((args[0]));
+            address = InetAddress.getByName(args[0]);
         } catch (UnknownHostException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage(), ex);
+            System.err.println("Error: The address " + args[0] + " is unknown.");
             return;
         }
 
+        // Validate the port number
         try {
             port = Integer.parseInt(args[1]);
+            if (port < 0 || port > 65535) {
+                System.err.println("Error: Port number must be between 0 and 65535.");
+                return;
+            }
         } catch (NumberFormatException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage(), ex);
+            System.err.println("Error: Port number must be an integer.");
             return;
         }
 
-        Client client = new Client(address, port);
+        // Create the client
+        try {
+            Client client = new Client(address, port);
+            // Here, add the code to start or use the client
+        } catch (Exception ex) {
+            System.err.println("Error creating the client: " + ex.getMessage());
+        }
     }
 }
