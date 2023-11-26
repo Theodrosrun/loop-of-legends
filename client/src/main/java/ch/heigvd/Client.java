@@ -60,6 +60,26 @@ public class Client {
      */
     private void initConnection(InetAddress address, int port) {
         try {
+            Thread thConnection = new Thread(() -> createSocket(address, port));
+            thConnection.start();
+            int timeOutTime = 5; //secondes
+            while (timeOutTime > 0 && (socket == null || !socket.isConnected())) {
+                terminal.clear();
+                terminal.print("Connecting to the server... time out in  " + timeOutTime + "second" + (timeOutTime > 1 ? "s" : ""));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                timeOutTime--;
+            }
+            thConnection.interrupt();
+            if (socket == null || !socket.isConnected()) {
+                terminal.clear();
+                terminal.print("Connection timeout\nPress enter to exit");
+                requestEnter();
+                exit(1);
+            }
             socket = new Socket(address, port);
             serverOutput = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
             serverInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -80,6 +100,18 @@ public class Client {
         } catch (IOException e) {
             exit(1);
         }
+    }
+
+    private void createSocket(InetAddress address, int port) {
+        try {
+            socket = new Socket(address, port);
+        }
+        catch (IOException e) {
+            terminal.print("Error creating the socket: " + e.getMessage() + "\n" + "Press enter to exit\n");
+            requestEnter();
+            exit(1);
+        }
+
     }
 
     /**
@@ -164,13 +196,6 @@ public class Client {
         }
 
         inputHandler.restoreHandler();
-
-        try {
-            serverOutput.write(command);
-            serverOutput.flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -294,7 +319,10 @@ public class Client {
 
     public static void main(String[] args) {
         // Validate arguments
-        if (args.length != 2) {
+        if (args.length == 0) {
+            args = new String[]{"127.0.0.1", "20000"};
+        }
+        else if (args.length != 2) {
             System.err.println("Usage: client <address> <port>");
             return;
         }
@@ -325,7 +353,6 @@ public class Client {
         // Create the client
         try {
             Client client = new Client(address, port);
-            // Here, add the code to start or use the client
         } catch (Exception ex) {
             System.err.println("Error creating the client: " + ex.getMessage());
         }

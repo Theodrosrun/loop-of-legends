@@ -167,22 +167,22 @@ public class Lobby {
             switch (i) {
                 case 0: {
                     initPosition = new Position(bw / 2, bh, UP, ' ');
-                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    player.setSnake(new Snake(initPosition, initLenght, i));
                     break;
                 }
                 case 1: {
                     initPosition = new Position(0, bh / 2, LEFT, ' ');
-                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    player.setSnake(new Snake(initPosition, initLenght, i));
                     break;
                 }
                 case 2: {
                     initPosition = new Position(bw / 2, 0, DOWN, ' ');
-                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    player.setSnake(new Snake(initPosition, initLenght, i));
                     break;
                 }
                 case 3: {
                     initPosition = new Position(bw, bh / 2, RIGHT, ' ');
-                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    player.setSnake(new Snake(initPosition, initLenght, i));
                     break;
                 }
             }
