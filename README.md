@@ -152,7 +152,7 @@ Common messages
 ### Edge-Cases Handling
 - **Full Lobby**: In cases where a client attempts to join a game lobby that is already full, the server responds with a specific 'EROR' message indicating that the lobby is at capacity.
 - **Username Already Taken**: When a client attempts to register or join with a username that is already in use, the server responds with a specific 'REPT' message indicating that the username is unavailable. This message can guide the user to choose an alternative username.
-- **Socket Closed/Disconnection**: If the client's connection to the server is unexpectedly closed (e.g., due to a socket closure), the client's termnal will display a notification message to the user. This message informs the user about the disconnection. This straightforward communication helps the user understand that the issue is related to the network connection and guides them on the immediate steps they can take.
+- **Socket Closed/Disconnection**: If the client's connection to the server is unexpectedly closed (e.g., due to a socket closure), the client's termnal will display a notification message to the user. This message informs the user about the disconnection. This straightforward communication helps the user understand that the issue is related to the network connection and guides them on the immediate steps they can take. The client's application is responsible for detecting when the socket has been closed.
 
 ## 3.4 Examples
 ### Client plays
