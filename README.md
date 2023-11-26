@@ -28,37 +28,19 @@ Before you begin with Loop of Legends, please execute the following commands:
 
 ## 2. Running the Application
 
-### 2.1 Launching server
-To launch the server, use the following command in the target folder:
+### Windows
+For launching applications on Windows, use the `javaw` command.
 
-#### Windows:
+#### Launching server:
 ```bash
 javaw -jar server-1.0-SNAPSHOT.jar [port]
 ```
-Example:
+Examples:
 ```bash
 javaw -jar server-1.0-SNAPSHOT.jar
-```
-```bash
 javaw -jar server-1.0-SNAPSHOT.jar 40000
 ```
-
-#### Linux:
-```bash
-java -jar server-1.0-SNAPSHOT.jar [port]
-```
-Example:
-```bash
-java -jar server-1.0-SNAPSHOT.jar
-```
-```bash
-java -jar server-1.0-SNAPSHOT.jar 40000
-```
-
-### 2.2 Launching client
-To launch the client, use the following command in the target folder:
-
-#### Windows:
+#### Launching client:
 ```bash
 javaw -jar client-1.0-SNAPSHOT.jar <server-address> <port>
 ```
@@ -67,7 +49,22 @@ Example:
 javaw -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 ```
 
-#### Linux:
+<br>
+
+### Linux
+For launching applications on Linux, use the `java` command.
+
+#### Launching server:
+```bash
+java -jar server-1.0-SNAPSHOT.jar [port]
+```
+Examples:
+```bash
+java -jar server-1.0-SNAPSHOT.jar
+java -jar server-1.0-SNAPSHOT.jar 40000
+```
+
+#### Launching client:
 ```bash
 java -jar client-1.0-SNAPSHOT.jar <server-address> <port>
 ```
@@ -76,7 +73,9 @@ Example:
 java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 ```
 
-### 2.3 How to play
+<br>
+
+### How to play
 Now that you are ready, Follow these simple steps to start playing and enjoy the game:
 
 #### **Enter Your Username**:
