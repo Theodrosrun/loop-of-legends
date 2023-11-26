@@ -146,7 +146,7 @@ Common messages
 
 ### Success/Error Codes
 - `DONE`: This code indicates that an action requested by the client has been completed successfully. For example, when a player successfully joins a lobby, the server might respond with a `DONE` message. It's a general acknowledgment sent from the server to confirm that the requested operation was executed without any issues.
-- `EROR`: This code signifies that an error occurred while processing the client's request. It is usually followed by an error message that provides more details about the nature of the error. Examples of situations that might generate an EROR message include attempts to join a full game lobby. The accompanying error message helps in understanding the specific reason for the failure.
+- `EROR`: This code signifies that an error occurred while processing the client's request. It is usually followed by an error message that provides more details about the nature of the error. Examples of situations that might generate an `EROR` message include attempts to join a full game lobby. The accompanying error message helps in understanding the specific reason for the failure.
 
 ### Edge-Cases Handling
 - **Full Lobby**: In cases where a client attempts to join a game lobby that is already full, the server responds with a specific `EROR` message indicating that the lobby is at capacity.
