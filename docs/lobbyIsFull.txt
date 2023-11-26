@@ -22,6 +22,6 @@ note right of S: Lobby is now full
 
 participant "Client 5" as C5
 C5 -> S: JOIN
-S -> C5: ERR "The lobby is full"
+S -> C5: EROR "The lobby is full"
 
 @enduml
