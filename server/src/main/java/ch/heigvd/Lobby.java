@@ -3,7 +3,6 @@ package ch.heigvd;
 import ch.heigvd.snake.Snake;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static ch.heigvd.DIRECTION.*;
 
@@ -101,7 +100,7 @@ public class Lobby {
         isOpen = true;
     }
 
-    public boolean playerExists(String userName) {
+    public boolean playerNameAlreadyInUse(String userName) {
         for (Player player : players) {
             if (player.getName().equals(userName)) {
                 return true;

@@ -68,7 +68,7 @@ public class ServerWorker implements Runnable {
                             serverOutput.write(Message.setCommand(Message.EROR, "The lobby is full"));
                             serverOutput.flush();
                             break;
-                        } else if (server.playerExists(data)) {
+                        } else if (server.playerNameAlreadyInUse(data)) {
                             serverOutput.write(Message.setCommand(Message.REPT, "Username already used"));
                             serverOutput.flush();
                             break;
