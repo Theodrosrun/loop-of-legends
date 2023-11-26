@@ -51,6 +51,8 @@ Before you begin with Loop of Legends, please execute the following commands:
 
 ## 2. Running the Application
 
+All commands below must be performed in the target folder.
+
 ### Windows
 For launching applications on Windows, use the `javaw` command.
 
@@ -71,7 +73,7 @@ By default, IP is 127.0.0.1 and port is 20000.
 ```bash
 javaw -jar client-1.0-SNAPSHOT.jar [server-address] [port]
 ```
-Example:
+Examples:
 ```bash
 javaw -jar client-1.0-SNAPSHOT.jar
 ```
@@ -102,7 +104,7 @@ By default, IP is 127.0.0.1 and port is 20000.
 ```bash
 java -jar client-1.0-SNAPSHOT.jar [server-address] [port]
 ```
-Example:
+Examples:
 ```bash
 java -jar client-1.0-SNAPSHOT.jar
 ```
