@@ -3,6 +3,7 @@ package ch.heigvd.snake;
 import ch.heigvd.DIRECTION;
 import ch.heigvd.Position;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Snake {
@@ -90,9 +91,9 @@ public class Snake {
     /**
      * moves the snake one step forward (step... lol... a snake... get it? YES I KNOW IT'S NOT FUNNY)
      */
-    public void step() {
+    public void step(int limitX, int limitY){
         Position head = body.getFirst();
-        if (!checkAutoCollision()) return;
+        if (!alive) return;
         head.setRepresentation(getBodyRepresentation(head, head));
 
         Position newHead = new Position(
@@ -109,6 +110,7 @@ public class Snake {
         for (int i = 2; i < body.size(); i++) {
             body.get(i-1).setRepresentation(getBodyRepresentation(body.get(i), body.get(i - 1)));
         }
+        checkAutoCollision(limitX, limitY);
     }
 
     /**
@@ -122,8 +124,13 @@ public class Snake {
      * Get the score of the snake
      * @return the score string of the snake
      */
-    public String getScore() {
-        return "Score: " + score;
+    public String getInfo() {
+        if (!alive) return "DEAD";
+        return Integer.toString(score);
+    }
+
+    public boolean isAlive() {
+        return alive;
     }
 
     /**
@@ -161,13 +168,36 @@ public class Snake {
      * Check if the snake is in collision with itself
      * @return true if the snake is in collision with itself, false otherwise
      */
-    private boolean checkAutoCollision() {
+    private void checkAutoCollision(int limitX, int limitY) {
+        Position head = Position.getRelativePosition(getHead(), limitX, limitY );
         for (int i = 1; i < body.size(); i++) {
-            if (body.getFirst().equals(body.get(i))) {
+            Position bodyPart = Position.getRelativePosition(body.get(i), limitX, limitY);
+            if (bodyPart.equals(head)) {
                 alive = false;
                 break;
             }
         }
-        return alive;
+    }
+
+    public ArrayList<Position> attacked(Position bitePosition, int limitX, int limitY) {
+        ArrayList<Position> tail = new ArrayList<>();
+        Position bite = Position.getRelativePosition(bitePosition, limitX, limitY);
+        Position head = Position.getRelativePosition(getHead(), limitX, limitY);
+        if (bite.equals(head)) {
+            alive = false;
+            return tail;
+        }
+        for (int i = 1; i < body.size(); i++) {
+            Position bodyPart = Position.getRelativePosition(body.get(i), limitX, limitY);
+            if (bite.getX() == bodyPart.getX() && bite.getY() == bodyPart.getY()) {
+                for(int j = i; j < body.size(); j++) {
+                    tail.add(body.get(j));
+                }
+                body.subList(i, body.size()).clear();
+                score -= (tail.size() / 2);
+                break;
+            }
+        }
+        return tail;
     }
 }

@@ -55,6 +55,13 @@ public class Food {
         this.quantity = quantity;
     }
 
+    public void setFood( ArrayList<Position> generatedFood) {
+        for (Position f : food) {
+            f.setRepresentation(representation);
+        }
+        food.addAll(generatedFood);
+    }
+
     /**
      * get the list of food
      * @return the list of food

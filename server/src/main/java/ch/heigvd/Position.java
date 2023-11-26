@@ -1,5 +1,7 @@
 package ch.heigvd;
 
+import static java.lang.Math.abs;
+
 /**
  * The class that represent the position on the map
  */
@@ -98,6 +100,46 @@ public class Position {
      */
     public void setRepresentation(char representation) {
         this.representation = representation;
+    }
+
+    /**
+     * get the relative value of the given value
+     *
+     * @param value the value to get the relative value
+     * @param limit the limit of the value
+     * @return the relative value of the given value
+     */
+    private static int getRelativeValue(int value, int limit) {
+
+        int relativeValue = value % limit;
+
+        if (value % limit < 0) {
+            relativeValue = limit - (1 + abs(relativeValue));
+        }
+        return relativeValue;
+
+    }
+    /**
+     * get the relative x position of the board
+     *
+     * @param x the x position
+     * @return the relative x position of the board
+     */
+    public static int getRelativeX(int x, int limit) {
+        return getRelativeValue(x, limit);
+    }
+
+    /**
+     * get the relative y position of the board
+     *
+     * @param y the y position
+     * @return the relative y position of the board
+     */
+    public static int getRelativeY(int y, int limit) {
+        return getRelativeValue(y, limit);
+    }
+    public static Position getRelativePosition(Position position, int limitX, int limitY) {
+        return new Position(getRelativeX(position.getX(), limitX), getRelativeY(position.getY(), limitY), position.getDirection(), position.getRepresentation());
     }
 
     /**

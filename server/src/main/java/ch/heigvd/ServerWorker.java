@@ -177,7 +177,11 @@ public class ServerWorker implements Runnable {
                 System.err.println("Server exception on gui: " + e);
             }
 
-            String command = Message.setCommand(Message.UPTE, server.getBoard().toString());
+            StringBuilder sb = new StringBuilder( server.getBoard().toString());
+            sb.append("\n");
+            sb.append(server.getInfos());
+
+            String command = Message.setCommand(Message.UPTE, sb.toString());
 
             if (!clientSocket.isClosed()) {
                 try {

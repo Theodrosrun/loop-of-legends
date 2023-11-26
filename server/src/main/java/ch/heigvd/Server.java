@@ -146,6 +146,10 @@ public class Server {
         return GAME_FREQUENCY;
     }
 
+    public String getInfos() {
+        return lobby.getInfos();
+    }
+
     /**
      * Start the server
      */
@@ -156,7 +160,7 @@ public class Server {
             Thread thListener = new Thread(this::listenNewClient);
             thListener.start();
 
-            board = new Board(30, 15, 20, 200);
+            board = new Board(40, 20, 20, 200);
 
             //loop for lobby
             lobby.open();
@@ -173,9 +177,22 @@ public class Server {
             listenNewClient = false;
             thListener.interrupt();
 
+            ArrayList<Position> generatedFood = new ArrayList<>();
             //loop for game
             while (lobby.getNbPlayer() > 0) {
-                lobby.snakeStep();
+                generatedFood.clear();
+                lobby.snakeStep(board.getWidth(), board.getHeight());
+                for (Player player : lobby.getPlayers()) {
+                    if (!player.isAlive()) continue;
+                    for (Player opponent : lobby.getPlayers()) {
+                        if (player != opponent) {
+                            {
+                                generatedFood.addAll(opponent.getSnake().attacked(player.getSnake().getHead(), board.getWidth(), board.getHeight()));
+                            }
+                        }
+                    }
+                }
+                board.setFood(generatedFood);
                 board.deploySnakes(lobby.getSnakes());
                 board.deployFood();
                 try {

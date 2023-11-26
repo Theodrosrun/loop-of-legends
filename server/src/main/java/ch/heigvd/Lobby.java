@@ -157,7 +157,7 @@ public class Lobby {
      * @param board the board to determine and compute the position of the snakes
      */
     public void initSnakes(Board board) {
-        int initLenght = 3;
+        int initLenght = 10;
         Position initPosition;
         int bw = board.getWidth();
         int bh = board.getHeight();
@@ -202,9 +202,9 @@ public class Lobby {
     /**
      * Move the snakes for each player
      */
-    public void snakeStep() {
+    public void snakeStep(int limitX, int limitY) {
         for (Player player : players) {
-            player.getSnake().step();
+            player.getSnake().step(limitX, limitY);
         }
     }
 
@@ -218,5 +218,25 @@ public class Lobby {
             snakes.add(player.getSnake());
         }
         return snakes;
+    }
+
+    public String getInfos() {
+        if (isOpen) {
+            return " RULES\n" +
+                    "_____\n" +
+                    "if you eat yourself or if you eat the head of other player, you are lose\n" +
+                    "if you eat another player's body, you cut it in half and the tail becomes food\n\n" +
+                    "COMMANDS\n" +
+                    "________\n" +
+                    "Use arrow keys to move\n" +
+                    "Press r to ready\n" +
+                    "Press q to quit\n";
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (Player p : players) {
+                sb.append(p.getName()).append(" : ").append(p.getInfo()).append("\n");
+            }
+            return sb.toString();
+        }
     }
 }
