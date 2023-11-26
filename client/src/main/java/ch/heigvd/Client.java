@@ -102,6 +102,12 @@ public class Client {
         }
     }
 
+    /**
+     * Create the socket
+     *
+     * @param address the address of the server
+     * @param port    the port of the server
+     */
     private void createSocket(InetAddress address, int port) {
         try {
             socket = new Socket(address, port);
@@ -135,6 +141,7 @@ public class Client {
      * Join the lobby
      */
     private void join() {
+        terminal.clear();
         terminal.print(Intro.logo);
         while (inputHandler.getKey() != KEY.ENTER) {
             if (inputHandler.getKey() == KEY.QUIT) {
@@ -287,6 +294,12 @@ public class Client {
         exit(0);
     }
 
+    /**
+     * Handle the message
+     *
+     * @param message the message
+     * @param data    the data
+     */
     private void messageHandling(String message, String data) {
         switch (message) {
             case "EROR":
@@ -306,6 +319,9 @@ public class Client {
 
     }
 
+    /**
+     * Request the user to press enter
+     */
     private void requestEnter() {
         while (inputHandler.getKey() != KEY.ENTER) {
             inputHandler.restoreHandler();
@@ -316,7 +332,7 @@ public class Client {
             }
         }
     }
-
+    
     public static void main(String[] args) {
         // Validate arguments
         if (args.length == 0) {

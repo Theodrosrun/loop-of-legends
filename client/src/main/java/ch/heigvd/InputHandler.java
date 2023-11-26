@@ -2,21 +2,44 @@ package ch.heigvd;
 
 import com.googlecode.lanterna.input.InputProvider;
 import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
-
 import java.io.IOException;
 import java.util.concurrent.Semaphore;
 
+/**
+ * InputHandler class
+ * This class is used to handle the input from the user and to parse it
+ * to a KEY enum
+ */
 public class InputHandler {
 
-    private InputProvider inputProvider;
+    /**
+     * The current keyStroke
+     */
     private KeyStroke key = null;
+
+    /**
+     * The semaphore used to pause the input handler
+     */
     private final Semaphore wait = new Semaphore(0);
 
+    /**
+     * The pause state
+     */
     private boolean pause = false;
 
+    /**
+     * The frequency at which the input is read in milliseconds
+     */
     private final int READ_FREQUENCY;
+
+    /**
+     * The input provider
+     */
     private final InputProvider INPUT_PROVIDER;
+
+    /**
+     * The stop request state
+     */
     boolean stopRequest = false;
 
     /**
@@ -32,6 +55,9 @@ public class InputHandler {
         thread.start();
     }
 
+    /**
+     * The run method of the InputHandler
+     */
     private void run() {
         while (!stopRequest) {
 
@@ -60,43 +86,58 @@ public class InputHandler {
         }
     }
 
+    /**
+     * Get the current keyStroke
+     *
+     * @return the current keyStroke
+     */
     public KeyStroke getKeyStroke() {
         return key;
     }
 
+    /**
+     * Get the current key
+     *
+     * @return the current key
+     */
     public KEY getKey() {
         return KEY.parseKeyStroke(key);
     }
 
+    /**
+     * Reset the current key
+     */
     public void resetKey() {
         key = null;
     }
 
+    /**
+     * Pause the input handler
+     */
     public void pauseHandler() {
         pause = true;
     }
 
+    /**
+     * Restore the input handler
+     */
     public void restoreHandler() {
         pause = false;
         wait.release();
     }
 
-    public void stopRequest() {
-        stopRequest = true;
-    }
 
-
+    /**
+     * Check if the key is a direction
+     *
+     * @param key the key to check
+     * @return true if the key is a direction, false otherwise
+     */
     public static boolean isDirection(KeyStroke key) {
         if (key == null) return false;
-        switch (key.getKeyType()) {
-            case ArrowUp:
-            case ArrowDown:
-            case ArrowLeft:
-            case ArrowRight:
-                return true;
-            default:
-                return false;
-
-        }
+        return switch (key.getKeyType()) {
+            case ArrowUp, ArrowDown, ArrowLeft, ArrowRight -> true;
+            default -> false;
+        };
     }
 }
