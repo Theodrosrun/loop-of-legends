@@ -54,23 +54,42 @@ public class Snake {
         }
     }
 
+    /**
+     * Set the next direction of the snake
+     * @param direction the next direction
+     */
     public void setNextDirection(DIRECTION direction) {
         if (!verifyNextDirection(direction)) return;
         body.getFirst().setDirection(direction);
     }
 
+    /**
+     * Get the direction of the snake
+     * @return the direction of the snake
+     */
     public DIRECTION getDirection() {
         return body.getFirst().getDirection();
     }
 
+    /**
+     * Get the head position of the snake
+     * @return the head position of the snake
+     */
     public Position getHead() {
         return body.getFirst();
     }
 
+    /**
+     * Get the body of the snake
+     * @return the body of the snake
+     */
     public LinkedList<Position> getPositions() {
         return body;
     }
 
+    /**
+     * moves the snake one step forward (step... lol... a snake... get it? YES I KNOW IT'S NOT FUNNY)
+     */
     public void step() {
         Position head = body.getFirst();
         if (!checkAutoCollision()) return;
@@ -92,14 +111,26 @@ public class Snake {
         }
     }
 
+    /**
+     * Grow the snake
+     */
     public void grow() {
         eat = true;
     }
 
+    /**
+     * Get the score of the snake
+     * @return the score string of the snake
+     */
     public String getScore() {
         return "Score: " + score;
     }
 
+    /**
+     * Verify if the next direction is valid
+     * @param direction the next direction
+     * @return true if the next direction is valid, false otherwise
+     */
     private boolean verifyNextDirection(DIRECTION direction) {
         return switch (direction) {
             case UP -> getDirection() != DIRECTION.DOWN;
@@ -109,6 +140,12 @@ public class Snake {
         };
     }
 
+    /**
+     * Get the representation of the body
+     * @param position the position of the body
+     * @param previousPosition the previous position of the body
+     * @return the representation of the body
+     */
     private char getBodyRepresentation(Position position, Position previousPosition) {
         if (previousPosition == null) {
             return HEAD[id];
@@ -120,6 +157,10 @@ public class Snake {
         }
     }
 
+    /**
+     * Check if the snake is in collision with itself
+     * @return true if the snake is in collision with itself, false otherwise
+     */
     private boolean checkAutoCollision() {
         for (int i = 1; i < body.size(); i++) {
             if (body.getFirst().equals(body.get(i))) {
