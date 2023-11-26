@@ -12,7 +12,7 @@ public class Player {
     /**
      * The id of the player
      */
-    private int id;
+    private final int id;
 
     /**
      * The snake of the player
@@ -22,7 +22,7 @@ public class Player {
     /**
      * The name of the player
      */
-    private String name;
+    private final String name;
 
     /**
      * The ready state of the player
@@ -87,8 +87,8 @@ public class Player {
 
     /**
      * compare two players with their id
-     * @param obj
-     * @return
+     * @param obj The player to compare
+     * @return true if the players are equals
      */
     @Override
     public boolean equals(Object obj) {

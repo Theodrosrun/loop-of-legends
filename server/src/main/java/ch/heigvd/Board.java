@@ -1,11 +1,7 @@
 package ch.heigvd;
-
-import ch.heigvd.Food;
 import ch.heigvd.snake.Snake;
-import ch.qos.logback.core.joran.sanity.Pair;
-
 import java.util.ArrayList;
-import java.util.HashMap;
+
 
 import static java.lang.Math.abs;
 
