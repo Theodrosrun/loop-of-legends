@@ -292,32 +292,42 @@ public class Client {
         }
     }
 
-    /**
-     * Close the connection with the server
-     */
-
-
     public static void main(String[] args) {
-        int port;
-        InetAddress address = null;
-
+        // Validate arguments
         if (args.length != 2) {
-            System.err.println("usage: client <address> <port>");
+            System.err.println("Usage: client <address> <port>");
             return;
         }
 
+        InetAddress address;
+        int port;
+
+        // Resolve the address
         try {
-            address = InetAddress.getByName((args[0]));
+            address = InetAddress.getByName(args[0]);
         } catch (UnknownHostException ex) {
+            System.err.println("Error: The address " + args[0] + " is unknown.");
             return;
         }
 
+        // Validate the port number
         try {
             port = Integer.parseInt(args[1]);
+            if (port < 0 || port > 65535) {
+                System.err.println("Error: Port number must be between 0 and 65535.");
+                return;
+            }
         } catch (NumberFormatException ex) {
+            System.err.println("Error: Port number must be an integer.");
             return;
         }
 
-        Client client = new Client(address, port);
+        // Create the client
+        try {
+            Client client = new Client(address, port);
+            // Here, add the code to start or use the client
+        } catch (Exception ex) {
+            System.err.println("Error creating the client: " + ex.getMessage());
+        }
     }
 }

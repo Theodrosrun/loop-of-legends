@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class ServerWorker implements Runnable {
-    private final int UPDATE_FREQUENCY = 100; // millisecondes
+    private final int UPDATE_FREQUENCY = 100; // [ms]
     private Player player;
     private Server server;
     private Socket clientSocket;
@@ -20,7 +20,16 @@ public class ServerWorker implements Runnable {
         try {
             clientInput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             serverOutput = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
-        } catch (IOException ex) {
+        } catch (IOException e) {
+            System.out.println("Server exception: " + e);
+
+            try {
+                if (clientInput != null) clientInput.close();
+                if (serverOutput != null) serverOutput.close();
+                if (clientSocket != null && !clientSocket.isClosed()) clientSocket.close();
+            } catch (IOException e2) {
+                System.err.println("Error closing resources: " + e2);
+            }
         }
 
         Thread exitTh = new Thread(new Exit(clientSocket, serverOutput, clientInput));
@@ -39,7 +48,6 @@ public class ServerWorker implements Runnable {
                 message = Message.getMessage(response);
                 data = Message.getData(response);
 
-                // Message handling
                 switch (Message.fromString(message)) {
                     case INIT:
                         command = Message.setCommand(Message.DONE);
@@ -103,19 +111,15 @@ public class ServerWorker implements Runnable {
             clientInput.close();
             serverOutput.close();
 
-        } catch (IOException ex) {
-            if (clientInput != null) {
-                try {
-                    clientInput.close();
-                } catch (IOException ex1) {
-                }
-            }
+        } catch (IOException e) {
+            System.err.println("Server exception: " + e);
 
-            if (clientSocket != null) {
-                try {
-                    clientSocket.close();
-                } catch (IOException ex1) {
-                }
+            try {
+                if (clientInput != null) clientInput.close();
+                if (serverOutput != null) serverOutput.close();
+                if (clientSocket != null) clientSocket.close();
+            } catch (IOException e2) {
+                System.err.println("Error closing resources: " + e2);
             }
         }
     }
@@ -125,16 +129,24 @@ public class ServerWorker implements Runnable {
             try {
                 Thread.sleep(UPDATE_FREQUENCY);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.out.println("Server exception: " + e);
             }
 
             String command = Message.setCommand(Message.UPTE, server.getBoard().toString());
+
             if (!clientSocket.isClosed()) {
                 try {
                     serverOutput.write(command);
                     serverOutput.flush();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Server exception: " + e);
+
+                    try {
+                        if (serverOutput != null) serverOutput.close();
+                        if (clientSocket != null && !clientSocket.isClosed())clientSocket.close();
+                    } catch (IOException e2) {
+                        System.err.println("Error closing resources: " + e2);
+                    }
                 }
             } else {
                 break;
