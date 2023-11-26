@@ -116,8 +116,8 @@ The Loop of Legend (LOL) protocol is designed specifically for online multiplaye
 
 ### Connection Initiation
 - The connection is initiated by the client.
-- The client sends an **INIT** message to the server to establish a connection.
-- The server, upon receiving the **INIT** message, responds with **DONE** if the connection is successfully established.
+- The client sends an `INIT` message to the server to establish a connection.
+- The server, upon receiving the `INIT` message, responds with `DONE` if the connection is successfully established.
 
 ## 3.3 Messages/Actions
 The client can send the following messages:
