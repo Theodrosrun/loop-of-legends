@@ -2,29 +2,6 @@
 
 **"Loop of Legends: The Multi-Snake Challenge"** is a networked snake game where players control snakes and try to survive as long as possible. This project implements the game client, which connects to a game server for a multiplayer experience.
 
-            "  _                                                    ______               
-            " | |     ___   ___  _ __                          _.-\"\"      \"\"-._          
-            " | |    / _ \\ / _ \\| '_ \\                      .-'                `-.       
-            " | |___| (_) | (_) | |_) |                   .'      __.----.__      `.     
-            " \\_____/\\___/ \\___/| .__/                   /     .-\"          \"-.     \\
-            "         __        | |                     /    .'                `.    \\   
-            "        / _|       |_|                    .    /                    \\    \\ 
-            "   ___ | |_                               /   ´                      `   `  
-            "  / _ \\|  _|                             ´   '                        '   | 
-            " | (_) | |                               |   |                        |   | 
-            "  \\___/|_|                               |   |                        |   |
-            "  _                               _      |   |                        |   |
-            " | |     ___  __ _  ___ _ __   __| |     |   .                        .   .   
-            " | |    / _ \\/ _` |/ _ \\ '_ \\ / _` |     `    \\   .-\"\"\"\"-.           / 
-            " | |___|  __/ (_| |  __/ | | | (_| |      \\    \\ /        \\   __    /    /  
-            " \\_____/\\___|\\__, |\\___|_| |_|\\__,_|       \\    (|)(|)_   .-'\".'  .'  
-            "              __/ |                         \\    \\   /_>-'  .<_.-'     /    
-            "             |___/                           `.   `-'     .'         .'     
-            "                                               `--.|___.-'`._    _.-'       
-            "
-
----
-
 ## 1. Building the Application
 
 Loop of snake has been developed in a Maven repository utilizing the multi-module approach. To launch this game, it is necessary to open two separate terminals.
