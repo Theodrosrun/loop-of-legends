@@ -1,5 +1,8 @@
 package ch.heigvd;
 
+/**
+ * The class that represent the position on the map
+ */
 public class Position {
 
     /**

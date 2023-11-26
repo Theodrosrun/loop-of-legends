@@ -9,6 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The class that represent the server
+ */
 public class Server {
     /**
      * The number of players in the game

@@ -4,6 +4,9 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * The class that represent the server worker
+ */
 public class ServerWorker implements Runnable {
     /**
      * the player that the server worker is associated with

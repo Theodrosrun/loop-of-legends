@@ -5,7 +5,9 @@ import ch.heigvd.snake.Snake;
 import java.util.ArrayList;
 
 import static ch.heigvd.DIRECTION.*;
-
+/**
+ * The class that represent the lobby
+ */
 public class Lobby {
     /**
      * The list of players in the lobby

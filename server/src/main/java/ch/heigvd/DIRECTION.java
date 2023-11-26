@@ -6,7 +6,6 @@ public enum DIRECTION {
     LEFT,
     RIGHT;
 
-
     public static DIRECTION parseKey(KEY key){
 
         switch (key) {

@@ -2,6 +2,9 @@ package ch.heigvd;
 
 import ch.heigvd.snake.Snake;
 
+/**
+ * The class that represent the player
+ */
 public class Player {
 
     /**

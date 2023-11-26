@@ -1,6 +1,9 @@
 package ch.heigvd;
 import java.util.ArrayList;
 
+/**
+ * The class that represent the food on the map
+ */
 public class Food {
 
     /**
@@ -37,7 +40,7 @@ public class Food {
      * the time counter that generate the food
      */
     private int counter = 0;
-    
+
     /**
      * Constructor
      * @param quantity the quantity of food generated each time
