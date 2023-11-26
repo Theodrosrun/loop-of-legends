@@ -55,21 +55,28 @@ Before you begin with Loop of Legends, please execute the following commands:
 For launching applications on Windows, use the `javaw` command.
 
 #### Launching server:
+By default, port is 20000.
 ```bash
 javaw -jar server-1.0-SNAPSHOT.jar [port]
 ```
 Examples:
 ```bash
 javaw -jar server-1.0-SNAPSHOT.jar
+```
+```bash
 javaw -jar server-1.0-SNAPSHOT.jar 40000
 ```
 #### Launching client:
+By default, IP is 127.0.0.1 and port is 20000.
 ```bash
-javaw -jar client-1.0-SNAPSHOT.jar <server-address> <port>
+javaw -jar client-1.0-SNAPSHOT.jar [server-address] [port]
 ```
 Example:
 ```bash
-javaw -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
+javaw -jar client-1.0-SNAPSHOT.jar
+```
+```bash
+javaw -jar client-1.0-SNAPSHOT.jar 192.168.1.10 40000
 ```
 
 <br>
@@ -78,22 +85,29 @@ javaw -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
 For launching applications on Linux, use the `java` command.
 
 #### Launching server:
+By default, port is 20000.
 ```bash
 java -jar server-1.0-SNAPSHOT.jar [port]
 ```
 Examples:
 ```bash
 java -jar server-1.0-SNAPSHOT.jar
+```
+```bash
 java -jar server-1.0-SNAPSHOT.jar 40000
 ```
 
 #### Launching client:
+By default, IP is 127.0.0.1 and port is 20000.
 ```bash
-java -jar client-1.0-SNAPSHOT.jar <server-address> <port>
+java -jar client-1.0-SNAPSHOT.jar [server-address] [port]
 ```
 Example:
 ```bash
-java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 20000
+java -jar client-1.0-SNAPSHOT.jar
+```
+```bash
+java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 40000
 ```
 
 <br>
