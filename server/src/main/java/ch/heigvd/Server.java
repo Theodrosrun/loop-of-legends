@@ -9,6 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The class that represent the server
+ */
 public class Server {
     /**
      * The number of players in the game
@@ -19,11 +22,6 @@ public class Server {
      * The logger
      */
     private final static Logger LOG = Logger.getLogger(Server.class.getName());
-
-    /**
-     *  The frequency that refresh the lobby in milliseconds
-     */
-    private final int LOBBY_FREQUENCY = 100;
 
     /**
      * The frequency that refresh the game in milliseconds
@@ -133,14 +131,14 @@ public class Server {
         Thread thListener = new Thread(this::listenNewClient);
         thListener.start();
 
-        board = new Board(30, 15, (short) NB_PLAYER, (short) 20, (short) 200);
+        board = new Board(30, 15, 20,200);
 
         //loop for lobby
         lobby.open();
         while (!lobby.everyPlayerReady()) {
             board.deployLobby(lobby);
             try {
-                Thread.sleep(LOBBY_FREQUENCY);
+                Thread.sleep(GAME_FREQUENCY);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -160,6 +158,14 @@ public class Server {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /**
+     * Get the frequency that refresh the game in milliseconds
+     * @return The frequency that refresh the game in milliseconds
+     */
+    public int getGameFrequency(){
+        return GAME_FREQUENCY;
     }
 
     /**

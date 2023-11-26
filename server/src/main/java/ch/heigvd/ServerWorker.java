@@ -4,15 +4,45 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * The class that represent the server worker
+ */
 public class ServerWorker implements Runnable {
-    private final int UPDATE_FREQUENCY = 100; // [ms]
+    /**
+     * the player that the server worker is associated with
+     */
     private Player player;
+
+    /**
+     * the server that the server worker work for
+     */
     private Server server;
+
+    /**
+     * the socket used to communicate with the client
+     */
     private Socket clientSocket;
+
+    /**
+     * the input stream used to communicate with the client
+     */
     private BufferedReader clientInput = null;
+
+    /**
+     * the output stream used to communicate with the client
+     */
     private BufferedWriter serverOutput = null;
+
+    /**
+     * the thread that update the gui of the client
+     */
     private Thread thGuiUpdate = new Thread(this::guiUpdate);
 
+    /**
+     * The constructor
+     * @param clientSocket The socket used to communicate with the client
+     * @param server The server that the server worker work for
+     */
     public ServerWorker(Socket clientSocket, Server server) {
         this.server = server;
         this.clientSocket = clientSocket;
@@ -36,6 +66,9 @@ public class ServerWorker implements Runnable {
         Runtime.getRuntime().addShutdownHook(exitTh);
     }
 
+    /**
+     * The run method of the thread
+     */
     @Override
     public void run() {
         try {
@@ -124,10 +157,13 @@ public class ServerWorker implements Runnable {
         }
     }
 
+    /**
+     * Update the gui of the client
+     */
     public void guiUpdate() {
         while (true) {
             try {
-                Thread.sleep(UPDATE_FREQUENCY);
+                Thread.sleep(server.getGameFrequency() / 2);
             } catch (InterruptedException e) {
                 System.out.println("Server exception: " + e);
             }

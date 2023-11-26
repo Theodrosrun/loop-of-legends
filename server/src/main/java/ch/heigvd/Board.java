@@ -1,59 +1,69 @@
 package ch.heigvd;
-
-import ch.heigvd.Food;
 import ch.heigvd.snake.Snake;
-import ch.qos.logback.core.joran.sanity.Pair;
-
 import java.util.ArrayList;
-import java.util.HashMap;
+
 
 import static java.lang.Math.abs;
-
+/**
+ * The class that represent the board of the game
+ */
 public class Board {
 
+    /**
+     * the representation of the border
+     */
     private final char emptyChar = ' ';
 
-    private BorderType borderType = BorderType.NORMAL;
+    /**
+     * the representation of the border
+     */
+    private final BorderType borderType = BorderType.NORMAL;
 
+    /**
+     * the board
+     */
+    private final char[][] board;
 
-    //TODO board should be private
-    private char[][] board;
+    /**
+     * the food on the board
+     */
+    private final Food foods;
 
-    private Food foods;
-
-    public Board(int width, int height, short nbSnakes, short foodQuantity, short foodFrequency) {
+    /**
+     * Constructor
+     * @param width the width of the board
+     * @param height the height of the board
+     * @param foodQuantity the quantity of food generated each time
+     * @param foodFrequency the frequency of the food generation
+     */
+    public Board(int width, int height, int foodQuantity, int foodFrequency) {
         board = new char[height + 2][width + 2];
         setBorder(board);
         foods = new Food(foodQuantity, foodFrequency);
     }
 
-    private void clearBoard() {
-        for (int i = 1; i < board.length - 1; i++) {
-            for (int j = 1; j < board[0].length - 1; j++) {
-                board[i][j] = emptyChar;
-            }
-        }
-    }
-
-    private int getRelativeValue(int value, int limit) {
-
-        int relativeValue = value % limit;
-
-        if (value % limit < 1) {
-            relativeValue = limit - (1 + abs(relativeValue));
-        }
-        return relativeValue;
-
-    }
-
+    /**
+     * get the relative x position of the board
+     * @param x the x position
+     * @return the relative x position of the board
+     */
     public int getRelativeX(int x) {
         return getRelativeValue(x, board[0].length - 1);
     }
 
+    /**
+     * get the relative y position of the board
+     * @param y the y position
+     * @return the relative y position of the board
+     */
     public int getRelativeY(int y) {
         return getRelativeValue(y, board.length - 1);
     }
 
+    /**
+     * deploy the snakes on the board
+     * @param snakes the list of snakes to deploy
+     */
     public void deploySnakes(ArrayList<Snake> snakes) {
         clearBoard();
         for (Snake snake : snakes) {
@@ -68,6 +78,10 @@ public class Board {
         }
     }
 
+    /**
+     * deploy the lobby on the board
+     * @param lobby the lobby to deploy
+     */
     public void deployLobby(Lobby lobby) {
 
         for ( int i = 0; i < lobby.getNbPlayer(); ++i) {
@@ -87,6 +101,9 @@ public class Board {
         }
     }
 
+    /**
+     * deploy the food on the board
+     */
     public void deployFood() {
           for (Position food : foods.getFood()) {
             int y = getRelativeY(food.getY());
@@ -97,6 +114,11 @@ public class Board {
         }
     }
 
+    /**
+     * check if the snake at the given position eat a food
+     * @param position the position of the snake
+     * @return true if the snake eat a food, false otherwise
+     */
     public boolean eat(Position position) {
         int y = getRelativeY(position.getY());
         int x = getRelativeX(position.getX());
@@ -114,6 +136,54 @@ public class Board {
         return false;
     }
 
+    /**
+     * get the width of the board
+     * @return the width of the board
+     */
+    public int getWidth() {
+        return board[0].length;
+    }
+
+    /**
+     * get the height of the board
+     * @return the height of the board
+     */
+    public int getHeight(){
+        return board.length;
+    }
+
+    /**
+     * clear the board
+     */
+    private void clearBoard() {
+        for (int i = 1; i < board.length - 1; i++) {
+            for (int j = 1; j < board[0].length - 1; j++) {
+                board[i][j] = emptyChar;
+            }
+        }
+    }
+
+    /**
+     * get the relative value of the given value
+     * @param value the value to get the relative value
+     * @param limit the limit of the value
+     * @return the relative value of the given value
+     */
+    private int getRelativeValue(int value, int limit) {
+
+        int relativeValue = value % limit;
+
+        if (value % limit < 1) {
+            relativeValue = limit - (1 + abs(relativeValue));
+        }
+        return relativeValue;
+
+    }
+
+    /**
+     * set the border of the board
+     * @param board the board to set the border
+     */
     private void setBorder(char[][] board) {
         for (int i = 1; i < board.length - 1; i++) {
             for (int j = 1; j < board[0].length - 1; j++) {
@@ -130,13 +200,9 @@ public class Board {
             board[board.length - 1][i] = Border.HORIZONTAL.getBorder(borderType);
         }
         board[0][0] = Border.CORNER_TOP_LEFT.getBorder(borderType);
-        board[0][board[0].length - 1] = Border.CORNER_TOP_RIGHT.getBorder(borderType);;
-        board[board.length - 1][0] = Border.CORNER_BOTTOM_LEFT.getBorder(borderType);;
-        board[board.length - 1][board[0].length - 1] = Border.CORNER_BOTTOM_RIGHT.getBorder(borderType);;
-    }
-
-    public char[][] getBoard() {
-        return board;
+        board[0][board[0].length - 1] = Border.CORNER_TOP_RIGHT.getBorder(borderType);
+        board[board.length - 1][0] = Border.CORNER_BOTTOM_LEFT.getBorder(borderType);
+        board[board.length - 1][board[0].length - 1] = Border.CORNER_BOTTOM_RIGHT.getBorder(borderType);
     }
 
     @Override
@@ -149,13 +215,5 @@ public class Board {
             sb.append("\n");
         }
         return sb.toString();
-    }
-
-    public int getWidth() {
-        return board[0].length;
-    }
-
-    public int getHeigth(){
-        return board.length;
     }
 }

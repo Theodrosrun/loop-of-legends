@@ -20,12 +20,28 @@ import com.googlecode.lanterna.gui2.dialogs.TextInputDialog;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.regex.Pattern;
-
+/**
+ * This class represents a terminal. It is used to display messages to the user
+ * and to get input from the user.
+ */
 public class Terminal implements InputProvider {
+
+    /**
+     * The terminal
+     */
     private com.googlecode.lanterna.terminal.Terminal terminal;
+    /**
+     * The screen
+     */
     private Screen screen = null;
+    /**
+     * The text graphics used to display messages
+     */
     private TextGraphics text;
 
+    /**
+     * Constructor
+     */
     public Terminal() {
         try {
             terminal = new DefaultTerminalFactory().createTerminal();
@@ -43,10 +59,10 @@ public class Terminal implements InputProvider {
         text = screen.newTextGraphics();
     }
 
-    public void helloTerminal() {
-        print("Hello Terminal!");
-    }
-
+    /**
+     * Get the user input
+     * @return the user input
+     */
     public String userInput() {
         WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
         String input = "\0";
@@ -59,6 +75,10 @@ public class Terminal implements InputProvider {
     }
 
 
+    /**
+     * Print a message to the terminal
+     * @param s the message to print
+     */
     public void print(String s) {
         try {
             screen.setCursorPosition(null);
@@ -91,17 +111,27 @@ public class Terminal implements InputProvider {
         }
     }
 
-
+    /**
+     * Unused method but required by the interface
+     */
     @Override
     public KeyStroke pollInput() throws IOException {
         return null;
     }
 
+    /**
+     * Read the user input
+     * @return the user input
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     public KeyStroke readInput() throws IOException {
         return terminal.readInput();
     }
 
+    /**
+     * Clear the terminal
+     */
     public void clear() {
         screen.clear();
     }

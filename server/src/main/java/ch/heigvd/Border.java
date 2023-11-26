@@ -1,5 +1,8 @@
 package ch.heigvd;
 
+/**
+ * The enum that represent the piece of border of the map
+ */
 public enum Border {
     HORIZONTAL,
     VERTICAL,
@@ -8,6 +11,9 @@ public enum Border {
     CORNER_BOTTOM_LEFT,
     CORNER_BOTTOM_RIGHT;
 
+    /**
+     * The char that represent the border
+     */
     private char[] borderChars;
 
     static {
@@ -19,6 +25,11 @@ public enum Border {
         CORNER_BOTTOM_RIGHT.borderChars = new char[]{'╝', '┘', '┛'};
     }
 
+    /**
+     * Get the char that represent the border
+     * @param borderType The type of border
+     * @return The char that represent the border
+     */
     public char getBorder(BorderType borderType) {
         return borderChars[borderType.ordinal()];
     }

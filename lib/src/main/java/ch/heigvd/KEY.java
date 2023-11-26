@@ -2,6 +2,10 @@ package ch.heigvd;
 
 import com.googlecode.lanterna.input.KeyStroke;
 
+/**
+ * Enumeration of the different keys that can be pressed by the user
+ * during the game.
+ */
 public enum KEY {
     UP,
     DOWN,
@@ -12,27 +16,11 @@ public enum KEY {
     READY,
     NONE;
 
-    public static KEY getKey(int keyCode) {
-        switch (keyCode) {
-            case 57419:
-                return LEFT;
-            case 57416:
-                return UP;
-            case 57421:
-                return RIGHT;
-            case 57424:
-                return DOWN;
-            case 16://q
-                return QUIT;
-            case 28:// Enter
-                return ENTER;
-            case 19://r
-                return READY;
-            default:
-                return NONE;
-        }
-    }
-
+    /**
+     * Parse a KeyStroke into a KEY
+     * @param key the KeyStroke to parse
+     * @return the corresponding KEY
+     */
     public static KEY parseKeyStroke(KeyStroke key) {
         if (key == null) {
             return KEY.NONE;

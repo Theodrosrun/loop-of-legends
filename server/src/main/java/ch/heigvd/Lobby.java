@@ -5,36 +5,63 @@ import ch.heigvd.snake.Snake;
 import java.util.ArrayList;
 
 import static ch.heigvd.DIRECTION.*;
-
+/**
+ * The class that represent the lobby
+ */
 public class Lobby {
-    private ArrayList<Player> players;
+    /**
+     * The list of players in the lobby
+     */
+    private final ArrayList<Player> players;
 
+    /**
+     * The boolean that indicates if the lobby is open
+     */
     private boolean isOpen = true;
 
-    private final int MAX_PLAYERS;
+    /**
+     * The maximum number of players in the lobby
+     */
+    private final int maxPlayers;
 
+    /**
+     * Constructor
+     * @param maxPlayers The maximum number of players in the lobby
+     */
     public Lobby(int maxPlayers) {
-        MAX_PLAYERS = maxPlayers;
+        this.maxPlayers = maxPlayers;
         players = new ArrayList<>();
     }
 
-    public boolean join(Player player) {
+
+    /**
+     * Add a player to the lobby
+     * @param player The player to add
+     */
+    public void join(Player player) {
         for (Player p : players) {
             if (p.getName().equals(player.getName())) {
-                return false;
+                return;
             }
         }
-        if (players.size() < MAX_PLAYERS) {
+        if (players.size() < maxPlayers) {
             players.add(player);
-            return true;
         }
-        return false;
     }
+
+    /**
+     * Set the ready state of the player
+     * @param player
+     */
     public void setReady(Player player) {
         player.setReady();
     }
+
+    /**
+     * Get the ready players
+     * @return The ready players
+     */
     public ArrayList<Player> getReadyPlayers() {
-        int nbReady = countReady();
         ArrayList<Player> readyPlayers = new ArrayList<>();
         for (Player player : players) {
             if (player.isReady()) {
@@ -43,46 +70,50 @@ public class Lobby {
         }
         return readyPlayers;
     }
-    public Player getPlayer(int id) {
-        for (Player p : players) {
-            if (p.getId() == id) {
-                return p;
-            }
-        }
-        return null;
-    }
+
+    /**
+     * Ask if the lobby is full
+     * @return true if the lobby is full
+     */
     public boolean lobbyIsFull() {
-        return players.size() >= MAX_PLAYERS;
+        return players.size() >= maxPlayers;
     }
-    private int countReady() {
-        int nbReady = 0;
-        for (Player player : players) {
-            if (player.isReady()) {
-                nbReady++;
-            }
-        }
-        return nbReady;
-    }
+
+    /**
+     * Get the players in the lobby
+     * @return The players in the lobby
+     */
     public ArrayList<Player> getPlayers() {
         return players;
     }
 
+    /**
+     * Ask if the lobby is open
+     * @return true if the lobby is open
+     */
     public boolean isOpen() {
         return isOpen;
     }
 
+    /**
+     * Close the lobby
+     */
     public void close() {
         isOpen = false;
     }
 
+    /**
+     * Get the number of players in the lobby
+     * @return The number of players in the lobby
+     */
     public int getNbPlayer() {
         return players.size();
     }
 
-    public int getNbReadyPlayers() {
-        return getReadyPlayers().size();
-    }
-
+    /**
+     * Ask if every player is ready
+     * @return true if every player is ready
+     */
     public boolean everyPlayerReady() {
         for (Player player : players) {
             if (!player.isReady()) {
@@ -92,14 +123,26 @@ public class Lobby {
         return !getReadyPlayers().isEmpty();
     }
 
+    /**
+     * Remove a player from the lobby
+     * @param player The player to remove
+     */
     public void removePlayer(Player player) {
         players.remove(player);
     }
 
+    /**
+     * Open the lobby
+     */
     public void open() {
         isOpen = true;
     }
 
+    /**
+     * Ask if the player name is already in use
+     * @param userName The name to check
+     * @return true if the name is already in use
+     */
     public boolean playerNameAlreadyInUse(String userName) {
         for (Player player : players) {
             if (player.getName().equals(userName)) {
@@ -109,33 +152,37 @@ public class Lobby {
         return false;
     }
 
+    /**
+     * init snakes for each player in the lobby
+     * @param board the board to determine and compute the position of the snakes
+     */
     public void initSnakes(Board board) {
         int initLenght = 3;
         Position initPosition;
         int bw = board.getWidth();
-        int bh = board.getHeigth();
+        int bh = board.getHeight();
 
         int i = 0;
         for (Player player : players) {
             switch (i) {
                 case 0: {
                     initPosition = new Position(bw / 2, bh, UP, ' ');
-                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    player.setSnake(new Snake(initPosition, initLenght, i));
                     break;
                 }
                 case 1: {
                     initPosition = new Position(0, bh / 2, LEFT, ' ');
-                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    player.setSnake(new Snake(initPosition, initLenght, i));
                     break;
                 }
                 case 2: {
                     initPosition = new Position(bw / 2, 0, DOWN, ' ');
-                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    player.setSnake(new Snake(initPosition, initLenght, i));
                     break;
                 }
                 case 3: {
                     initPosition = new Position(bw, bh / 2, RIGHT, ' ');
-                    player.setSnake(new Snake(initPosition, (short) initLenght));
+                    player.setSnake(new Snake(initPosition, initLenght, i));
                     break;
                 }
             }
@@ -143,16 +190,28 @@ public class Lobby {
         }
     }
 
+    /**
+     * Set the direction of the player
+     * @param player The player to set the direction
+     * @param direction The direction to set
+     */
     public void setDirection(Player player, DIRECTION direction) {
         player.getSnake().setNextDirection(direction);
     }
 
+    /**
+     * Move the snakes for each player
+     */
     public void snakeStep() {
         for (Player player : players) {
             player.getSnake().step();
         }
     }
 
+    /**
+     * Get the snakes of the players
+     * @return The snakes of the players
+     */
     public ArrayList<Snake> getSnakes() {
         ArrayList<Snake> snakes = new ArrayList<>();
         for (Player player : players) {
