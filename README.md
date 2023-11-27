@@ -208,6 +208,6 @@ Common messages
 ### Lobby is full:
 ![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/lobbyIsFull.png)
 ### Username Already Taken:
-![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/usernameAlreadyTaken.png)
+![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/feature/improving-readme/docs/usernameAlreadyTaken.png)
 ### Socket closed:
 ![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/socketClosed.png)
