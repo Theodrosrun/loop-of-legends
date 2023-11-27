@@ -124,7 +124,7 @@ Now that you are ready, Follow these simple steps to start playing and enjoy the
    - Start by entering your unique username. This name will represent you in the game and will be visible to other players. Choose a name that is distinctive and memorable!
 
 #### **Declare Ready**:
-   - Once you have entered your name and are ready to play, press the 'R' key. This will signal to other players and the game system that you are ready to begin. Wait for other players to also declare themselves ready.
+   - Once you have entered your name and are ready to play, press the `R` key. This will signal to other players and the game system that you are ready to begin. Wait for other players to also declare themselves ready.
 
 #### **Using the Arrow Keys**:
    - The game begins! Use the arrow keys to control your snake in the game arena.
@@ -138,7 +138,7 @@ Now that you are ready, Follow these simple steps to start playing and enjoy the
    - The more you eat, the longer your snake grows, making the game more challenging and exciting.
 
 #### **Exiting the Game**:
-- If you wish to leave the game, simply press the 'Q' key (or the designated exit key). This action will safely exit you from the game session.
+- If you wish to leave the game, simply press the `Q` key (or the designated exit key). This action will safely exit you from the game session.
 
 ---
 
