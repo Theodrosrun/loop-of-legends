@@ -35,17 +35,23 @@ In the first terminal, you will start the server module. This module is responsi
 
 In the second terminal, you will launch the client module. The client is the interface through which players interact with the game. This module communicates with the server to send commands and receive updates on the game's state.
 
-### Build Instructions
+### Prerequisites
+Ensure you have the Java Runtime Environment (JRE) or Java Development Kit (JDK) installed on your computer. The version of Java should be compatible with the application.
 
-Before you begin with Loop of Legends, please execute the following commands:
+### Step 1: Install Java
+- Install the **Java Runtime Environment (JRE)** or **Java Development Kit (JDK)**.
+- Ensure the Java version is compatible with the application.
+- You can check your Java version by running `java -version` in the command line.
 
-```sh
-# Download the dependencies
-./mvnw dependency:resolve
+### Step 2: Download the JAR File
+- Download the provided JAR file to your computer.
 
-# Package the application
-./mvnw package
-```
+### Step 3: Set File Permissions (Unix/Linux Only)
+- On Unix/Linux systems, you might need to make the JAR file executable:
+
+  ```bash
+  chmod +x path/to/jar.jar
+  ```
 
 ---
 
