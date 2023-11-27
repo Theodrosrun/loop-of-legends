@@ -219,6 +219,11 @@ public class Client {
                     inputHandler.resetKey();
                     isReady = true;
                 }
+                else if (inputHandler.getKey() == KEY.HELP) {
+                    terminal.clear();
+                    terminal.print(Help.Rules + "\n" + Help.Commands);
+                    requestKey(KEY.HELP);
+                }
                 if (inputHandler.getKey() == KEY.QUIT) {
                     command = Message.setCommand(Message.QUIT);
                     quit();
@@ -253,6 +258,7 @@ public class Client {
                 message = Message.getMessage(response);
                 data = Message.getData(response);
                 messageHandling(message, data);
+                terminal.clear();
                 terminal.print(data);
             }
             quit();
@@ -323,7 +329,16 @@ public class Client {
      * Request the user to press enter
      */
     private void requestEnter() {
-        while (inputHandler.getKey() != KEY.ENTER) {
+        requestKey(KEY.ENTER);
+    }
+
+    /**
+     * Request the user to press a key
+     * @param key the key to press
+     */
+    private void requestKey(KEY key){
+        inputHandler.resetKey();
+        while (inputHandler.getKey() != key) {
             inputHandler.restoreHandler();
             try {
                 Thread.sleep(200);
@@ -331,6 +346,7 @@ public class Client {
                 throw new RuntimeException(e);
             }
         }
+        inputHandler.resetKey();
     }
 
     public static void main(String[] args) {

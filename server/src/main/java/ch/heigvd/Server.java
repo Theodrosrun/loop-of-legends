@@ -31,7 +31,7 @@ public class Server {
     /**
      * The frequency that refresh the game in milliseconds
      */
-    private final int GAME_FREQUENCY = 300;
+    private final int GAME_FREQUENCY = 200;
 
     /**
      * The port used by the server
@@ -160,7 +160,7 @@ public class Server {
             Thread thListener = new Thread(this::listenNewClient);
             thListener.start();
 
-            board = new Board(30, 15, 5, 200);
+            board = new Board(30, 15, 15, 200);
 
             //loop for lobby
             lobby.open();

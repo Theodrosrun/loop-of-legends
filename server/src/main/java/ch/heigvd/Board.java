@@ -55,7 +55,7 @@ public class Board {
      * @param snakes the list of snakes to deploy
      */
     public void deploySnakes(ArrayList<Snake> snakes) {
-        clearBoard();
+        setBorder(board);
         for (Snake snake : snakes) {
             if (eat(snake.getHead())) {
                 snake.grow();

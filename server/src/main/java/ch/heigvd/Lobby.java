@@ -222,15 +222,9 @@ public class Lobby {
 
     public String getInfos() {
         if (isOpen) {
-            return " RULES\n" +
-                    "_____\n" +
-                    "if you eat yourself or if you eat the head of other player, you are lose\n" +
-                    "if you eat another player's body, you cut it in half and the tail becomes food\n\n" +
-                    "COMMANDS\n" +
-                    "________\n" +
-                    "Use arrow keys to move\n" +
-                    "Press r to ready\n" +
-                    "Press q to quit\n";
+            return "Press r to ready\n" +
+                    "Press q to quit\n" +
+                    "Press h to get help\n";
         } else {
             StringBuilder sb = new StringBuilder();
             for (Player p : players) {
