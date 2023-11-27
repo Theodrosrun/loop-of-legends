@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import static ch.heigvd.Position.getRelativeX;
 import static ch.heigvd.Position.getRelativeY;
-import static java.lang.Math.abs;
 
 /**
  * The class that represent the board of the game
@@ -44,6 +43,8 @@ public class Board {
      */
     public Board(int width, int height, int foodQuantity, int foodFrequency) {
         board = new char[height + 2][width + 2];
+        Position.setLimit_y(height);
+        Position.setLimit_x(width);
         setBorder(board);
         foods = new Food(foodQuantity, foodFrequency);
     }
@@ -56,12 +57,12 @@ public class Board {
     public void deploySnakes(ArrayList<Snake> snakes) {
         clearBoard();
         for (Snake snake : snakes) {
-            if (eat(snake.getHead(), board[0].length, board.length)) {
+            if (eat(snake.getHead())) {
                 snake.grow();
             }
             for (Position position : snake.getPositions()) {
-                int y = getRelativeY(position.getY(), board.length);
-                int x = getRelativeX(position.getX(), board[0].length);
+                int y = position.getY() + 1;
+                int x = position.getX() + 1;
                 board[y][x] = position.getRepresentation();
             }
         }
@@ -76,11 +77,12 @@ public class Board {
         setBorder(board);
         for (int i = 0; i < lobby.getNbPlayer(); ++i) {
             StringBuilder sb = new StringBuilder(Border.VERTICAL.getBorder(borderType) + " ");
-            int maxNameSize = getWidth() - 11;
+            int maxNameSize = getWidth() - 15;
             Player player = lobby.getPlayers().get(i);
             String ready = player.isReady() ? "READY" : "WAIT ";
 
-            sb.append(player.getId()).append(" ");
+            sb.append(player.getId()).append("  ");
+            sb.append(Snake.HEAD[i]).append("  ");
             sb.append(player.getName(), 0, Math.min(player.getName().length(), maxNameSize));
             if (player.getName().length() - maxNameSize < 0) {
                 sb.append(String.valueOf(emptyChar).repeat(maxNameSize - player.getName().length()));
@@ -97,8 +99,8 @@ public class Board {
      */
     public void deployFood() {
         for (Position food : foods.getFood()) {
-            int y = getRelativeY(food.getY(), board.length);
-            int x = getRelativeX(food.getX(), board[0].length);
+            int y = food.getY() + 1;
+            int x = food.getX() + 1;
             if (board[y][x] == emptyChar) {
                 board[y][x] = food.getRepresentation();
             }
@@ -115,14 +117,11 @@ public class Board {
      * @param position the position of the snake
      * @return true if the snake eat a food, false otherwise
      */
-    public boolean eat(Position position, int limitX , int limitY) {
-        Position eatedPosition = Position.getRelativePosition(position, limitX, limitY);
-        int y = getRelativeY(position.getY(), board.length);
-        int x = getRelativeX(position.getX(), board[0].length);
+    public boolean eat(Position position) {
+
         for (Position food : foods.getFood()) {
-            int foodY = getRelativeY(food.getY(), board.length);
-            int foodX = getRelativeX(food.getX(), board[0].length);
-            if (foodX == x && foodY == y) {
+
+            if (food.equals(position)) {
                 if (foods.isEated(food)) {
                     return false;
                 }
@@ -188,6 +187,10 @@ public class Board {
         board[0][board[0].length - 1] = Border.CORNER_TOP_RIGHT.getBorder(borderType);
         board[board.length - 1][0] = Border.CORNER_BOTTOM_LEFT.getBorder(borderType);
         board[board.length - 1][board[0].length - 1] = Border.CORNER_BOTTOM_RIGHT.getBorder(borderType);
+    }
+
+    public void initBoard(){
+        setBorder(board);
     }
 
     @Override

@@ -157,7 +157,7 @@ public class Lobby {
      * @param board the board to determine and compute the position of the snakes
      */
     public void initSnakes(Board board) {
-        int initLenght = 10;
+        int initLenght = 4;
         Position initPosition;
         int bw = board.getWidth();
         int bh = board.getHeight();
@@ -202,9 +202,9 @@ public class Lobby {
     /**
      * Move the snakes for each player
      */
-    public void snakeStep(int limitX, int limitY) {
+    public void snakeStep() {
         for (Player player : players) {
-            player.getSnake().step(limitX, limitY);
+            player.getSnake().step();
         }
     }
 

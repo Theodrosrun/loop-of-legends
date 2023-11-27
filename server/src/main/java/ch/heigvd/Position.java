@@ -6,6 +6,8 @@ import static java.lang.Math.abs;
  * The class that represent the position on the map
  */
 public class Position {
+    private static int limit_x = 0;
+    private static int limit_y = 0;
 
     /**
      * The x and y coordinates of the position
@@ -48,10 +50,18 @@ public class Position {
      * @param representation The representation of the position on board
      */
     public Position(int x, int y, DIRECTION direction, char representation) {
-        this.x = x;
-        this.y = y;
+        this.x = getRelativeX(x);
+        this.y = getRelativeY(y);
         this.direction = direction;
         this.representation = representation;
+    }
+
+    public static double getLimit_x() {
+        return limit_x;
+    }
+
+    public static double getLimit_y() {
+        return limit_y;
     }
 
     /**
@@ -114,7 +124,7 @@ public class Position {
         int relativeValue = value % limit;
 
         if (value % limit < 0) {
-            relativeValue = limit - (1 + abs(relativeValue));
+            relativeValue = limit - (abs(relativeValue));
         }
         return relativeValue;
 
@@ -125,8 +135,8 @@ public class Position {
      * @param x the x position
      * @return the relative x position of the board
      */
-    public static int getRelativeX(int x, int limit) {
-        return getRelativeValue(x, limit);
+    public static int getRelativeX(int x) {
+        return getRelativeValue(x, limit_x);
     }
 
     /**
@@ -135,11 +145,8 @@ public class Position {
      * @param y the y position
      * @return the relative y position of the board
      */
-    public static int getRelativeY(int y, int limit) {
-        return getRelativeValue(y, limit);
-    }
-    public static Position getRelativePosition(Position position, int limitX, int limitY) {
-        return new Position(getRelativeX(position.getX(), limitX), getRelativeY(position.getY(), limitY), position.getDirection(), position.getRepresentation());
+    public static int getRelativeY(int y) {
+        return getRelativeValue(y, limit_y);
     }
 
     /**
@@ -155,4 +162,11 @@ public class Position {
         return false;
     }
 
+    public static void setLimit_x(int limitX) {
+        limit_x = limitX;
+    }
+
+    public static void setLimit_y(int limitY) {
+        limit_y = limitY;
+    }
 }

@@ -160,7 +160,7 @@ public class Server {
             Thread thListener = new Thread(this::listenNewClient);
             thListener.start();
 
-            board = new Board(40, 20, 20, 200);
+            board = new Board(30, 15, 5, 200);
 
             //loop for lobby
             lobby.open();
@@ -180,14 +180,15 @@ public class Server {
             ArrayList<Position> generatedFood = new ArrayList<>();
             //loop for game
             while (lobby.getNbPlayer() > 0) {
+                board.initBoard();
                 generatedFood.clear();
-                lobby.snakeStep(board.getWidth(), board.getHeight());
+                lobby.snakeStep();
                 for (Player player : lobby.getPlayers()) {
                     if (!player.isAlive()) continue;
                     for (Player opponent : lobby.getPlayers()) {
                         if (player != opponent) {
                             {
-                                generatedFood.addAll(opponent.getSnake().attacked(player.getSnake().getHead(), board.getWidth(), board.getHeight()));
+                                generatedFood.addAll(opponent.getSnake().attacked(player.getSnake()));
                             }
                         }
                     }

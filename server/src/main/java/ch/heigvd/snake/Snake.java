@@ -11,7 +11,7 @@ public class Snake {
     /**
      * This array represent the head of the snake for each player
      */
-    private final static char[] HEAD = {'∅','0','●','⦿'};
+    public final static char[] HEAD = {'∅','0','●','⦿'};
 
     /**
      * define if the snake is alive or not
@@ -91,7 +91,7 @@ public class Snake {
     /**
      * moves the snake one step forward (step... lol... a snake... get it? YES I KNOW IT'S NOT FUNNY)
      */
-    public void step(int limitX, int limitY){
+    public void step(){
         Position head = body.getFirst();
         if (!alive) return;
         head.setRepresentation(getBodyRepresentation(head, head));
@@ -110,7 +110,7 @@ public class Snake {
         for (int i = 2; i < body.size(); i++) {
             body.get(i-1).setRepresentation(getBodyRepresentation(body.get(i), body.get(i - 1)));
         }
-        checkAutoCollision(limitX, limitY);
+        checkAutoCollision();
     }
 
     /**
@@ -168,28 +168,25 @@ public class Snake {
      * Check if the snake is in collision with itself
      * @return true if the snake is in collision with itself, false otherwise
      */
-    private void checkAutoCollision(int limitX, int limitY) {
-        Position head = Position.getRelativePosition(getHead(), limitX, limitY );
+    private void checkAutoCollision() {
+        ;
         for (int i = 1; i < body.size(); i++) {
-            Position bodyPart = Position.getRelativePosition(body.get(i), limitX, limitY);
-            if (bodyPart.equals(head)) {
+            if (body.get(i).equals(getHead())) {
                 alive = false;
                 break;
             }
         }
     }
 
-    public ArrayList<Position> attacked(Position bitePosition, int limitX, int limitY) {
+    public ArrayList<Position> attacked(Snake attackant) {
         ArrayList<Position> tail = new ArrayList<>();
-        Position bite = Position.getRelativePosition(bitePosition, limitX, limitY);
-        Position head = Position.getRelativePosition(getHead(), limitX, limitY);
-        if (bite.equals(head)) {
+        if (attackant.getHead().equals(getHead())) {
             alive = false;
+            attackant.setAlive(false);
             return tail;
         }
         for (int i = 1; i < body.size(); i++) {
-            Position bodyPart = Position.getRelativePosition(body.get(i), limitX, limitY);
-            if (bite.getX() == bodyPart.getX() && bite.getY() == bodyPart.getY()) {
+            if (attackant.getHead().equals(body.get(i))) {
                 for(int j = i; j < body.size(); j++) {
                     tail.add(body.get(j));
                 }
@@ -199,5 +196,9 @@ public class Snake {
             }
         }
         return tail;
+    }
+
+    private void setAlive(boolean isAlive) {
+        alive = isAlive;
     }
 }
