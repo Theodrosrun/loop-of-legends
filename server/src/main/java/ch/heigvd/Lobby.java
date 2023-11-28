@@ -13,16 +13,14 @@ public class Lobby {
      * The list of players in the lobby
      */
     private final ArrayList<Player> players;
-
-    /**
-     * The boolean that indicates if the lobby is open
-     */
-    private boolean isOpen = true;
-
     /**
      * The maximum number of players in the lobby
      */
     private final int maxPlayers;
+    /**
+     * The boolean that indicates if the lobby is open
+     */
+    private boolean isOpen = true;
 
     /**
      * Constructor

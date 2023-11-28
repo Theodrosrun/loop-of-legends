@@ -3,16 +3,12 @@ package ch.heigvd;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.lang.System.exit;
 
 /**
  * The class that represent the server
@@ -146,6 +142,11 @@ public class Server {
         return GAME_FREQUENCY;
     }
 
+    /**
+     * Get the infos of the lobby
+     *
+     * @return The infos of the lobby
+     */
     public String getInfos() {
         return lobby.getInfos();
     }
@@ -188,7 +189,7 @@ public class Server {
                     for (Player opponent : lobby.getPlayers()) {
                         if (player != opponent) {
                             {
-                                generatedFood.addAll(opponent.getSnake().attacked(player.getSnake()));
+                                generatedFood.addAll(opponent.getSnake().attack(player.getSnake()));
                             }
                         }
                     }

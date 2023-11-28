@@ -107,6 +107,11 @@ public class Board {
         }
     }
 
+    /**
+     * set food on the board
+     *
+     * @return the position of the generated food
+     */
     public void setFood(ArrayList<Position> generatedFood) {
         foods.setFood(generatedFood);
     }
@@ -161,8 +166,6 @@ public class Board {
         }
     }
 
-
-
     /**
      * set the border of the board
      *
@@ -189,6 +192,11 @@ public class Board {
         board[board.length - 1][board[0].length - 1] = Border.CORNER_BOTTOM_RIGHT.getBorder(borderType);
     }
 
+    /**
+     * Initialize the board
+     *
+     * @return the board
+     */
     public void initBoard(){
         setBorder(board);
     }

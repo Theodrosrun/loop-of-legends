@@ -52,6 +52,10 @@ public class Food {
         this.quantity = quantity;
     }
 
+    /**
+     * Used to set food
+     * @param generatedFood the generated food
+     */
     public void setFood( ArrayList<Position> generatedFood) {
         for (Position f : food) {
             f.setRepresentation(representation);

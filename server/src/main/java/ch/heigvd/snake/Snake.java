@@ -129,6 +129,10 @@ public class Snake {
         return Integer.toString(score);
     }
 
+    /**
+     * Define if the snake is alive or not
+     * @return true if the snake is alive, false otherwise
+     */
     public boolean isAlive() {
         return alive;
     }
@@ -178,7 +182,12 @@ public class Snake {
         }
     }
 
-    public ArrayList<Position> attacked(Snake attackant) {
+    /**
+     * Check if the snake is in collision with another snake
+     * @param attackant the snake to check
+     * @return the list of position of tail of the snake
+     * */
+    public ArrayList<Position> attack(Snake attackant) {
         ArrayList<Position> tail = new ArrayList<>();
         if (attackant.getHead().equals(getHead())) {
             alive = false;
@@ -198,6 +207,10 @@ public class Snake {
         return tail;
     }
 
+    /**
+     * Set the alive state of the snake
+     * @param isAlive the alive state of the snake
+     */
     private void setAlive(boolean isAlive) {
         alive = isAlive;
     }

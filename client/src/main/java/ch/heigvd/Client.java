@@ -10,20 +10,17 @@ import static java.lang.System.*;
 
 public class Client {
     /**
-     * The command, response, message and data used to communicate with the server
-     */
-    private String command = "", response = "", message = "", data = "";
-
-    /**
      * The terminal
      */
     private final Terminal terminal = new Terminal();
-
     /**
      * The input handler used to get the user inputs
      */
     private final InputHandler inputHandler = new InputHandler(terminal, 50);
-
+    /**
+     * The command, response, message and data used to communicate with the server
+     */
+    private String command = "", response = "", message = "", data = "";
     /**
      * The output streams used to communicate with the server
      */
