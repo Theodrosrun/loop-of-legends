@@ -35,17 +35,20 @@ In the first terminal, you will start the server module. This module is responsi
 
 In the second terminal, you will launch the client module. The client is the interface through which players interact with the game. This module communicates with the server to send commands and receive updates on the game's state.
 
-### Build Instructions
+### Prerequisites
+Ensure you have the Java Runtime Environment 17 (JRE) or Java Development Kit 17 (JDK) installed on your computer. The version of Java should be compatible with the application.
 
-Before you begin with Loop of Legends, please execute the following commands:
+### Step 1: Install Java
+- Install the **Java Runtime Environment 17** or **Java Development Kit 17**.
+- Ensure the Java version is compatible with the application.
+- You can check your Java version by running `java -version` in the command line.
 
-```sh
-# Download the dependencies
-./mvnw dependency:resolve
+### Step 2: Set File Permissions (Unix/Linux Only)
+- On Unix/Linux systems, you might need to make the JAR file executable:
 
-# Package the application
-./mvnw package
-```
+  ```bash
+  chmod +x path/to/jar.jar
+  ```
 
 ---
 
@@ -117,12 +120,19 @@ java -jar client-1.0-SNAPSHOT.jar 192.168.1.10 40000
 ### How to play
 Now that you are ready, Follow these simple steps to start playing and enjoy the game:
 
+#### **Game Objective**:
+   - Your goal is to grow your snake by eating special items that appear in the arena.
+   - The more you eat, the longer your snake grows, making the game more challenging and exciting.
+
 #### **Enter Your Username**:
    - Start by entering your unique username. This name will represent you in the game and will be visible to other players. Choose a name that is distinctive and memorable!
 
 #### **Declare Ready**:
-   - Once you have entered your name and are ready to play, press the 'R' key. This will signal to other players and the game system that you are ready to begin. Wait for other players to also declare themselves ready.
+   - Once you have entered your name and are ready to play, press the `R` key. This will signal to other players and the game system that you are ready to begin. Wait for other players to also declare themselves ready.
 
+#### **Help Menu**:
+   - To view the help menu with game instructions and tips, press the `H` key. This will bring up a comprehensive guide covering various aspects of the game, including controls, objectives, and frequently asked questions. The menu is designed to assist players.
+   
 #### **Using the Arrow Keys**:
    - The game begins! Use the arrow keys to control your snake in the game arena.
      - **Up:** Press the up arrow to move your snake upwards.
@@ -130,12 +140,8 @@ Now that you are ready, Follow these simple steps to start playing and enjoy the
      - **Down:** The down arrow will move your snake downwards.
      - **Left:** And finally, use the left arrow to turn left.
 
-#### **Game Objective**:
-   - Your goal is to grow your snake by eating special items that appear in the arena.
-   - The more you eat, the longer your snake grows, making the game more challenging and exciting.
-
 #### **Exiting the Game**:
-- If you wish to leave the game, simply press the 'Q' key (or the designated exit key). This action will safely exit you from the game session.
+- If you wish to leave the game, simply press the `Q` key (or the designated exit key). This action will safely exit you from the game session.
 
 ---
 
@@ -193,13 +199,15 @@ Common messages
 - **Socket Closed/Disconnection**: If the client's connection to the server is unexpectedly closed (e.g., due to a socket closure), the client's termnal will display a notification message to the user. This message informs the user about the disconnection. This straightforward communication helps the user understand that the issue is related to the network connection and guides them on the immediate steps they can take. The client's application is responsible for detecting when the socket has been closed.
 
 ## 3.4 Examples
-### Client plays - Single player
+### Client plays - Single player:
 ![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/clientPlays.png)
-### Clients play - Multiplayers
+### Clients play - Multiplayers:
 ![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/clientsPlay.png)
-### Client leaves
+### Client leaves:
 ![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/clientLeaves.png)
-### Lobby is full
+### Lobby is full:
 ![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/lobbyIsFull.png)
-### Socket closed
+### Username Already Taken:
+![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/feature/improving-readme/docs/usernameAlreadyTaken.png)
+### Socket closed:
 ![Example Image](https://github.com/Theodrosrun/loop-of-legends/blob/23-protocol-finalization/docs/socketClosed.png)
