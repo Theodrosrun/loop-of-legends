@@ -14,6 +14,7 @@ public enum KEY {
     QUIT,
     ENTER,
     READY,
+    HELP,
     NONE;
 
     /**
@@ -34,6 +35,7 @@ public enum KEY {
             case Character -> switch (key.getCharacter()) {
                 case 'q' -> KEY.QUIT;
                 case 'r' -> KEY.READY;
+                case 'h' -> KEY.HELP;
                 default -> KEY.NONE;
             };
             default -> KEY.NONE;

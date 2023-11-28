@@ -88,6 +88,14 @@ public class Player {
         return id;
     }
 
+    public String getInfo() {
+        return snake.getInfo();
+    }
+
+    public boolean isAlive() {
+        return snake.isAlive();
+    }
+
     /**
      * compare two players with their id
      * @param obj The player to compare

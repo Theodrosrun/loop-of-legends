@@ -3,6 +3,7 @@ package ch.heigvd.snake;
 import ch.heigvd.DIRECTION;
 import ch.heigvd.Position;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Snake {
@@ -10,7 +11,7 @@ public class Snake {
     /**
      * This array represent the head of the snake for each player
      */
-    private final static char[] HEAD = {'∅','0','●','⦿'};
+    public final static char[] HEAD = {'∅','0','●','⦿'};
 
     /**
      * define if the snake is alive or not
@@ -90,9 +91,9 @@ public class Snake {
     /**
      * moves the snake one step forward (step... lol... a snake... get it? YES I KNOW IT'S NOT FUNNY)
      */
-    public void step() {
+    public void step(){
         Position head = body.getFirst();
-        if (!checkAutoCollision()) return;
+        if (!alive) return;
         head.setRepresentation(getBodyRepresentation(head, head));
 
         Position newHead = new Position(
@@ -109,6 +110,7 @@ public class Snake {
         for (int i = 2; i < body.size(); i++) {
             body.get(i-1).setRepresentation(getBodyRepresentation(body.get(i), body.get(i - 1)));
         }
+        checkAutoCollision();
     }
 
     /**
@@ -122,8 +124,17 @@ public class Snake {
      * Get the score of the snake
      * @return the score string of the snake
      */
-    public String getScore() {
-        return "Score: " + score;
+    public String getInfo() {
+        if (!alive) return "DEAD";
+        return Integer.toString(score);
+    }
+
+    /**
+     * Define if the snake is alive or not
+     * @return true if the snake is alive, false otherwise
+     */
+    public boolean isAlive() {
+        return alive;
     }
 
     /**
@@ -161,13 +172,46 @@ public class Snake {
      * Check if the snake is in collision with itself
      * @return true if the snake is in collision with itself, false otherwise
      */
-    private boolean checkAutoCollision() {
+    private void checkAutoCollision() {
+        ;
         for (int i = 1; i < body.size(); i++) {
-            if (body.getFirst().equals(body.get(i))) {
+            if (body.get(i).equals(getHead())) {
                 alive = false;
                 break;
             }
         }
-        return alive;
+    }
+
+    /**
+     * Check if the snake is in collision with another snake
+     * @param attackant the snake to check
+     * @return the list of position of tail of the snake
+     * */
+    public ArrayList<Position> attack(Snake attackant) {
+        ArrayList<Position> tail = new ArrayList<>();
+        if (attackant.getHead().equals(getHead())) {
+            alive = false;
+            attackant.setAlive(false);
+            return tail;
+        }
+        for (int i = 1; i < body.size(); i++) {
+            if (attackant.getHead().equals(body.get(i))) {
+                for(int j = i; j < body.size(); j++) {
+                    tail.add(body.get(j));
+                }
+                body.subList(i, body.size()).clear();
+                score -= (tail.size() / 2);
+                break;
+            }
+        }
+        return tail;
+    }
+
+    /**
+     * Set the alive state of the snake
+     * @param isAlive the alive state of the snake
+     */
+    private void setAlive(boolean isAlive) {
+        alive = isAlive;
     }
 }

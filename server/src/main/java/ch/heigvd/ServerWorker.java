@@ -3,11 +3,15 @@ package ch.heigvd;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
 
 /**
  * The class that represent the server worker
  */
 public class ServerWorker implements Runnable {
+
+    private final static Logger LOG = Logger.getLogger(ServerWorker.class.getName());
+
     /**
      * the player that the server worker is associated with
      */
@@ -40,8 +44,9 @@ public class ServerWorker implements Runnable {
 
     /**
      * The constructor
+     *
      * @param clientSocket The socket used to communicate with the client
-     * @param server The server that the server worker work for
+     * @param server       The server that the server worker work for
      */
     public ServerWorker(Socket clientSocket, Server server) {
         this.server = server;
@@ -51,7 +56,7 @@ public class ServerWorker implements Runnable {
             clientInput = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             serverOutput = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8));
         } catch (IOException e) {
-            System.out.println("Server exception: " + e);
+            System.out.println("Server exception on constructor: " + e);
 
             try {
                 if (clientInput != null) clientInput.close();
@@ -141,8 +146,12 @@ public class ServerWorker implements Runnable {
                 }
             }
 
-            clientInput.close();
+            LOG.info("A client left the game");
+
             serverOutput.close();
+            clientInput.close();
+            clientSocket.close();
+
 
         } catch (IOException e) {
             System.err.println("Server exception: " + e);
@@ -165,21 +174,25 @@ public class ServerWorker implements Runnable {
             try {
                 Thread.sleep(server.getGameFrequency() / 2);
             } catch (InterruptedException e) {
-                System.out.println("Server exception: " + e);
+                System.err.println("Server exception on gui: " + e);
             }
 
-            String command = Message.setCommand(Message.UPTE, server.getBoard().toString());
+            StringBuilder sb = new StringBuilder( server.getBoard().toString());
+            sb.append("\n");
+            sb.append(server.getInfos());
+
+            String command = Message.setCommand(Message.UPTE, sb.toString());
 
             if (!clientSocket.isClosed()) {
                 try {
                     serverOutput.write(command);
                     serverOutput.flush();
                 } catch (IOException e) {
-                    System.out.println("Server exception: " + e);
+                    System.err.println("Server exception on gui if not close : " + e);
 
                     try {
                         if (serverOutput != null) serverOutput.close();
-                        if (clientSocket != null && !clientSocket.isClosed())clientSocket.close();
+                        if (clientSocket != null && !clientSocket.isClosed()) clientSocket.close();
                     } catch (IOException e2) {
                         System.err.println("Error closing resources: " + e2);
                     }

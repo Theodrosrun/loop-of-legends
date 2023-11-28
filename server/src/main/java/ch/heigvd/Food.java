@@ -48,11 +48,19 @@ public class Food {
      */
     public Food(int quantity, int frequency) {
         food = new ArrayList<>(quantity);
-        for (int i = 0; i < quantity; i++) {
-            food.add(new Position(0, 0, representation));
-        }
         this.frequency = frequency;
         this.quantity = quantity;
+    }
+
+    /**
+     * Used to set food
+     * @param generatedFood the generated food
+     */
+    public void setFood( ArrayList<Position> generatedFood) {
+        for (Position f : food) {
+            f.setRepresentation(representation);
+        }
+        food.addAll(generatedFood);
     }
 
     /**
@@ -69,10 +77,20 @@ public class Food {
      * @param position the position of the food to remove
      */
     public void removeFood(Position position){
-        for (Position f : food) {
+
+        for (int i = 0; i < food.size(); i++) {
+            Position f = food.get(i);
             if (f.equals(position)) {
                 f.setRepresentation(emptyChar);
                 eatedFood.add(f);
+                food.remove(f);
+                return;
+            }
+        }
+
+        for (Position f : food) {
+            if (f.equals(position)) {
+
                 return;
             }
         }
@@ -99,7 +117,7 @@ public class Food {
         eatedFood.clear();
         if (counter++ % frequency == 0) {
             for (int i = 0; i < quantity; i++) {
-                food.set(i, getRandPosition());
+                food.add(getRandPosition());
             }
         }
     }
@@ -109,8 +127,8 @@ public class Food {
      * @return a random position
      */
     private Position getRandPosition(){
-        int x = (int) (Math.random() * 20);
-        int y = (int) (Math.random() * 20);
+        int x = (int) (Math.random() * Position.getLimit_x());
+        int y = (int) (Math.random() * Position.getLimit_y());
         return new Position(x, y, representation);
     }
 }

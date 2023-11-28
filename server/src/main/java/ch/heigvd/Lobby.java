@@ -13,16 +13,14 @@ public class Lobby {
      * The list of players in the lobby
      */
     private final ArrayList<Player> players;
-
-    /**
-     * The boolean that indicates if the lobby is open
-     */
-    private boolean isOpen = true;
-
     /**
      * The maximum number of players in the lobby
      */
     private final int maxPlayers;
+    /**
+     * The boolean that indicates if the lobby is open
+     */
+    private boolean isOpen = true;
 
     /**
      * Constructor
@@ -157,7 +155,7 @@ public class Lobby {
      * @param board the board to determine and compute the position of the snakes
      */
     public void initSnakes(Board board) {
-        int initLenght = 3;
+        int initLenght = 4;
         Position initPosition;
         int bw = board.getWidth();
         int bh = board.getHeight();
@@ -218,5 +216,19 @@ public class Lobby {
             snakes.add(player.getSnake());
         }
         return snakes;
+    }
+
+    public String getInfos() {
+        if (isOpen) {
+            return "Press r to ready\n" +
+                    "Press q to quit\n" +
+                    "Press h to get help\n";
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (Player p : players) {
+                sb.append(p.getName()).append(" : ").append(p.getInfo()).append("\n");
+            }
+            return sb.toString();
+        }
     }
 }

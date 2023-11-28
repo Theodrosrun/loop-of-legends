@@ -1,9 +1,13 @@
 package ch.heigvd;
 
+import static java.lang.Math.abs;
+
 /**
  * The class that represent the position on the map
  */
 public class Position {
+    private static int limit_x = 0;
+    private static int limit_y = 0;
 
     /**
      * The x and y coordinates of the position
@@ -46,10 +50,18 @@ public class Position {
      * @param representation The representation of the position on board
      */
     public Position(int x, int y, DIRECTION direction, char representation) {
-        this.x = x;
-        this.y = y;
+        this.x = getRelativeX(x);
+        this.y = getRelativeY(y);
         this.direction = direction;
         this.representation = representation;
+    }
+
+    public static double getLimit_x() {
+        return limit_x;
+    }
+
+    public static double getLimit_y() {
+        return limit_y;
     }
 
     /**
@@ -101,6 +113,43 @@ public class Position {
     }
 
     /**
+     * get the relative value of the given value
+     *
+     * @param value the value to get the relative value
+     * @param limit the limit of the value
+     * @return the relative value of the given value
+     */
+    private static int getRelativeValue(int value, int limit) {
+
+        int relativeValue = value % limit;
+
+        if (value % limit < 0) {
+            relativeValue = limit - (abs(relativeValue));
+        }
+        return relativeValue;
+
+    }
+    /**
+     * get the relative x position of the board
+     *
+     * @param x the x position
+     * @return the relative x position of the board
+     */
+    public static int getRelativeX(int x) {
+        return getRelativeValue(x, limit_x);
+    }
+
+    /**
+     * get the relative y position of the board
+     *
+     * @param y the y position
+     * @return the relative y position of the board
+     */
+    public static int getRelativeY(int y) {
+        return getRelativeValue(y, limit_y);
+    }
+
+    /**
      * Compare two positions with their coordinates
      * @param obj The position to compare
      * @return true if the positions are equals
@@ -113,4 +162,11 @@ public class Position {
         return false;
     }
 
+    public static void setLimit_x(int limitX) {
+        limit_x = limitX;
+    }
+
+    public static void setLimit_y(int limitY) {
+        limit_y = limitY;
+    }
 }
